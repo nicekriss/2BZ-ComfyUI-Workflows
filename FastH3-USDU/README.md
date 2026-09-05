@@ -1,10 +1,12 @@
-# FastH3 + USDU Video Restore v1.1.1
+# FastH3 + USDU · 설치기 v1.2.0-rc1 (메인컴 테스트용)
+
+먼저 [START-HERE-ko.md](START-HERE-ko.md)를 읽으세요. 워크플로우는 v1.1.1이며 이번 테스트 대상은 자동 설치·복구 기능입니다.
 
 MiniMax H3 Fast VSA 모델을 USDU의 타일 복원 경로에 연결해, 기존 영상을 빠르게 복원·확대하는 ComfyUI 워크플로우입니다.
 
 ## 설치
 
-1. [Releases](https://github.com/nicekriss/2BZ-ComfyUI-Workflows/releases/latest)에서 ZIP을 다운로드해 압축을 풉니다.
+1. [테스트 Release v1.2.0-rc1](https://github.com/nicekriss/2BZ-ComfyUI-Workflows/releases/tag/v1.2.0-rc1)에서 ZIP을 다운로드해 압축을 풉니다.
 2. ComfyUI를 완전히 종료합니다.
 3. `Install-SolAttn-MiniMax.bat`을 더블클릭합니다.
 4. 창이 뜨면 `main.py`가 들어 있는 ComfyUI 폴더를 선택합니다.
@@ -31,9 +33,9 @@ MiniMax H3 Fast VSA 모델을 USDU의 타일 복원 경로에 연결해, 기존 
 
 `sol_attn` import만으로는 부족합니다. 현재 VSA 경로는 CUDA `sol_attn_chunked`와 `tail`, `block_len`, `coarse_gate`, `topk_ratio` 인자를 요구합니다. 설치 전 GPU/BF16 지원과 128-token CUDA 커널 실행을 검사합니다. 이 검사는 전체 H3 모델 호환성이나 속도·화질을 보장하지 않습니다.
 
-패키지 자동 업그레이드는 하지 않습니다. 커널이 없으면 ComfyUI Desktop의 업데이트/환경 복구 절차를 사용한 뒤 재검사하세요. 수동 환경에서는 해당 ComfyUI가 실제 사용하는 Python으로 `python -m pip install --no-deps comfy-kitchen==0.2.32`를 실행하는 방법이 있습니다. 이 명령은 의존성을 해결하지 않으므로 실패하면 환경에 맞는 공식 설치 지침을 확인하세요. 시스템 Python에 설치하지 마세요.
+현재 CUDA 검사가 실패하면 기존 comfy-kitchen 파일을 백업한 뒤 공식 `0.2.32` wheel을 `--no-deps`로 설치합니다. Torch와 다른 패키지는 변경하지 않습니다. 설치 또는 CUDA 재검사에 실패하면 백업으로 복구합니다. 성공 후에도 `Restore-SolAttn-MiniMax.bat`으로 수동 복구할 수 있습니다. 실행 중인 ComfyUI를 먼저 종료해야 합니다.
 
-2026-09-05 검증: 기존 로컬 0.2.31은 chunked 함수 누락으로 실패했고, 별도 임시 경로의 공식 Windows 0.2.32 wheel은 RTX 3090에서 API 검사와 작은 VSA CUDA 실행을 통과했습니다. 실행 중인 ComfyUI 패키지는 이 배포 수정 과정에서 변경하지 않았습니다.
+격리된 테스트 환경에서 0.2.31 → 0.2.32 설치와 VSA CUDA 실행을 검증했습니다. 메인컴 전체 H3 실행은 아직 미검증이며, 이 파일은 테스트 배포본입니다.
 
 진단만 실행: `powershell -NoProfile -ExecutionPolicy Bypass -File .\Install-SolAttn-MiniMax.ps1 -ComfyUIRoot "C:\path\ComfyUI" -CheckOnly`. Python 자동 탐색이 모호하면 `-PythonExe "C:\path\python.exe"`를 추가하세요. Linux/macOS용 원클릭 설치기는 제공하지 않습니다.
 
