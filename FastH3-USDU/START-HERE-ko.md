@@ -1,10 +1,10 @@
-# 처음 시작하기 · v1.2.0
+# 처음 시작하기 · v1.2.1
 
 **Windows / NVIDIA용 설치 패키지. 깨끗한 PC에서 새 설치기로 전체 설치·렌더 검증은 아직 미완료입니다.**
 
 ## 0. 어디서 받고, 어디에 풀까요?
 
-**[설치기 다운로드 페이지 · v1.2.0](https://github.com/nicekriss/2BZ-ComfyUI-Workflows/releases/tag/v1.2.0)**를 엽니다. Assets에서 `2BZ-FastH3-USDU-installer-v1.2.0.zip`을 받으세요.
+**[설치기 다운로드 페이지 · v1.2.1](https://github.com/nicekriss/2BZ-ComfyUI-Workflows/releases/tag/v1.2.1)**를 엽니다. Assets에서 `2BZ-FastH3-USDU-installer-v1.2.1.zip`을 받으세요.
 검색으로 찾는다면 GitHub에서 `nicekriss/2BZ-ComfyUI-Workflows` → README의 설치 ZIP 링크를 누릅니다. 촬영은 위 버전 지정 링크, 항상 최신 안내는 https://github.com/nicekriss/2BZ-ComfyUI-Workflows/releases/latest 를 사용하세요. `Source code (zip)`은 설치 패키지가 아닙니다.
 다운로드한 ZIP 우클릭 → 모두 압축 풀기 → 예: `C:\AI-Setup\FastH3-USDU\`에 풉니다. **custom_nodes에 ZIP 전체를 넣지 않습니다.**
 압축 푼 폴더에 이 문서, `Install-SolAttn-MiniMax.bat`, `Install-USDU-H3.bat`, `2BZ_FastH3_USDU.json`이 함께 보여야 합니다. BAT만 따로 옮기지 마세요.

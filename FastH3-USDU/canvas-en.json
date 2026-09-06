@@ -1,0 +1,50 @@
+{
+  "titles": {
+    "1": "0 · Start here / v1.2.1",
+    "2": "1 · Load your input video",
+    "3": "Optional · Trim video (OFF by default)",
+    "4": "2 · Decode frames + audio",
+    "5": "3 · H3 text encoder",
+    "6": "3 · FastH3 VSA checkpoint",
+    "7": "4 · H3 sigma shift",
+    "8": "🧩 5 · VSA sparse attention",
+    "9": "3 · H3 video VAE",
+    "10": "6 · Tile conditioning (automatic prompt)",
+    "11": "7 · FastH3 guider",
+    "12": "8 · Simple / 2 steps / denoise 0.20",
+    "13": "9 · Euler",
+    "16": "12 · Restore original audio",
+    "17": "13 · Save upscaled video",
+    "18": "Settings and comparison notes",
+    "19": "AUTO · Read normalized source size",
+    "24": "🧩 11 · ESRGAN + USDU tile refinement",
+    "26": "📦 Download all 4 models here",
+    "27": "🧩 Required custom nodes / installation",
+    "28": "Credits · Reddit sources · support",
+    "29": "AUTO · 1MP / multiples of 32",
+    "30": "Optional prompt guidance",
+    "31": "3 · Official RealESRGAN x2plus",
+    "32": "Optional · Extra description (leave blank)",
+    "33": "AUTO · Base + optional prompt",
+    "42": "Latest results · FastH3 USDU selected"
+  },
+  "notes": {
+    "1": "# FastH3 + USDU · v1.2.1\n1. Extract the entire installer ZIP. Follow START-HERE-en.md to install the two custom nodes with ComfyUI stopped.\n2. Open this workflow, then click the **four download links in the Model setup note**.\n3. Put each file in its listed folder, refresh model lists and select your input video.\n4. Leave the extra prompt blank unless needed. Test a short clip before processing a long video.\n\nKorean: 2BZ_FastH3_USDU.json\nEnglish: 2BZ_FastH3_USDU_EN.json\nOnly the explanation language differs; computation and settings are identical.\n\nDefault: normalize to about 1MP → 2x / 2 steps / denoise 0.20 / full video.\nTile and conditioning dimensions follow the normalized source automatically.\nOutput: output/video/FastH3_USDU…mp4. Not fixed FHD or 2048px output.\n\nSee **6 · Latest test results** for the three-way comparison.\nAn existing RTX4070 Ti SUPER16GB / RAM32GB setup worked (user report). Clean-PC end-to-end installation and simultaneous recording are unverified. Faces and scene details may change.",
+    "18": "# Settings\nEuler / simple / 2 steps / denoise0.20.\nThe checkpoint's “4step” name does not change the actual two-step sampling setting.\n\nNormalize to about1MP, then upscale2x. Output size depends on the source aspect ratio; it is not fixed FHD.\nUSDU tiles and conditioning dimensions both come from the normalized input.\n\nKeep VSA(FastVideo), keep10%, exact_kv_and_rows.\nKeep percentage is a sparse-attention selection ratio, not a VRAM or quality percentage.\nStep distillation, INT8 quantization and VSA are separate factors; the overall2x result is not a VSA-only measurement.\n\nFaces, expressions, clothes and backgrounds may change. Compare matching source/result frames.\nOther scales such as1.5/1.8 are possible, but the latest15-second timings used2x.\n\nOnly consider the optional memory-estimate override after OOM.\nNo KJNodes dependency is required by the default graph.\nA15-second clip does not inherently fail; the user previously completed30-second clips.\nSee START-HERE-en.md for the optional wiring and its limitations.",
+    "26": "# Download models directly from this note\n\nOpen the workflow first. Missing-model indicators are expected until you download and select the files. **Keep their original filenames.**\n\n### 1. FastH3 VSA checkpoint\n[Download FastH3 checkpoint](https://huggingface.co/Kijai/MiniMax-H3-experimental/resolve/main/minimax_h3_fastvideo_vsa_datafree_1300step_4step_int8_convrot.safetensors)\n→ `ComfyUI/models/diffusion_models/`\n\n### 2. H3 Qwen text encoder\n[Download Qwen3-VL NVFP4 encoder](https://huggingface.co/Comfy-Org/MiniMax-H3/resolve/main/text_encoders/qwen3vl_32b_minimax_h3_nvfp4_awq.safetensors)\n→ `ComfyUI/models/text_encoders/`\n\n### 3. H3 video VAE\n[Download H3 Video VAE FP16](https://huggingface.co/Comfy-Org/MiniMax-H3/resolve/main/vae/minimax_h3_video_vae_fp16.safetensors)\n→ `ComfyUI/models/vae/`\n\n### 4. Pixel upscaler\n[Download RealESRGAN_x2plus.pth](https://github.com/xinntao/Real-ESRGAN/releases/download/v0.2.1/RealESRGAN_x2plus.pth)\n→ `ComfyUI/models/upscale_models/`\n\nAbout 41GB total. Links responded on2026-09-07. Configured shared model folders also work.\nRefresh model lists and select the files; restart ComfyUI if they remain undiscovered.\nThe benchmark's local x2 file has not been proven identical to the official x2plus file.",
+    "27": "# Install custom nodes\nSave your work and stop ComfyUI before installation.\n\n1. Run Install-SolAttn-MiniMax.bat from the extracted ZIP.\n2. Run Install-USDU-H3.bat (Git for Windows required).\n3. Restart ComfyUI, open this workflow and download models from its Model setup note.\n\n[Get the installer ZIP](https://github.com/nicekriss/2BZ-ComfyUI-Workflows/releases/latest)\n[H3 USDU source](https://github.com/lisitskyaa/ComfyUI_UltimateSDUpscaleGuider_H3)\n\nThe installer checks SolAttn v5, installs Kitchen0.2.32 only if needed, and may patch two fingerprint-verified H3 core files. Backups are retained. Unknown versions and edited files are refused, not overwritten.\nCheck-Setup.bat tests a small CUDA operation, NOT full model loading or speed.\nCheck-ComfyUI.bat checks backend node/model names.\nSee START-HERE-en.md for compatibility, success criteria and restore steps.\nClean-PC end-to-end installation remains unverified.",
+    "28": "# Credits and sources\nWorkflow planning and tests: [TooBusyAI / 2BZ](https://www.youtube.com/@toobusyAI)\n\n## Original Reddit posts\n[FastH3 open-source announcement](https://www.reddit.com/r/StableDiffusion/comments/1w0xkpb/weve_open_sourced_minimax_h3_that_generates_15s/)\n[MiniMax H3 + Ultimate SD Upscale example](https://www.reddit.com/r/StableDiffusion/comments/1vwgoy2/minimax_h3_ultimate_sd_upscale_can_actually_fix/)\n\nOriginal generation-speed claims are separate from this USDU benchmark. Third-party models and nodes retain their authors' licenses.\n\n## Report a problem\n[GitHub Issues](https://github.com/nicekriss/2BZ-ComfyUI-Workflows/issues)\nUse the English report template in START-HERE-en.md.\nInclude ZIP version, GPU/VRAM/RAM, ComfyUI version, failed stage, actual workflow JSON and full error logs.\nFor quality issues, include matching source/output crops and a short public-safe clip.\nRemove credentials, personal paths and private footage before sharing. Nothing is automatically uploaded.",
+    "30": "# Optional extra prompt\nThe default restoration prompt does not specify ethnicity, gender or a fixed face shape. It is intended for people, objects and scenery.\n\nUse the extra-description field only for visible details that need clarification.\nExamples:\nA person wearing round glasses and a blue jacket.\nA red motorcycle with black wheels on a wet road.\n\nDo not invent identity details. Ethnicity instructions are not mandatory.\nA prompt cannot guarantee identity preservation.\nIf faces change or flicker, compare a lower denoise value; this may also reduce restoration strength.\nLeave the field blank for the default behavior.",
+    "42": "# Final choice: FastH3 + USDU\n\nSame first15seconds /2752×1536 /24fps /2 steps /denoise0.20.\n\n| Configuration | Successful workflow time |\n|---|---:|\n| Base H3 +4-step Turbo LoRA /USDU | 96m37s |\n| FastH3 /USDU | 48m40s |\n| FastH3 /MMH3 single node | 47m36s |\n\nFastH3 configurations were about2x faster in this test. One successful run each, NOT a controlled VSA-only ablation.\nThe single node was about1minute faster, but the user observed more distortion and selected the USDU workflow.\nThe corrected pixel-SR single-node test is distinct from the earlier failed bilinear-latent experiment.\n\nFastH3 USDU failed with OOM twice before completing with memory factor1.0.\nFailed-attempt time is excluded above. Duration alone was not established as the cause.\nThis optional override is NOT included in the default graph. See START-HERE-en.md.\n\nThe benchmark used a local RealESRGAN_x2.pth; this package uses official x2plus. Identity of those files is unverified.\nThis table is RTX3090 24GB/RAM64GB. Existing4070 Ti SUPER16GB/RAM32GB success is user-reported.\nClean-PC installation-through-render and recording during inference remain unverified.\nFull timing details: BENCHMARK.md(Korean)."
+  },
+  "groups": {
+    "1": "0 · Start here",
+    "2": "1 · Download and select 4 models",
+    "3": "2 · Install required custom nodes",
+    "4": "3 · Input video and automatic sizing",
+    "5": "4 · FastH3 VSA engine",
+    "6": "5 · Upscale, refine and save",
+    "7": "7 · Settings, credits and sources",
+    "8": "6 · Latest test results / final choice"
+  }
+}

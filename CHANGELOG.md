@@ -1,5 +1,13 @@
 # Changelog
 
+## v1.2.1 — 2026-09-07
+
+- Added four direct model download links and destination folders to the workflow's MarkdownNote.
+- Added an English workflow and English installation/support guide; Korean and English graphs have identical execution settings and connections.
+- Moved the latest three-way result table into a visible, dedicated group. Final choice remains FastH3 + USDU.
+- Updated the recording sequence to load the workflow before downloading models. Installer logic and render settings are unchanged from v1.2.0.
+- Verified both graphs, layout, live-canvas note contents and download URL responses. Clean-PC end-to-end rendering remains unverified.
+
 ## v1.2.0 — 2026-09-07
 
 - Latest download now points to the installer package, not the older v1.1.1 release.

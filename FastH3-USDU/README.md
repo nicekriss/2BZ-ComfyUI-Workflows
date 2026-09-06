@@ -1,9 +1,13 @@
-# FastH3 + USDU · v1.2.0
+# FastH3 + USDU · v1.2.1
 
 **[처음 시작하기](START-HERE-ko.md)**. 기존 영상을 약 1MP로 정규화하고 ESRGAN + FastH3 USDU로 2배 확대합니다. 빠른 처리나 원본 완전 보존을 보장하지 않습니다. 실패한 latent 경로는 제거했습니다.
 
-이 ZIP은 보완한 설치 패키지입니다. [v1.2.0 다운로드](https://github.com/nicekriss/2BZ-ComfyUI-Workflows/releases/tag/v1.2.0). **새 설치기로 깨끗한 PC에서 전체 설치·렌더 검증은 미완료**입니다.
+이 ZIP은 보완한 설치 패키지입니다. [v1.2.1 다운로드](https://github.com/nicekriss/2BZ-ComfyUI-Workflows/releases/tag/v1.2.1). **새 설치기로 깨끗한 PC에서 전체 설치·렌더 검증은 미완료**입니다.
 기존 환경에서는 RTX 3090 24GB / RAM 64GB로 실행했고, 사용자는 메인 RTX 4070 Ti SUPER 16GB / RAM 32GB에서도 업스케일 성공을 확인했습니다. 녹화 동시 실행이나 모든 길이·해상도 보장은 아닙니다.
+
+## 워크플로우에서 바로 받기
+
+한국어 `2BZ_FastH3_USDU.json` / English `2BZ_FastH3_USDU_EN.json` 중 하나를 먼저 여세요. **① 모델 다운로드** 노트에 모델 4개의 직접 다운로드 링크와 저장 위치가 있습니다. **⑥ 최신 테스트 결과**에서 비교표를 볼 수 있습니다. 영문판은 노트·노드 제목·그룹 제목을 번역했고 계산은 같습니다. [English setup guide](START-HERE-en.md).
 
 ## 필수 모델 4개 — 약 41GB, 별도 다운로드
 
