@@ -71,9 +71,23 @@ class GatePatchTests(unittest.TestCase):
         self.assertEqual(nodes[31]['widgets_values'][0], 'RealESRGAN_x2plus.pth')
         self.assertEqual(nodes[2]['widgets_values'][0], '')
         self.assertEqual(nodes[3]['mode'], 4)
-        self.assertEqual(nodes[24]['widgets_values'][0], 1.8)
-        self.assertEqual(nodes[12]['widgets_values'], ['simple', 2, .25])
+        self.assertEqual(nodes[24]['widgets_values'][0], 2.0)
+        self.assertEqual(nodes[12]['widgets_values'], ['simple', 2, .20])
         self.assertTrue(any(link[1:5] == [24, 0, 16, 0] for link in graph['links']))
+        self.assertIn('96분 37초', nodes[42]['widgets_values'][0])
+        self.assertIn('48분 40초', nodes[42]['widgets_values'][0])
+        self.assertIn('47분 36초', nodes[42]['widgets_values'][0])
+        self.assertIn('1w0xkpb', nodes[28]['widgets_values'][0])
+        self.assertIn('1vwgoy2', nodes[28]['widgets_values'][0])
+        self.assertFalse(any('Latent' in n['type'] for n in nodes.values()))
+        self.assertFalse(any(n['type'] == 'ModelMemoryUsageFactorOverride' for n in nodes.values()))
+        for node in nodes.values():
+            if 'widgets_values_named' in node:
+                for inp in node.get('inputs', []):
+                    if inp.get('widget', {}).get('name') == 'denoise':
+                        self.assertEqual(node['widgets_values_named']['denoise'], .20)
+        for target, slot in ((24, 10), (24, 11), (10, 5), (10, 6)):
+            self.assertTrue(any(link[1] == 19 and link[3:5] == [target, slot] for link in graph['links']))
 
 
 if __name__ == '__main__':

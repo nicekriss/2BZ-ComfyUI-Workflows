@@ -44,17 +44,18 @@ def build(root, workflow, output):
         if 'widgets_values_named' in node:
             node['widgets_values_named'][name] = value
     widget(31, 'model_name', 0, 'RealESRGAN_x2plus.pth')
+    widget(24, 'upscale_by', 0, 2.0)
+    widget(12, 'denoise', 2, 0.20)
+    nodes[12]['title'] = '8 · Simple · 2 steps / Denoise 0.20'
     nodes[31]['title'] = '10 · RealESRGAN x2plus (공식 파일)'
     nodes[26]['title'] = '📦 필수 모델 4개 · 파일 배치'
     widget(2, 'file', 0, '')
     widget(17, 'filename_prefix', 0, 'video/FastH3_USDU')
-    for node_id, filename in ((1, 'canvas-start.md'), (27, 'canvas-install.md'), (26, 'canvas-models.md')):
+    for node_id, filename in ((1, 'canvas-start.md'), (27, 'canvas-install.md'),
+                              (26, 'canvas-models.md'), (18, 'canvas-settings.md'),
+                              (42, 'canvas-results.md')):
         widget(node_id, 'text', 0, (PACKAGE / filename).read_text(encoding='utf-8'))
-    summary = nodes[42]['widgets_values'][0]
-    summary = summary.replace('원본 `2BZ_FastH3_USDU_noups`는 별도로 보존했습니다.',
-                              '이 배포본은 실패 경로를 제거한 USDU 구성입니다.')
-    summary = summary.split('\n\n증거:')[0] + '\n\n측정 조건과 한계는 BENCHMARK.md를 참고하세요.'
-    widget(42, 'text', 0, summary)
+    nodes[42]['title'] = '최종 비교 · FastH3 USDU 채택 / 2026-09-07'
     assert '1w0xkpb' in nodes[28]['widgets_values'][0] and '1vwgoy2' in nodes[28]['widgets_values'][0]
     graph.get('extra', {}).pop('comfyui_mcp', None)
     # Remove local execution previews/paths, retaining only graph content.
@@ -66,7 +67,7 @@ def build(root, workflow, output):
              'h3-gate-patch.json', 'Install-SolAttn-MiniMax.bat', 'Install-SolAttn-MiniMax.ps1',
              'Restore-SolAttn-MiniMax.bat', 'Check-Setup.bat', 'README.md', 'START-HERE-ko.md',
              'BENCHMARK.md', 'RECORDING-ko.md', 'install_usdu.py', 'Install-USDU-H3.bat',
-             'Check-ComfyUI.bat', 'Check-ComfyUI.ps1', 'REPORT-PROBLEM-ko.md']
+             'Check-ComfyUI.bat', 'Check-ComfyUI.ps1', 'REPORT-PROBLEM-ko.md', 'MEMORY-ko.md']
     with zipfile.ZipFile(output, 'w', zipfile.ZIP_DEFLATED) as archive:
         for name in files:
             archive.write(PACKAGE / name, name)

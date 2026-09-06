@@ -1,5 +1,18 @@
 # 메인 PC 설치 녹화
 
+## 촬영 시작 경로
+
+GitHub 검색 `nicekriss/2BZ-ComfyUI-Workflows` → README **설치 ZIP 다운로드 v1.2.0** → Assets **2BZ-FastH3-USDU-installer-v1.2.0.zip**.
+압축을 로컬 쓰기 가능한 폴더(예: C:\AI-Setup\FastH3-USDU)에 전부 풀고, ComfyUI 종료 → 어텐션 BAT → USDU BAT → 모델 4개 → 컴피 재실행 → Check-ComfyUI BAT → JSON 열기 → 짧은 영상 실행 순서입니다.
+Source code ZIP이나 BAT만 다운로드하지 않습니다. 성공 표시는 START-HERE-ko.md의 네 단계 표를 그대로 보여주세요.
+
+## 이번 버전과 실측을 설명할 때
+
+기본값은 약1MP → 2배,2스텝,denoise0.20입니다. 이전 녹화의1.8배/.25와 다릅니다.
+“이번 같은15초 작업에서 일반H3+터보는약97분,FastH3 USDU는약49분. 단일 노드는약48분이었지만 변형이 더 있어 USDU를 최종 선택했습니다.”
+FastH3 USDU의 성공 시간은 OOM 후 선택적 메모리 설정을 보완한 실행입니다. VSA 하나만으로2배 빨라졌다고 말하지 마세요.
+실측 로컬x2 모델과 배포용공식x2plus의 동일성은 미검증입니다. 새 ZIP 완전 신규 설치를 검증했다고 말하지 마세요.
+
 4070 Ti SUPER 16GB / RAM 32GB에서 업스케일 성공 사례는 있지만 녹화 동시 실행은 미검증입니다. 녹화와 렌더를 분리해서 준비합니다.
 
 1. 폴더 선택·설치기·모델 배치 과정을 녹화합니다.
