@@ -2,8 +2,8 @@
 
 ## 촬영 시작 경로
 
-GitHub 검색 `nicekriss/2BZ-ComfyUI-Workflows` → README **설치 ZIP 다운로드 v1.2.0** → Assets **2BZ-FastH3-USDU-installer-v1.2.0.zip**.
-압축을 로컬 쓰기 가능한 폴더(예: C:\AI-Setup\FastH3-USDU)에 전부 풀고, ComfyUI 종료 → 어텐션 BAT → USDU BAT → 모델 4개 → 컴피 재실행 → Check-ComfyUI BAT → JSON 열기 → 짧은 영상 실행 순서입니다.
+GitHub 검색 `nicekriss/2BZ-ComfyUI-Workflows` → README **설치 ZIP 다운로드 v1.2.1** → Assets **2BZ-FastH3-USDU-installer-v1.2.1.zip**.
+압축을 로컬 쓰기 가능한 폴더(예: C:\AI-Setup\FastH3-USDU)에 전부 풀고, ComfyUI 종료 → 어텐션 BAT → USDU BAT → 컴피 재실행 → 한국어/영어 JSON 열기 → 모델 노트의 링크 4개로 다운로드 → 로더 확인 → Check-ComfyUI BAT → 짧은 영상 실행 순서입니다.
 Source code ZIP이나 BAT만 다운로드하지 않습니다. 성공 표시는 START-HERE-ko.md의 네 단계 표를 그대로 보여주세요.
 
 ## 이번 버전과 실측을 설명할 때

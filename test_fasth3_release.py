@@ -1,6 +1,7 @@
 """Offline installer contract tests; no live install or model execution."""
 import importlib.util
 import json
+import re
 from pathlib import Path
 import subprocess
 import tempfile
@@ -88,6 +89,28 @@ class GatePatchTests(unittest.TestCase):
                         self.assertEqual(node['widgets_values_named']['denoise'], .20)
         for target, slot in ((24, 10), (24, 11), (10, 5), (10, 6)):
             self.assertTrue(any(link[1] == 19 and link[3:5] == [target, slot] for link in graph['links']))
+
+    def test_bilingual_workflows_have_identical_execution(self):
+        ko = json.loads((BASE / 'FastH3-USDU/2BZ_FastH3_USDU.json').read_text(encoding='utf-8'))
+        en = json.loads((BASE / 'FastH3-USDU/2BZ_FastH3_USDU_EN.json').read_text(encoding='utf-8'))
+        self.assertNotEqual(ko['id'], en['id'])
+        self.assertEqual(ko['links'], en['links'])
+        for left, right in zip(ko['nodes'], en['nodes'], strict=True):
+            for key in ('id', 'type', 'mode', 'inputs', 'outputs', 'pos', 'size'):
+                self.assertEqual(left.get(key), right.get(key), (left['id'], key))
+            self.assertIsNone(re.search('[가-힣]', right['title']))
+            if left['type'] == 'MarkdownNote':
+                self.assertIsNone(re.search('[가-힣]', right['widgets_values'][0]))
+            else:
+                self.assertEqual(left.get('widgets_values'), right.get('widgets_values'))
+        for graph in (ko, en):
+            nodes = {n['id']: n for n in graph['nodes']}
+            links = re.findall(r'https://[^\s)]+', nodes[26]['widgets_values'][0])
+            self.assertEqual(len(links), 4)
+            for model_id in (6, 5, 9, 31):
+                self.assertTrue(any(url.endswith(nodes[model_id]['widgets_values'][0]) for url in links))
+            self.assertGreaterEqual(nodes[42]['pos'][1], 0)
+            self.assertTrue(any(g['id'] == 8 for g in graph['groups']))
 
 
 if __name__ == '__main__':

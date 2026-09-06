@@ -2,17 +2,19 @@
 
 너무바쁜베짱이(2BZ)가 실제 제작과 비교 테스트에 사용한 ComfyUI 워크플로우를 배포합니다.
 
+English users: open **2BZ_FastH3_USDU_EN.json** from the ZIP, then use its clickable model-download note. [English setup guide](FastH3-USDU/START-HERE-en.md).
+
 ## FastH3 + USDU Video Restore
 
-기존 영상을 약 1MP로 정규화한 뒤 MiniMax H3 Fast 모델과 USDU 타일 복원으로 확대합니다. v1.2.0은 2배이며, 타일 크기는 정규화된 입력에 자동으로 맞춥니다. FHD 고정 출력은 아닙니다.
+기존 영상을 약 1MP로 정규화한 뒤 MiniMax H3 Fast 모델과 USDU 타일 복원으로 확대합니다. v1.2.1은 2배이며, 타일 크기는 정규화된 입력에 자동으로 맞춥니다. FHD 고정 출력은 아닙니다.
 
-**[설치 ZIP 다운로드 · v1.2.0](https://github.com/nicekriss/2BZ-ComfyUI-Workflows/releases/tag/v1.2.0)** → Assets의 `2BZ-FastH3-USDU-installer-v1.2.0.zip`을 받으세요. `Source code (zip)`이 아닙니다. [처음 시작하기](FastH3-USDU/START-HERE-ko.md).
+**[설치 ZIP 다운로드 · v1.2.1](https://github.com/nicekriss/2BZ-ComfyUI-Workflows/releases/tag/v1.2.1)** → Assets의 `2BZ-FastH3-USDU-installer-v1.2.1.zip`을 받으세요. `Source code (zip)`이 아닙니다. [처음 시작하기](FastH3-USDU/START-HERE-ko.md).
 
 - 기본 복원 강도: `denoise 0.20`
-- v1.2.0 기본 출력 배율: `2x`
+- v1.2.1 기본 출력 배율: `2x`
 - 기본 프롬프트: 인종·성별을 지정하지 않는 범용 복원 지시 + 선택 추가 묘사
 - 권장 입력 길이: 약 5초
-- 기존 실행 환경: RTX 3090 24GB. 메인 RTX 4070 Ti SUPER 16GB / RAM 32GB도 업스케일 성공(사용자 확인). 새 v1.2.0 설치기로 깨끗한 환경 전체 설치·렌더 검증은 미완료.
+- 기존 실행 환경: RTX 3090 24GB. 메인 RTX 4070 Ti SUPER 16GB / RAM 32GB도 업스케일 성공(사용자 확인). 새 v1.2.1 설치기로 깨끗한 환경 전체 설치·렌더 검증은 미완료.
 - 최종 선택: FastH3 USDU. 같은 15초·2스텝·denoise 0.20 비교에서 일반 H3+Turbo 96분37초 → FastH3 USDU 48분40초. 단일 노드는47분36초였으나 사용자 검토에서 더 변형되어 미채택. [조건·한계](FastH3-USDU/BENCHMARK.md).
 - OOM 때만 [선택적 메모리 보완](FastH3-USDU/MEMORY-ko.md). 기본 그래프는 추가 KJNodes 없이 유지합니다.
 - 상세 설치법: [FastH3-USDU/README.md](FastH3-USDU/README.md)

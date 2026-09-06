@@ -1,11 +1,13 @@
 """Build the reviewed package from a saved workflow, without touching the live canvas."""
 import argparse
+import copy
 import difflib
 import hashlib
 import json
 from pathlib import Path
 import subprocess
 import zipfile
+import uuid
 
 BASE = Path(__file__).resolve().parent
 PACKAGE = BASE / 'FastH3-USDU'
@@ -48,7 +50,7 @@ def build(root, workflow, output):
     widget(12, 'denoise', 2, 0.20)
     nodes[12]['title'] = '8 · Simple · 2 steps / Denoise 0.20'
     nodes[31]['title'] = '10 · RealESRGAN x2plus (공식 파일)'
-    nodes[26]['title'] = '📦 필수 모델 4개 · 파일 배치'
+    nodes[26]['title'] = '📦 모델 4개 · 다운로드 링크'
     widget(2, 'file', 0, '')
     widget(17, 'filename_prefix', 0, 'video/FastH3_USDU')
     for node_id, filename in ((1, 'canvas-start.md'), (27, 'canvas-install.md'),
@@ -56,6 +58,21 @@ def build(root, workflow, output):
                               (42, 'canvas-results.md')):
         widget(node_id, 'text', 0, (PACKAGE / filename).read_text(encoding='utf-8'))
     nodes[42]['title'] = '최종 비교 · FastH3 USDU 채택 / 2026-09-07'
+    # Keep the download and results notes visible in the main canvas lanes.
+    nodes[26]['size'] = [700, 710]
+    nodes[31]['pos'] = [1640, 544]
+    nodes[42]['pos'] = [2145, 1040]
+    nodes[42]['size'] = [760, 1100]
+    groups = {g['id']: g for g in graph['groups']}
+    groups[2]['title'] = '① 모델 다운로드 · 필수 4개'
+    groups[2]['bounding'] = [860, 0, 1110, 860]
+    groups[7]['title'] = '⑦ 설정 도움말 · 제작 / 출처'
+    results_group = {'id': 8, 'title': '⑥ 최신 테스트 결과 · 최종 선택',
+                     'bounding': [2105, 960, 840, 1250], 'color': '#286878', 'flags': {}}
+    if 8 in groups:
+        groups[8].update(results_group)
+    else:
+        graph['groups'].append(results_group)
     assert '1w0xkpb' in nodes[28]['widgets_values'][0] and '1vwgoy2' in nodes[28]['widgets_values'][0]
     graph.get('extra', {}).pop('comfyui_mcp', None)
     # Remove local execution previews/paths, retaining only graph content.
@@ -63,7 +80,21 @@ def build(root, workflow, output):
         node.pop('imgs', None)
         node.pop('images', None)
     (PACKAGE / '2BZ_FastH3_USDU.json').write_text(json.dumps(graph, ensure_ascii=False, separators=(',', ':')), encoding='utf-8')
-    files = ['2BZ_FastH3_USDU.json', 'check_solattn.py', 'install_solattn.py', 'h3_compat.py',
+    english = copy.deepcopy(graph)
+    english['id'] = str(uuid.uuid5(uuid.NAMESPACE_URL, 'https://github.com/nicekriss/2BZ-ComfyUI-Workflows/FastH3-USDU/EN'))
+    translation = json.loads((PACKAGE / 'canvas-en.json').read_text(encoding='utf-8'))
+    for node in english['nodes']:
+        node['title'] = translation['titles'][str(node['id'])]
+        if node['type'] == 'MarkdownNote':
+            value = translation['notes'][str(node['id'])]
+            node['widgets_values'][0] = value
+            if 'widgets_values_named' in node:
+                node['widgets_values_named']['text'] = value
+    for group in english['groups']:
+        group['title'] = translation['groups'][str(group['id'])]
+    (PACKAGE / '2BZ_FastH3_USDU_EN.json').write_text(json.dumps(english, ensure_ascii=False, separators=(',', ':')), encoding='utf-8')
+    files = ['2BZ_FastH3_USDU.json', '2BZ_FastH3_USDU_EN.json', 'START-HERE-en.md',
+             'check_solattn.py', 'install_solattn.py', 'h3_compat.py',
              'h3-gate-patch.json', 'Install-SolAttn-MiniMax.bat', 'Install-SolAttn-MiniMax.ps1',
              'Restore-SolAttn-MiniMax.bat', 'Check-Setup.bat', 'README.md', 'START-HERE-ko.md',
              'BENCHMARK.md', 'RECORDING-ko.md', 'install_usdu.py', 'Install-USDU-H3.bat',
