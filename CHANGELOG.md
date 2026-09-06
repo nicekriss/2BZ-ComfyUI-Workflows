@@ -1,5 +1,13 @@
 # Changelog
 
+## v1.2.0 — 2026-09-07
+
+- Latest download now points to the installer package, not the older v1.1.1 release.
+- Defaults aligned to the latest comparison: 2x / 2 steps / denoise0.20; same automatic source-normalized tile sizing.
+- Updated three-way timings and user's final selection: FastH3 USDU; corrected single-node path completes but showed more distortion in user review.
+- Optional OOM memory-estimate instructions, failures and unverified causal claims disclosed; no new mandatory node or installer behavior change.
+- Beginner installation, success checks, recording and error-report instructions refreshed. Clean-PC end-to-end installation and simultaneous recording remain unverified.
+
 ## v1.2.0-rc2 — 2026-09-06 · public candidate
 
 - Failed latent path removed; 27-node USDU graph, 1.8x / 2 steps / .25 and summary included.

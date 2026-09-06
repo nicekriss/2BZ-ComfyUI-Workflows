@@ -1,8 +1,8 @@
-# FastH3 + USDU · v1.2.0-rc2
+# FastH3 + USDU · v1.2.0
 
-**[처음 시작하기](START-HERE-ko.md)**. 기존 영상을 약 1MP로 정규화하고 ESRGAN + FastH3 USDU로 1.8배 확대합니다. 빠른 처리나 원본 완전 보존을 보장하지 않습니다. 실패한 latent 경로는 제거했습니다.
+**[처음 시작하기](START-HERE-ko.md)**. 기존 영상을 약 1MP로 정규화하고 ESRGAN + FastH3 USDU로 2배 확대합니다. 빠른 처리나 원본 완전 보존을 보장하지 않습니다. 실패한 latent 경로는 제거했습니다.
 
-이 ZIP은 보완한 공개 설치 후보본입니다. [v1.2.0-rc2 다운로드](https://github.com/nicekriss/2BZ-ComfyUI-Workflows/releases/tag/v1.2.0-rc2). **새 설치기로 깨끗한 PC에서 전체 설치·렌더 검증은 미완료**입니다.
+이 ZIP은 보완한 설치 패키지입니다. [v1.2.0 다운로드](https://github.com/nicekriss/2BZ-ComfyUI-Workflows/releases/tag/v1.2.0). **새 설치기로 깨끗한 PC에서 전체 설치·렌더 검증은 미완료**입니다.
 기존 환경에서는 RTX 3090 24GB / RAM 64GB로 실행했고, 사용자는 메인 RTX 4070 Ti SUPER 16GB / RAM 32GB에서도 업스케일 성공을 확인했습니다. 녹화 동시 실행이나 모든 길이·해상도 보장은 아닙니다.
 
 ## 필수 모델 4개 — 약 41GB, 별도 다운로드
@@ -28,9 +28,9 @@ Windows / NVIDIA SM80+ 및 BF16 환경용이며 Linux/macOS 설치기는 없습�
 
 ## 기본값
 
-전체 영상 / 1MP·32배수 / 1.8배 / Euler·simple / 2스텝 / denoise 0.25 / VSA keep 10% / 빈 추가 프롬프트 / 원본 오디오 연결.
+전체 영상 / 1MP·32배수 / 2배 / Euler·simple / 2스텝 / denoise 0.20 / VSA keep 10% / 빈 추가 프롬프트 / 원본 오디오 연결.
 정확한 FHD 또는 가로 2048 출력은 아닙니다. 기본 프롬프트는 특정 인종·성별을 지정하지 않습니다.
-얼굴·의상·배경이 달라질 수 있으며 VSA의 전체 속도 개선은 이번 비교에서 입증하지 못했습니다. [측정 기록](BENCHMARK.md).
+얼굴·의상·배경이 달라질 수 있습니다. 같은 15초 비교에서 일반 H3+Turbo 96분37초, FastH3 USDU 48분40초, 단일 노드47분36초였습니다. 단일 노드는 사용자 검토에서 더 변형되어 USDU를 최종 채택했습니다. VSA만의 전체 가속 효과와 구분하세요. OOM 선택 대응은 [MEMORY-ko.md](MEMORY-ko.md). [측정 기록](BENCHMARK.md).
 
 ## 출처·라이선스
 

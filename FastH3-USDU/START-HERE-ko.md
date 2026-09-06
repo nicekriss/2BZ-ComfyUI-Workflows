@@ -1,11 +1,11 @@
-# 처음 시작하기 · v1.2.0-rc2
+# 처음 시작하기 · v1.2.0
 
-**Windows / NVIDIA용 공개 설치 후보본. 깨끗한 PC에서 새 설치기로 전체 설치·렌더 검증은 아직 미완료입니다.**
+**Windows / NVIDIA용 설치 패키지. 깨끗한 PC에서 새 설치기로 전체 설치·렌더 검증은 아직 미완료입니다.**
 
 ## 0. 어디서 받고, 어디에 풀까요?
 
-**[설치기 다운로드 페이지 · v1.2.0-rc2](https://github.com/nicekriss/2BZ-ComfyUI-Workflows/releases/tag/v1.2.0-rc2)**를 엽니다. Assets에서 `2BZ-FastH3-USDU-installer-v1.2.0-rc2.zip`을 받으세요.
-검색으로 찾는다면 GitHub에서 `nicekriss/2BZ-ComfyUI-Workflows` → README의 설치 ZIP 링크를 누릅니다. 영상 설명란에도 위 버전 지정 링크를 사용하세요. `Source code (zip)`은 설치 패키지가 아닙니다.
+**[설치기 다운로드 페이지 · v1.2.0](https://github.com/nicekriss/2BZ-ComfyUI-Workflows/releases/tag/v1.2.0)**를 엽니다. Assets에서 `2BZ-FastH3-USDU-installer-v1.2.0.zip`을 받으세요.
+검색으로 찾는다면 GitHub에서 `nicekriss/2BZ-ComfyUI-Workflows` → README의 설치 ZIP 링크를 누릅니다. 촬영은 위 버전 지정 링크, 항상 최신 안내는 https://github.com/nicekriss/2BZ-ComfyUI-Workflows/releases/latest 를 사용하세요. `Source code (zip)`은 설치 패키지가 아닙니다.
 다운로드한 ZIP 우클릭 → 모두 압축 풀기 → 예: `C:\AI-Setup\FastH3-USDU\`에 풉니다. **custom_nodes에 ZIP 전체를 넣지 않습니다.**
 압축 푼 폴더에 이 문서, `Install-SolAttn-MiniMax.bat`, `Install-USDU-H3.bat`, `2BZ_FastH3_USDU.json`이 함께 보여야 합니다. BAT만 따로 옮기지 마세요.
 Windows가 실행을 차단하면 배포 출처·파일명이 맞는지 먼저 확인하세요. 보안 기능을 일괄 해제하지 말고 경고 화면을 오류 제보에 첨부하세요.
@@ -63,9 +63,10 @@ ComfyUI 재시작 → `2BZ_FastH3_USDU.json` 드래그 → 로더 4개 확인 �
 
 ## 5. 첫 실행
 
-기본: 전체 영상 / 약 1MP·32배수 정규화 / 1.8배 / Euler·simple / 2스텝 / denoise 0.25.
+기본: 전체 영상 / 약 1MP·32배수 정규화 / 2배 / Euler·simple / 2스텝 / denoise 0.20.
 정규화된 크기를 USDU 타일과 조건부여에 자동 연결합니다. FHD·2048 고정 출력이 아닙니다.
 처음에는 1초 안팎 별도 영상으로 확인하세요. 또는 '선택 · 구간 자르기'를 활성화하면 처음 22프레임만 처리합니다(기본 바이패스). 이후 바이패스로 복원해야 전체 영상이 처리됩니다.
+예: 1376×768로 정규화된 입력은 2752×1536으로 출력됩니다. 1.5/1.8배로 바꾸면 크기와 속도도 달라져 이번 실측과 직접 비교하지 않습니다.
 출력: `output/video/FastH3_USDU…mp4`. 얼굴·의상·움직임 변형을 직접 확인하세요.
 
 ## 호환성 제한
@@ -76,6 +77,10 @@ H3 코어 패치는 ComfyUI commit `7fd919f0caff66a52289ea5b19cb6eaca0da04ef`의
 
 `Check-Setup.bat`은 H3 소스 상태와 작은 CUDA 연산만 검사합니다. 전체 모델 로딩·VSA 실행·속도·화질 검사가 아닙니다.
 실제 로그의 `VSA tiles`, gate 누락·커널 오류를 확인해야 합니다. USDU가 샘플링 로그를 숨기는 버전에서는 로그 부재만으로 미작동이라고 단정하지 마세요.
+
+## 메모리 오류가 날 때
+
+정상 실행되면 설정을 바꾸지 마세요. 이번 15초 비교의 FastH3 USDU는 OOM 두 번 후 선택적 메모리 추정 계수1.0으로 완료했습니다. 기본 그래프에는 추가 노드가 없으며 [MEMORY-ko.md](MEMORY-ko.md)에 정확한 연결과 원복을 설명했습니다. 길이만이 원인이라는 뜻은 아닙니다. 이전 30초 성공 사례도 있습니다.
 
 ## 복구·오류 보고
 
