@@ -1,0 +1,51 @@
+[
+  {
+    "path": "comfy/model_detection.py",
+    "before_sha256": "ead7ef2738fecd266eddd1eb36dbd7c29d1f16d13768f294d176c5354f744212",
+    "after_sha256": "39b51a18b5853839b72dc2173426dde33c15c107d4044a3ec3ac1b85c05d98d0",
+    "edits": [
+      {
+        "start": 21806,
+        "end": 21806,
+        "replacement": "        dit_config[\"vsa\"] = '{}blocks.0.attn.to_gate_compress.weight'.format(key_prefix) in state_dict_keys\n"
+      }
+    ]
+  },
+  {
+    "path": "comfy/ldm/minimax/model.py",
+    "before_sha256": "b3f51bfd5c44962c3bbe09c3e16e34698a286c5279e050ea6c3defbb8434c34e",
+    "after_sha256": "f0f615a58a90401ef0e5dac397eee0b56eaac47835a33b0896b8e5808b532dbf",
+    "edits": [
+      {
+        "start": 5976,
+        "end": 6072,
+        "replacement": "    def __init__(self, hidden, heads, head_dim, eps, dtype=None, device=None, operations=None, vsa=False):\n"
+      },
+      {
+        "start": 6566,
+        "end": 6566,
+        "replacement": "        if vsa:\n            self.to_gate_compress = operations.Linear(hidden, inner, bias=False, dtype=dtype, device=device)\n"
+      },
+      {
+        "start": 11588,
+        "end": 11683,
+        "replacement": "                 apply_silu=True, adaln_dtype=None, dtype=None, device=None, operations=None, vsa=False):\n"
+      },
+      {
+        "start": 11880,
+        "end": 11994,
+        "replacement": "        self.attn = Attention(hidden, heads, head_dim, qk_eps, dtype=dtype, device=device, operations=operations, vsa=vsa)\n"
+      },
+      {
+        "start": 20762,
+        "end": 20802,
+        "replacement": "                 adaln_curve_grid=None, vsa=False,\n"
+      },
+      {
+        "start": 22982,
+        "end": 23102,
+        "replacement": "                     time_embed_dim, norm_eps, qk_norm_eps, **curve, dtype=dtype, device=device, operations=operations, vsa=vsa)\n"
+      }
+    ]
+  }
+]

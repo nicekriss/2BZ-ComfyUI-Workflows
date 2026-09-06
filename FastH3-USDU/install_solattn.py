@@ -92,6 +92,10 @@ def main():
         say('Log: ' + str(log_path))
         pointer = state / 'last-backup.txt'
         if args.restore:
+            run([str(HERE / 'h3_compat.py'), '--root', str(root), '--restore'])
+            if not pointer.exists():
+                say('No Kitchen backup; Kitchen unchanged. SolAttn and USDU are retained.')
+                return
             backup = Path(pointer.read_text(encoding='utf-8')).resolve()
             if not backup.is_relative_to(state.resolve()):
                 raise RuntimeError('Backup is outside installer state directory.')
@@ -100,8 +104,11 @@ def main():
             return
         check = [str(HERE / 'check_solattn.py')]
         if args.check_only:
+            run([str(HERE / 'h3_compat.py'), '--root', str(root)])
             run(check)
             return
+        # Reject unknown core source before changing any installed package.
+        run([str(HERE / 'h3_compat.py'), '--root', str(root)])
         # Reject unsupported GPUs and outdated frontend API before changing packages.
         run(['-c', 'import torch; from comfy_api.latest import io; '
              'assert torch.cuda.is_available(), "CUDA unavailable"; '
@@ -143,7 +150,9 @@ def main():
                 # Exclusive creation preserves any file created by another installer.
                 with node.open('xb') as output:
                     output.write(data)
-            say('SUCCESS: VSA CUDA test passed and verified SolAttn v5 node is installed.')
+            run([str(HERE / 'h3_compat.py'), '--root', str(root), '--apply'])
+            say('DEPENDENCIES READY: VSA CUDA passed, SolAttn v5 and H3 gate source verified.')
+            say('USDU and models are separate steps. This does NOT mean the workflow is ready to render.')
             say('Restart ComfyUI; use VSA (FastVideo). Check actual H3 log for VSA tiles and no fallback.')
             say('This is a kernel test, not a full H3 speed/quality benchmark.')
             if backup:

@@ -1,5 +1,13 @@
 # Changelog
 
+## v1.2.0-rc2 — 2026-09-06 · public candidate
+
+- Failed latent path removed; 27-node USDU graph, 1.8x / 2 steps / .25 and summary included.
+- Official x2plus filename; private input selection cleared.
+- Fingerprinted H3 gate patch, backups and guarded restore; unknown versions refused.
+- Pinned USDU/submodule installer, beginner and recording guides.
+- Clean-PC end-to-end install remains unverified; published as a release candidate for the documented installation walkthrough.
+
 ## v1.1.1 — 2026-09-05
 
 - 현재 캔버스 26노드·29링크를 반영하고 범용 기본 프롬프트 + 선택 추가 묘사로 수정
