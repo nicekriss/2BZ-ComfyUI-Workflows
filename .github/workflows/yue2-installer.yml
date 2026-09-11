@@ -1,0 +1,22 @@
+name: YuE2 installer checks
+on:
+  pull_request:
+    paths: ['YuE2/**', 'test_yue2_installer.py', '.github/workflows/yue2-installer.yml']
+  push:
+    branches: [main]
+    paths: ['YuE2/**', 'test_yue2_installer.py', '.github/workflows/yue2-installer.yml']
+jobs:
+  installer-tests:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - run: python -m unittest test_yue2_installer -v
+      - shell: pwsh
+        run: |
+          $tokens = $null
+          $errors = $null
+          [System.Management.Automation.Language.Parser]::ParseFile("$PWD/YuE2/Install-YuE2.ps1", [ref]$tokens, [ref]$errors) | Out-Null
+          if ($errors.Count) { throw ($errors | Out-String) }
