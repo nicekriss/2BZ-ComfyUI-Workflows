@@ -1,10 +1,10 @@
-# YuE2 음악 생성 설치기 · yue2-v0.1.0-rc1
+# YuE2 음악 생성 설치기 · yue2-v0.1.0-rc2
 
 가사와 음악 스타일을 입력해 보컬과 반주가 있는 곡을 만드는 ComfyUI 워크플로입니다.
 
 ## 다운로드와 설치
 
-1. [설치 ZIP 다운로드](https://github.com/nicekriss/2BZ-ComfyUI-Workflows/releases/tag/yue2-v0.1.0-rc1)에서 **2BZ-YuE2-installer-v0.1.0-rc1.zip**을 받아 압축을 풉니다. `Source code (zip)`이나 BAT 파일 하나만 받지 마세요.
+1. [설치 ZIP 다운로드](https://github.com/nicekriss/2BZ-ComfyUI-Workflows/releases/tag/yue2-v0.1.0-rc2)에서 **2BZ-YuE2-installer-v0.1.0-rc2.zip**을 받아 압축을 풉니다. `Source code (zip)`이나 BAT 파일 하나만 받지 마세요.
 2. **Install-YuE2.bat**을 더블클릭합니다.
 3. **ComfyUI 폴더**를 선택합니다. `main.py`와 `custom_nodes`가 있는 폴더입니다. 포터블은 그 위 폴더도 가능합니다. Desktop 앱의 EXE 설치 폴더가 아니라 실제 ComfyUI 인스턴스 폴더를 선택하세요.
 4. **모델 저장 폴더**를 선택합니다. 기본 `ComfyUI/models` 또는 이미 사용하는 공유 모델 폴더를 선택하면 됩니다.

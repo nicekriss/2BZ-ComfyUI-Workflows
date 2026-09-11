@@ -1,5 +1,11 @@
 # Changes
 
+## yue2-v0.1.0-rc2
+
+- Synchronize the packaged workflow notes with the current canvas installer guide.
+- Link installation steps, folder selection, setup checks and troubleshooting directly from the workflow.
+- Generation code and settings are unchanged; omit the author-PC installed status from the public copy.
+
 ## yue2-v0.1.0-rc1
 
 - Add Windows folder-picker installer and isolated YuE2 runtime using existing ComfyUI CUDA Torch.
