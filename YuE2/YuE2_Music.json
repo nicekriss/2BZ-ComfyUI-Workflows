@@ -278,10 +278,10 @@
       "mode": 0,
       "inputs": [],
       "outputs": [],
-      "title": "생성 후 듣기",
+      "title": "설치 후 · 실행 / 저장 / 확인",
       "properties": {},
       "widgets_values": [
-        "사용 순서: 가사 → 스타일 → Run → 위 플레이어 재생\nstyle_override에 입력하면 장르보다 우선합니다. 비우면 장르 프리셋 사용.\nplanning: full=멜로디+코드 / melody=멜로디 / off=악보 계획 없음\nseed 변경: 새로운 곡. 곡 길이는 자동으로 결정됩니다.\n출력: ComfyUI의 output/YuE2/ (Desktop은 공유 output 폴더)\n이 워크플로는 텍스트→음악 생성용입니다. 외부 ABC 편집·커버 입력은 연결하지 않았습니다."
+        "설치 후: 가사 수정 → 스타일 지정 → Run\nstyle_override에 쓰면 장르보다 우선합니다.\n장르 프리셋을 쓰려면 이 칸을 비우세요.\nseed를 바꾸면 새로운 곡을 만듭니다.\nplanning: full=멜로디+코드 / melody=멜로디\n                off=악보 계획 없음. 길이는 자동 결정.\n\n완성곡은 위 플레이어에서 재생합니다.\nFLAC 저장: 컴피의 output/YuE2/ 폴더\nDesktop은 공유 output 폴더를 확인하세요.\n\n설치 확인: Check-YuE2.bat → 같은 컴피 선택\nUnknown 노드: 재시작 후 시작 로그 확인\n설치 오류: 왼쪽 상세 가이드 참고"
       ],
       "color": "#233",
       "bgcolor": "#355"
@@ -365,17 +365,17 @@
       ],
       "size": [
         280,
-        370
+        430
       ],
       "flags": {},
       "order": 4,
       "mode": 0,
       "inputs": [],
       "outputs": [],
-      "title": "모델 다운로드 · 설치 가이드",
+      "title": "처음 시작 · 설치기 사용법",
       "properties": {},
       "widgets_values": [
-        "**먼저 Install-YuE2.bat 실행 후 ComfyUI 재시작**\n\n[설치·사용 가이드](https://github.com/nicekriss/2BZ-ComfyUI-Workflows/blob/main/YuE2/START-HERE-ko.md)\n\n[YuE2-3B](https://huggingface.co/m-a-p/YuE2-3B/tree/main) · [YuE2-VAE](https://huggingface.co/m-a-p/YuE2-Vae/tree/main)\n\n설치기가 필수 파일을 자동 다운로드합니다. 약 7.8 GB.\n\nWindows / NVIDIA BF16 / Torch 2.10.x\n24GB VRAM 권장\n\n가중치: CC BY-NC 4.0\n\n[공식 데모](https://map-yue2.github.io/)"
+        "**처음 설치할 때**\n\n[① 설치 ZIP 다운로드](https://github.com/nicekriss/2BZ-ComfyUI-Workflows/releases/tag/yue2-v0.1.0-rc2)\n\n② 압축 풀기 → YuE2 폴더\n\n③ `Install-YuE2.bat` 실행\n\n④ ComfyUI 폴더 선택\n`main.py`가 있는 실제 폴더\n\n⑤ 모델 저장 폴더 선택\n모델 약 7.8GB 자동 다운로드\n\n⑥ `INSTALLED` 확인 → 컴피 재시작\n`YuE2_Music.json` 열기\n\n[상세 가이드 · 오류 해결](https://github.com/nicekriss/2BZ-ComfyUI-Workflows/blob/main/YuE2/START-HERE-ko.md)\n\nWindows · NVIDIA · Torch 2.10.x\n가중치: **CC BY-NC 4.0 · 비상업용**"
       ],
       "color": "#233",
       "bgcolor": "#355"
@@ -439,7 +439,7 @@
         10,
         60,
         340,
-        670
+        730
       ],
       "color": "#3f627f",
       "flags": {}
