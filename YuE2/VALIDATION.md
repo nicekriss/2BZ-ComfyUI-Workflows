@@ -10,7 +10,14 @@ Validated on 2026-09-11, Windows / RTX 3090 24GB / RAM 64GB / Python 3.13.12 / T
 - Seven focused tests passed: existing-file reuse, mismatch preservation, failed-download handling, range fallback, resume, existing-node protection, portable workflow links.
 - PowerShell parser and Python compilation passed. Existing ComfyUI `pip check` remained clean.
 
-The existing ComfyUI Desktop server was restarted with the packaged node code. `/object_info/YuE2LocalModel` confirmed registration. A short Korean full-planning generation was queued against the newly installed runtime; final measurements are recorded below after completion.
+The existing ComfyUI Desktop server was restarted with the packaged node code. `/object_info/YuE2LocalModel` confirmed registration. A Korean full-planning generation using the newly installed runtime completed successfully:
+
+- Prompt ID: `cd5f0194-103a-4f5b-9a4e-c4708f23e561`; ComfyUI history reported success.
+- Output: 39.999 seconds, 48kHz stereo FLAC, finite and non-silent.
+- Model end-to-end time: 113.02 seconds; peak allocated VRAM: 7.852 GiB.
+- Planning: 26.52s; semantic generation: 58.62s; NAR: 12.81s; VAE: 4.76s.
+- Neither score nor semantic output was truncated.
+- GitHub Windows CI passed the installer tests and PowerShell parser check.
 
 ## Scope limits
 
