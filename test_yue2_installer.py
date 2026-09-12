@@ -6,6 +6,7 @@ import zipfile
 from pathlib import Path
 import tempfile
 import unittest
+from types import SimpleNamespace
 from unittest.mock import patch
 
 BASE = Path(__file__).parent / "YuE2"
@@ -20,6 +21,112 @@ class Response(io.BytesIO):
 
 
 class InstallerTests(unittest.TestCase):
+    def test_newer_torch_warns_and_continues(self):
+        torch = SimpleNamespace(__version__="2.12.1+cu130", __file__="site/torch/__init__.py",
+            cuda=SimpleNamespace(is_available=lambda: True, is_bf16_supported=lambda: True,
+                                 get_device_name=lambda: "Test GPU"))
+        with patch.dict("sys.modules", {"torch": torch}), patch.object(installer.sys, "platform", "win32"), \
+                patch.object(installer.sys, "version_info", (3, 13)), patch("sys.stdout", new_callable=io.StringIO) as out:
+            installer.environment()
+        self.assertIn("Continuing without modifying", out.getvalue())
+
+    def test_non_cuda_still_rejected(self):
+        torch = SimpleNamespace(cuda=SimpleNamespace(is_available=lambda: False))
+        with patch.dict("sys.modules", {"torch": torch}), patch.object(installer.sys, "platform", "win32"), \
+                patch.object(installer.sys, "version_info", (3, 13)):
+            with self.assertRaisesRegex(RuntimeError, "CUDA is unavailable"):
+                installer.environment()
+
+    def test_protected_packages_and_direct_urls_never_reach_pip(self):
+        with tempfile.TemporaryDirectory() as temp:
+            state = Path(temp) / "state"
+            dist = SimpleNamespace(locate_file=lambda _: Path(temp) / "comfy-site")
+            with patch.object(installer.metadata, "distribution", return_value=dist), patch.object(installer, "run") as run:
+                for package in ["torch==2.10.0", "torchvision", "torchaudio", "xformers", "triton",
+                                "triton_windows", "nvidia-cublas-cu13", "cuda-bindings", "torch-cuda",
+                                "example @ https://example.invalid/package.whl", "yue2-infer[fast]"]:
+                    with self.subTest(package=package), self.assertRaisesRegex(RuntimeError, "Refusing"):
+                        installer.install_wheels(state / "site", [package], state)
+                run.assert_not_called()
+
+    def test_dependency_install_disables_resolver_and_builds(self):
+        with tempfile.TemporaryDirectory() as temp:
+            state = Path(temp) / "state"
+            dist = SimpleNamespace(locate_file=lambda _: Path(temp) / "comfy-site")
+            with patch.object(installer.metadata, "distribution", return_value=dist), patch.object(installer, "run") as run:
+                installer.install_wheels(state / "site", ["tiktoken==0.12.0"], state)
+                args = run.call_args.args[0]
+                self.assertIn("--no-deps", args)
+                self.assertIn("--only-binary=:all:", args)
+                self.assertNotIn("--upgrade", args)
+                self.assertEqual(args[args.index("--target") + 1], (state / "site").resolve())
+
+    def test_pip_target_cannot_escape_into_comfy(self):
+        with tempfile.TemporaryDirectory() as temp:
+            state = Path(temp) / "state"
+            with patch.object(installer, "run") as run:
+                with self.assertRaisesRegex(RuntimeError, "outside YuE2"):
+                    installer.install_wheels(state / ".." / "comfy-site", ["numpy"], state)
+                run.assert_not_called()
+
+    def test_environment_change_is_reported_and_fails(self):
+        with tempfile.TemporaryDirectory() as temp:
+            before = {"torch": {"version": "2.12.1+cu130"}}
+            with patch.object(installer, "package_state", return_value={"torch": {"version": "2.10.0"}}):
+                with self.assertRaisesRegex(RuntimeError, "ComfyUI packages changed: torch"):
+                    installer.report_preservation(before, Path(temp))
+            result = json.loads((Path(temp) / "environment-comparison.json").read_text())
+            self.assertEqual(result["changed"], ["torch"])
+
+    def test_existing_compatible_dependencies_not_installed(self):
+        with tempfile.TemporaryDirectory() as temp:
+            state = Path(temp)
+            runtime = state / "runtime"
+            (runtime / "Scripts").mkdir(parents=True)
+            (runtime / "Scripts" / "python.exe").touch()
+            (runtime / "Lib" / "site-packages").mkdir(parents=True)
+            with patch.object(installer, "ADDITIONAL", {"numpy>=1.26,<3": "numpy==2.2.6", "tiktoken==0.12.0": "tiktoken==0.12.0"}), \
+                    patch.object(installer, "package_state", return_value={"numpy": {"version": "2.4.4"}}), \
+                    patch.object(installer, "install_wheels") as install:
+                installer.prepare_runtime(state, "comfy-site")
+                self.assertEqual(install.call_args.args[1], ["tiktoken==0.12.0"])
+
+    def test_audit_runs_when_installation_fails(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            (root / "main.py").touch()
+            (root / "custom_nodes").mkdir()
+            with patch("sys.argv", ["install", "--root", str(root)]), \
+                    patch.object(installer, "environment", return_value="site"), \
+                    patch.object(installer, "prepare_runtime", side_effect=RuntimeError("install failed")), \
+                    patch.object(installer, "report_preservation") as audit:
+                with self.assertRaisesRegex(RuntimeError, "install failed"):
+                    installer.main()
+                audit.assert_called_once()
+
+    def test_clean_install_uses_src_package_and_bundled_bridge(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            (root / "main.py").touch()
+            (root / "custom_nodes").mkdir()
+            state = root / "user" / "2bz-yue2"
+            site = state / "runtime" / "Lib" / "site-packages"
+            site.mkdir(parents=True)
+            with zipfile.ZipFile(state / "yue2-source.zip", "w") as archive:
+                archive.writestr("YuE-pinned/src/yue2/__init__.py", "# model source")
+            with zipfile.ZipFile(state / "toobusy-abc-studio.zip", "w") as archive:
+                archive.writestr("studio/abc_studio_node/abc_studio.py", "# ABC node")
+            with patch("sys.argv", ["install", "--root", str(root)]), \
+                    patch.object(installer, "environment", return_value="shared"), \
+                    patch.object(installer, "prepare_runtime", return_value=(state / "runtime/Scripts/python.exe", site)), \
+                    patch.object(installer, "download_file"), patch.object(installer, "smoke_runtime"), \
+                    patch.object(installer, "_install_model_weights"):
+                installer.main()
+            self.assertTrue((site / "yue2/__init__.py").is_file())
+            node = root / "custom_nodes/ComfyUI-YuE2"
+            self.assertEqual((node / "nodes.py").read_bytes(), (BASE / "custom_nodes/ComfyUI-YuE2/nodes.py").read_bytes())
+            self.assertTrue((node / "setup.json").is_file())
+
     def test_verified_file_never_downloaded(self):
         with tempfile.TemporaryDirectory() as temp:
             p = Path(temp) / "model"
@@ -157,9 +264,7 @@ class InstallerTests(unittest.TestCase):
                 with self.assertRaisesRegex(RuntimeError, "missing required node class"):
                     installer.main()
 
-    def test_release_package_leaves_out_the_dead_bundled_node_copy(self):
-        # 설치기는 업스트림을 내려받는다. 예전에 같이 넣던 patched 사본이 ZIP 에
-        # 남아 있으면 아무도 설치하지 않는 코드를 누군가 고치고 있게 된다.
+    def test_release_package_includes_the_installed_bridge(self):
         import importlib.util
 
         spec = importlib.util.spec_from_file_location(
@@ -169,7 +274,9 @@ class InstallerTests(unittest.TestCase):
         names = {name for _, name in builder.members()}
         self.assertIn("YuE2/install_yue2.py", names)
         self.assertIn("YuE2/YuE2_Music.json", names)
-        self.assertFalse([n for n in names if "custom_nodes" in n or "__pycache__" in n])
+        self.assertIn("YuE2/custom_nodes/ComfyUI-YuE2/nodes.py", names)
+        self.assertIn("YuE2/smoke_yue2.py", names)
+        self.assertFalse([n for n in names if "__pycache__" in n])
         self.assertEqual(builder.check(), len(names))
 
     def test_source_archive_is_verified_before_use(self):

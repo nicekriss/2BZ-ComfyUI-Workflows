@@ -1,9 +1,6 @@
 """Build the YuE2 installer ZIP that users download from the release page.
 
-The installer no longer ships a patched copy of ComfyUI-YuE2; it downloads the
-official upstream source and the separate toobusy-abc-studio package. The old
-bundled copy under YuE2/custom_nodes is therefore dead weight and is left out,
-so nobody edits it expecting it to reach users.
+The installer ships the local subprocess bridge and downloads pinned YuE2 model code.
 
 The archive is written with fixed timestamps and sorted names, so the same
 inputs always produce the same bytes and the checksum means something.
@@ -16,13 +13,17 @@ import zipfile
 
 BASE = Path(__file__).resolve().parent
 PACKAGE = BASE / "YuE2"
-SKIP_DIRS = {"__pycache__", "custom_nodes"}
+SKIP_DIRS = {"__pycache__"}
 REQUIRED = [
     "Install-YuE2.bat",
     "Install-YuE2.ps1",
     "Check-YuE2.bat",
     "install_yue2.py",
     "downloads.json",
+    "smoke_yue2.py",
+    "custom_nodes/ComfyUI-YuE2/nodes.py",
+    "custom_nodes/ComfyUI-YuE2/worker.py",
+    "custom_nodes/ComfyUI-YuE2/__init__.py",
     "YuE2_Music.json",
     "START-HERE-ko.md",
 ]
