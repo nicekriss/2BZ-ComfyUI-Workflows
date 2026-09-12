@@ -1,10 +1,10 @@
-# YuE2 음악 생성 설치기 · yue2-v0.1.0-rc4
+# YuE2 음악 생성 설치기 · yue2-v0.1.0-rc5
 
 가사와 음악 스타일을 입력해 보컬과 반주가 있는 곡을 만드는 ComfyUI 워크플로입니다.
 
 ## 다운로드와 설치
 
-1. **[2BZ-YuE2-installer-v0.1.0-rc4.zip 다운로드](https://github.com/nicekriss/2BZ-ComfyUI-Workflows/releases/download/yue2-v0.1.0-rc4/2BZ-YuE2-installer-v0.1.0-rc4.zip)**를 받아 압축을 풉니다. `Source code (zip)`이나 BAT 파일 하나만 받지 마세요.
+1. **[2BZ-YuE2-installer-v0.1.0-rc5.zip 다운로드](https://github.com/nicekriss/2BZ-ComfyUI-Workflows/releases/download/yue2-v0.1.0-rc5/2BZ-YuE2-installer-v0.1.0-rc5.zip)**를 받아 압축을 풉니다. `Source code (zip)`이나 BAT 파일 하나만 받지 마세요.
 2. **Install-YuE2.bat**을 더블클릭합니다.
 3. **ComfyUI 폴더**를 선택합니다. `main.py`와 `custom_nodes`가 있는 폴더입니다. 포터블은 그 위 폴더도 가능합니다. Desktop 앱의 EXE 설치 폴더가 아니라 실제 ComfyUI 인스턴스 폴더를 선택하세요.
 4. **모델 저장 폴더**를 선택합니다. 기본 `ComfyUI/models` 또는 이미 사용하는 공유 모델 폴더를 선택하면 됩니다.
@@ -80,6 +80,12 @@ FLAC은 ComfyUI의 `output/YuE2/`에 저장됩니다. Desktop에서는 앱의 �
 - [공식 사용법](https://github.com/multimodal-art-projection/YuE) · [공식 데모](https://map-yue2.github.io/)
 
 설치기에 사용하는 정확한 revision·파일 URL·해시는 `downloads.json`에 있습니다. 모델 가중치에는 **CC BY-NC 4.0**이 적용됩니다. 이 저장소의 MIT 라이선스가 모델 라이선스를 대체하지 않습니다.
+
+## 진행 표시와 기존 설치 업데이트
+
+rc5는 ComfyUI 콘솔과 실행 중인 노드에 현재 단계를 표시합니다. 모델 확인·로딩 중에도 약 5초마다 상태가 나오며, 음악 생성은 생성 토큰 수·속도·경과 시간을 보여줍니다. 곡 길이가 자동으로 정해지는 단계에는 예상 완료 퍼센트를 만들지 않습니다. 오디오 합성·디코딩은 실제 단계 수로 진행률을 표시합니다. 전체 50%는 곡 생성량이 아닙니다.
+
+rc4 사용자는 생성이 끝난 뒤 새 ZIP의 `Install-YuE2.bat`에서 같은 ComfyUI 폴더를 선택하고 재시작하세요. 공식 rc4 노드 코드를 확인한 경우에만 업데이트하며, 이전 코드는 `user/2bz-yue2/backups`에 보관합니다. 기존 설정·모델·실행 환경·저장 워크플로는 유지합니다. 직접 수정한 노드 코드는 자동으로 덮어쓰지 않으며, 업데이트가 생략됐다는 경고를 출력합니다.
 
 ## 확인과 오류 해결
 

@@ -19,7 +19,7 @@ SOURCE_COMMIT = "92a73cc7652fcc1f937855e4b765e0a0edd7ff2e"
 SOURCE_ZIP_URL = f"https://codeload.github.com/multimodal-art-projection/YuE/zip/{SOURCE_COMMIT}"
 ABC_STUDIO_REF = "v0.2.0"
 ABC_STUDIO_ZIP_URL = f"https://codeload.github.com/nicekriss/toobusy-abc-studio/zip/refs/tags/{ABC_STUDIO_REF}"
-VERSION = "0.1.0-rc4"
+VERSION = "0.1.0-rc5"
 PROTECTED = {"torch", "torchvision", "torchaudio", "xformers", "triton", "triton-windows"}
 AUDITED = sorted(PROTECTED | {"transformers", "numpy"})
 # Reuse compatible shared packages. Conflicts are overlaid ONLY in the subprocess.
@@ -250,6 +250,43 @@ def _copy_node_package(source_root, destination, setup_payload=None):
     staging.rename(destination)
 
 
+def _update_bridge(destination, state):
+    """Upgrade only a recognized installer bridge; preserve custom code and setup."""
+    source = HERE / "custom_nodes" / "ComfyUI-YuE2"
+    current = {p.name: _code_digest(p) for p in source.glob("*.py")}
+    known = json.loads((HERE / "bridge-versions.json").read_text(encoding="utf-8"))
+    actual = {p.name: _code_digest(p) for p in destination.glob("*.py")}
+    if actual == current:
+        print("YuE2 bridge is already current.", flush=True)
+        return True
+    if (destination / ".git").exists() or actual not in known.values():
+        print("WARNING: YuE2 bridge update SKIPPED: unrecognized/customized code was preserved. "
+              "Live progress may be unavailable. Back up your custom node before replacing it.", flush=True)
+        return False
+    if destination.is_symlink() or any(p.is_symlink() for p in destination.glob("*.py")):
+        raise RuntimeError("Refusing to update a linked YuE2 bridge.")
+    backups = state / "backups"
+    backups.mkdir(parents=True, exist_ok=True)
+    backup = backups / ("ComfyUI-YuE2-" + datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S.%fZ"))
+    with tempfile.TemporaryDirectory(prefix="bridge-update-", dir=state) as temp:
+        staged = Path(temp) / destination.name
+        shutil.copytree(destination, staged, symlinks=True, ignore=shutil.ignore_patterns("__pycache__"))
+        for name in current:
+            shutil.copy2(source / name, staged / name)
+        destination.rename(backup)
+        try:
+            staged.rename(destination)
+        except BaseException:
+            backup.rename(destination)
+            raise
+    print(f"UPDATED: YuE2 bridge {VERSION}. Previous files: {backup}", flush=True)
+    return True
+
+
+def _code_digest(path):
+    return hashlib.sha256(path.read_bytes().replace(b"\r\n", b"\n")).hexdigest()
+
+
 def _install_model_weights(model_root, manifest):
     for item in manifest["models"]:
         target = Path(model_root[item["kind"]]) / item["name"]
@@ -334,7 +371,7 @@ def main():
     try:
         if yue2_destination.exists():
             config = json.loads((yue2_destination / "setup.json").read_text(encoding="utf-8"))
-            print(f"Existing ComfyUI-YuE2 detected and preserved: {yue2_destination}")
+            _update_bridge(yue2_destination, state)
         else:
             python, site = prepare_runtime(state, shared_site)
             source_archive = state / "yue2-source.zip"

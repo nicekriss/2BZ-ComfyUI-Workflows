@@ -21,6 +21,8 @@ REQUIRED = [
     "install_yue2.py",
     "downloads.json",
     "smoke_yue2.py",
+    "bridge-versions.json",
+    "custom_nodes/ComfyUI-YuE2/live_progress.py",
     "custom_nodes/ComfyUI-YuE2/nodes.py",
     "custom_nodes/ComfyUI-YuE2/worker.py",
     "custom_nodes/ComfyUI-YuE2/__init__.py",
