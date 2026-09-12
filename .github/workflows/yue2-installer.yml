@@ -1,10 +1,10 @@
 name: YuE2 installer checks
 on:
   pull_request:
-    paths: ['YuE2/**', 'test_yue2_installer.py', '.github/workflows/yue2-installer.yml']
+    paths: ['YuE2/**', 'test_yue2_installer.py', 'test_yue2_abc_update.py', 'build_yue2_release.py', '.github/workflows/yue2-installer.yml']
   push:
     branches: [main]
-    paths: ['YuE2/**', 'test_yue2_installer.py', '.github/workflows/yue2-installer.yml']
+    paths: ['YuE2/**', 'test_yue2_installer.py', 'test_yue2_abc_update.py', 'build_yue2_release.py', '.github/workflows/yue2-installer.yml']
 jobs:
   installer-tests:
     runs-on: windows-latest
@@ -13,7 +13,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.13'
-      - run: python -m unittest test_yue2_installer -v
+      - run: python -m unittest test_yue2_installer test_yue2_abc_update -v
       - shell: pwsh
         run: |
           $tokens = $null

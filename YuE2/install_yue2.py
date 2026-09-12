@@ -1,4 +1,4 @@
-"""Install YuE2 beside an existing Windows ComfyUI without changing its packages."""
+"""Install YuE2 beside an existing Windows ComfyUI while preserving existing packages."""
 
 import argparse
 import hashlib
@@ -17,9 +17,9 @@ from datetime import datetime, timezone
 HERE = Path(__file__).resolve().parent
 SOURCE_COMMIT = "92a73cc7652fcc1f937855e4b765e0a0edd7ff2e"
 SOURCE_ZIP_URL = f"https://codeload.github.com/multimodal-art-projection/YuE/zip/{SOURCE_COMMIT}"
-ABC_STUDIO_REF = "v0.2.0"
+ABC_STUDIO_REF = "v0.3.0"
 ABC_STUDIO_ZIP_URL = f"https://codeload.github.com/nicekriss/toobusy-abc-studio/zip/refs/tags/{ABC_STUDIO_REF}"
-VERSION = "0.1.0-rc5"
+VERSION = "0.1.0-rc6"
 PROTECTED = {"torch", "torchvision", "torchaudio", "xformers", "triton", "triton-windows"}
 AUDITED = sorted(PROTECTED | {"transformers", "numpy"})
 # Reuse compatible shared packages. Conflicts are overlaid ONLY in the subprocess.
@@ -48,7 +48,7 @@ OPTIONAL = ("vllm", "triton", "hf-xet", "pynvml")  # Never installed automatical
 def package_state():
     result = {}
     for dist in metadata.distributions():
-        name = dist.metadata.get("Name", "").lower().replace("_", "-")
+        name = dist.metadata.get("Name", "").lower().replace("_", "-").replace(".", "-")
         if name:
             record = dist.read_text("RECORD") or ""
             result[name] = {"version": dist.version, "location": str(dist.locate_file("").resolve()),
@@ -56,7 +56,7 @@ def package_state():
     return result
 
 
-def report_preservation(before, state):
+def report_preservation(before, state, allowed_additions=()):
     after = package_state()
     changed = sorted(name for name in before.keys() | after.keys() if before.get(name) != after.get(name))
     (state / "environment-after.json").write_text(json.dumps(after, indent=2), encoding="utf-8")
@@ -65,14 +65,16 @@ def report_preservation(before, state):
         old = before.get(name, {}).get("version", "not installed")
         new = after.get(name, {}).get("version", "not installed")
         print(f"{name:14}: {old} -> {'unchanged' if name not in changed else new}", flush=True)
-    if changed:
-        raise RuntimeError("WARNING: ComfyUI packages changed: " + ", ".join(changed)
+    unexpected = [name for name in changed if name in before or name not in allowed_additions]
+    if unexpected:
+        raise RuntimeError("WARNING: ComfyUI packages changed: " + ", ".join(unexpected)
                            + ". Stop and inspect the environment snapshots; no automatic Torch rollback is attempted.")
-    print("Existing ComfyUI environment preserved.", flush=True)
+    print("Existing ComfyUI environment preserved. Approved audio additions: "
+          + ", ".join(name for name in changed if name not in before), flush=True)
 
 
 def protected(name):
-    name = name.lower().replace("_", "-")
+    name = name.lower().replace("_", "-").replace(".", "-")
     return name in PROTECTED or name.startswith(("torch-", "nvidia-", "cuda-", "pytorch-"))
 
 
@@ -111,7 +113,7 @@ def prepare_runtime(state, shared_site):
         else:
             venv.EnvBuilder(with_pip=False).create(runtime)
     site = runtime / "Lib" / "site-packages"
-    local = {d.metadata["Name"].lower().replace("_", "-"): d.version for d in metadata.distributions(path=[str(site)])}
+    local = {d.metadata["Name"].lower().replace("_", "-").replace(".", "-"): d.version for d in metadata.distributions(path=[str(site)])}
     if any(protected(name) for name in local):
         raise RuntimeError("YuE2 runtime contains a private Torch/CUDA package; move the runtime aside and retry.")
     (site / "comfy_cuda.pth").write_text(shared_site + "\n", encoding="utf-8")
@@ -119,7 +121,7 @@ def prepare_runtime(state, shared_site):
     missing = []
     for requirement, wheel in ADDITIONAL.items():
         req = Requirement(requirement)
-        name = req.name.lower().replace("_", "-")
+        name = req.name.lower().replace("_", "-").replace(".", "-")
         version = local.get(name) or shared.get(name, {}).get("version")
         if version and req.specifier.contains(version):
             print(f"REUSE: {name} {version}", flush=True)
@@ -318,14 +320,117 @@ def _abc_studio_has_required_generate_node(abc_destination):
     )
 
 
-def _backup_existing_path(path):
-    counter = 0
-    while True:
-        suffix = ".old" if counter == 0 else f".old.{counter}"
-        backup = path.with_name(path.name + suffix)
-        if not backup.exists():
-            return path.replace(backup)
-        counter += 1
+def _abc_tree(directory):
+    result = {}
+    for current, dirs, files in os.walk(directory, followlinks=False):
+        for name in dirs + files:
+            path = Path(current) / name
+            if path.is_symlink() or getattr(path.lstat(), "st_file_attributes", 0) & 0x400:
+                raise RuntimeError(f"Linked ABC Studio files cannot be updated: {path}")
+        dirs[:] = [name for name in dirs if name not in {".git", "__pycache__", ".pytest_cache"}]
+        for name in files:
+            if name.endswith((".pyc", ".pyo")):
+                continue
+            path = Path(current) / name
+            result[path.relative_to(directory).as_posix()] = _code_digest(path)
+    return result
+
+
+def _abc_status(destination):
+    if destination.is_symlink() or (destination.exists() and getattr(destination.lstat(), "st_file_attributes", 0) & 0x400):
+        raise RuntimeError(f"Linked ABC Studio folder cannot be updated: {destination}")
+    if not destination.exists():
+        return "missing"
+    known = json.loads((HERE / "abc-studio-versions.json").read_text(encoding="utf-8"))
+    actual = _abc_tree(destination)
+    if actual == known[ABC_STUDIO_REF]:
+        return "current"
+    if (destination / ".git").exists() or actual not in known.values():
+        raise RuntimeError("ABC Studio contains customized, newer or unrecognized files; kept unchanged. "
+                           "Back up this folder and update it separately before rerunning: " + str(destination))
+    return "upgrade"
+
+
+def _install_abc(destination, state, manifest):
+    status = _abc_status(destination)
+    if status == "current":
+        print(f"ABC Studio {ABC_STUDIO_REF} is already current.", flush=True)
+        return
+    archive = state / f"toobusy-abc-studio-{ABC_STUDIO_REF}.zip"
+    download_file(ABC_STUDIO_ZIP_URL, archive, manifest["abc_studio"]["sha256"])
+    known = json.loads((HERE / "abc-studio-versions.json").read_text(encoding="utf-8"))
+    with tempfile.TemporaryDirectory(prefix="abc-update-", dir=state) as temp:
+        with zipfile.ZipFile(archive) as source:
+            source.extractall(temp)
+        staged = _find_root_with_child(Path(temp), lambda p: (p / "abc_studio_node").is_dir())
+        if _abc_tree(staged) != known[ABC_STUDIO_REF]:
+            raise RuntimeError("ABC Studio archive content differs from the pinned release.")
+        # Recheck immediately before the swap; do not overwrite intervening user edits.
+        if _abc_status(destination) != status:
+            raise RuntimeError("ABC Studio changed during installation. Please retry.")
+        backup = None
+        if status == "upgrade":
+            backups = state / "backups"
+            backups.mkdir(parents=True, exist_ok=True)
+            backup = backups / ("toobusy-abc-studio-" + datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S.%fZ"))
+            destination.rename(backup)
+        try:
+            staged.rename(destination)
+        except BaseException:
+            if backup is not None:
+                backup.rename(destination)
+            raise
+    print(f"ABC Studio {ABC_STUDIO_REF} installed. Previous version: {backup or 'none'}", flush=True)
+
+
+def _audio_plan_packages(report, before):
+    from pip._vendor.packaging.utils import canonicalize_name
+    from pip._vendor.packaging.version import Version
+    packages = []
+    for item in report.get("install", []):
+        name = canonicalize_name(item["metadata"]["name"])
+        version = str(Version(item["metadata"]["version"]))
+        if protected(name) or name in before:
+            raise RuntimeError(f"Audio installation would change existing/protected package: {name}")
+        if not item.get("download_info", {}).get("url", "").split("?", 1)[0].endswith(".whl"):
+            raise RuntimeError(f"Audio dependency is not a binary wheel: {name}")
+        packages.append(f"{name}=={version}")
+    return packages
+
+
+def _prepare_abc_audio(state, audit, allowed_additions):
+    # ABC v0.3.0 runs its analysis worker with ComfyUI's Python. Add only absent
+    # wheels there; every installed distribution is constrained to its current version.
+    before = package_state()
+    constraints = audit / "audio-constraints.txt"
+    constraints.write_text("".join(f"{name}=={dist['version']}\n" for name, dist in sorted(before.items())), encoding="utf-8")
+    report = audit / "audio-pip-plan.json"
+    env = {k: v for k, v in os.environ.items() if not k.startswith("PIP_")}
+    env.update(PIP_CONFIG_FILE=os.devnull, PYTHONNOUSERSITE="1")
+    base = [sys.executable, "-m", "pip", "--isolated"]
+    try:
+        run([*base, "install", "--dry-run", "--report", report, "--only-binary=:all:",
+             "--index-url", "https://pypi.org/simple", "--constraint", constraints,
+             "librosa>=0.11,<0.12", "soundfile>=0.13,<0.14"], env=env)
+    except subprocess.CalledProcessError as exc:
+        raise RuntimeError("Audio dependencies cannot be added without changing existing ComfyUI packages. "
+                           "No package upgrade was attempted; inspect audio-constraints.txt and the pip error.") from exc
+    packages = _audio_plan_packages(json.loads(report.read_text(encoding="utf-8")), before)
+    if packages:
+        wheels = audit / "audio-wheels"
+        wheels.mkdir()
+        run([*base, "download", "--no-deps", "--only-binary=:all:", "--index-url", "https://pypi.org/simple",
+             "--dest", wheels, *packages], env=env)
+        if package_state() != before:
+            raise RuntimeError("ComfyUI packages changed during preparation. Close other installers and retry.")
+        allowed_additions.update(package.split("==", 1)[0] for package in packages)
+        run([*base, "install", "--no-deps", "--no-index", "--only-binary=:all:",
+             "--find-links", wheels, *packages], env=env)
+    _smoke_abc_audio()
+
+
+def _smoke_abc_audio():
+    run([sys.executable, "-I", "-X", "utf8", HERE / "smoke_abc.py"])
 
 
 def main():
@@ -350,6 +455,9 @@ def main():
             raise RuntimeError(f"Missing toobusy-abc-studio: {abc_destination}")
         if not _abc_studio_has_required_generate_node(abc_destination):
             raise RuntimeError(f"toobusy-abc-studio installed but missing required node class: {abc_destination}")
+        if _abc_status(abc_destination) != "current":
+            raise RuntimeError("ABC Studio needs an update. Run Install-YuE2.bat first.")
+        _smoke_abc_audio()
         config = json.loads((yue2_destination / "setup.json").read_text(encoding="utf-8"))
         _verify_node_setup(config, manifest)
         smoke_runtime(config["runtime"], environment(), config)
@@ -368,7 +476,9 @@ def main():
     audit.mkdir(parents=True)
     before = package_state()
     (audit / "environment-before.json").write_text(json.dumps(before, indent=2), encoding="utf-8")
+    allowed_additions = set()
     try:
+        _abc_status(abc_destination)
         if yue2_destination.exists():
             config = json.loads((yue2_destination / "setup.json").read_text(encoding="utf-8"))
             _update_bridge(yue2_destination, state)
@@ -394,30 +504,8 @@ def main():
         _install_model_weights(config, manifest)
         smoke_runtime(config["runtime"], shared_site, config)
 
-        if abc_destination.exists() and _abc_studio_has_required_generate_node(abc_destination):
-            print(f"Existing toobusy-abc-studio detected and preserved: {abc_destination}")
-        else:
-            stale = abc_destination.exists()
-            backup = None
-            if stale:
-                print(f"Existing toobusy-abc-studio detected but required node class is missing or outdated: {abc_destination}")
-                backup = _backup_existing_path(abc_destination)
-                print(f"Old toobusy-abc-studio moved to: {backup}")
-            abc_archive = state / "toobusy-abc-studio.zip"
-            download_file(ABC_STUDIO_ZIP_URL, abc_archive, manifest["abc_studio"]["sha256"])
-            try:
-                with tempfile.TemporaryDirectory(prefix="toobusy-abc-studio-", dir=state) as temp:
-                    with zipfile.ZipFile(abc_archive) as source:
-                        source.extractall(temp)
-                    package_root = _find_root_with_child(Path(temp), lambda p: (p / "abc_studio_node").is_dir())
-                    _copy_node_package(package_root, abc_destination)
-            except Exception:
-                if backup is not None and backup.is_dir():
-                    if abc_destination.exists():
-                        shutil.rmtree(abc_destination)
-                    backup.rename(abc_destination)
-                    print(f"Restored previous toobusy-abc-studio package: {abc_destination}")
-                raise
+        _prepare_abc_audio(state, audit, allowed_additions)
+        _install_abc(abc_destination, state, manifest)
 
         workflows = root / "user" / "default" / "workflows"
         workflows.mkdir(parents=True, exist_ok=True)
@@ -426,7 +514,7 @@ def main():
             shutil.copy2(HERE / "YuE2_Music.json", workflow)
         print(f"INSTALLED\nWorkflow: {workflow}\nRestart ComfyUI, then open the workflow.", flush=True)
     finally:
-        report_preservation(before, audit)
+        report_preservation(before, audit, allowed_additions)
 
 
 if __name__ == "__main__":

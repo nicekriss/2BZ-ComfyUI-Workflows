@@ -1,5 +1,12 @@
 # Changes
 
+## yue2-v0.1.0-rc6
+
+- Pin ABC Studio v0.3.0 and its verified archive hash; include song transcription and explicit instrument/vocal microphone routing.
+- Upgrade recognized v0.2.0 installations with backup outside custom_nodes and rollback. Preserve current versions; stop on customized or unknown ABC files.
+- Plan audio dependencies with every existing ComfyUI package constrained, reject replacements, download wheels first and add only absent packages without dependency resolution during installation.
+- Verify host audio imports, WAV I/O and pYIN before reporting installation success. Keep YuE2 model/runtime and existing workflow settings.
+
 ## yue2-v0.1.0-rc5
 
 - Relay worker output to the ComfyUI console while retaining each job's generation.log.

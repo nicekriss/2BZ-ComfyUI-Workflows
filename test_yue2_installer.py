@@ -121,6 +121,7 @@ class InstallerTests(unittest.TestCase):
                     patch.object(installer, "environment", return_value="shared"), \
                     patch.object(installer, "prepare_runtime", return_value=(state / "runtime/Scripts/python.exe", site)), \
                     patch.object(installer, "download_file"), patch.object(installer, "smoke_runtime"), \
+                    patch.object(installer, "_prepare_abc_audio"), patch.object(installer, "_install_abc"), \
                     patch.object(installer, "_install_model_weights"):
                 installer.main()
             self.assertTrue((site / "yue2/__init__.py").is_file())
@@ -194,44 +195,25 @@ class InstallerTests(unittest.TestCase):
                     patch.object(installer, "environment", return_value="site"), \
                     patch.object(installer, "run", return_value=None), \
                     patch.object(installer, "_install_model_weights", return_value=None), \
-                    patch.object(installer, "download_file", return_value=None):
+                    patch.object(installer, "download_file", return_value=None), \
+                    patch.object(installer, "_abc_status", return_value="current"), \
+                    patch.object(installer, "_prepare_abc_audio"), patch.object(installer, "_install_abc") as install_abc:
                 installer.main()
 
-    def test_stale_abc_studio_reinstalled_safely(self):
+    def test_custom_abc_is_preserved_and_stops_installation(self):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
             (root / "main.py").touch()
-            node = root / "custom_nodes" / "ComfyUI-YuE2"
-            node.mkdir(parents=True)
-            (node / "setup.json").write_text(json.dumps({
-                "runtime": str(root / "runtime" / "bin" / "python.exe"),
-                "model": str(root / "models" / "audio_encoders" / "YuE2-3B"),
-                "vae": str(root / "models" / "vae" / "YuE2-Vae"),
-            }, ensure_ascii=False), encoding="utf-8")
-
-            abc = root / "custom_nodes" / "toobusy-abc-studio"
+            abc = root / "custom_nodes/toobusy-abc-studio"
             abc.mkdir(parents=True)
-            (abc / "abc_studio_node").mkdir(parents=True)
-            (abc / "abc_studio_node" / "abc_studio.py").write_text("class LegacyOnly: pass", encoding="utf-8")
-
-            state = root / "user" / "2bz-yue2"
-            state.mkdir(parents=True)
-            zip_path = state / "toobusy-abc-studio.zip"
-            with zipfile.ZipFile(zip_path, "w", compression=zipfile.ZIP_DEFLATED) as archive:
-                archive.writestr(
-                    "toobusy-abc-studio-main/abc_studio_node/abc_studio.py",
-                    "class YuE2LocalGenerateWithABC: pass",
-                )
-
+            (abc / "custom.py").write_text("# user edits")
             with patch("sys.argv", ["install", "--root", str(root)]), \
                     patch.object(installer, "environment", return_value="site"), \
-                    patch.object(installer, "run", return_value=None), \
-                    patch.object(installer, "_install_model_weights", return_value=None), \
-                    patch.object(installer, "download_file", side_effect=lambda *_a, **_k: None):
-                installer.main()
-
-            self.assertTrue((root / "custom_nodes" / "toobusy-abc-studio.old").exists())
-            self.assertTrue((root / "custom_nodes" / "toobusy-abc-studio").is_dir())
+                    patch.object(installer, "run") as run:
+                with self.assertRaisesRegex(RuntimeError, "customized"):
+                    installer.main()
+                run.assert_not_called()
+            self.assertEqual((abc / "custom.py").read_text(), "# user edits")
 
     def test_missing_pack_detected_in_check_mode(self):
         with tempfile.TemporaryDirectory() as temp:
@@ -277,6 +259,8 @@ class InstallerTests(unittest.TestCase):
         self.assertIn("YuE2/YuE2_Music.json", names)
         self.assertIn("YuE2/custom_nodes/ComfyUI-YuE2/nodes.py", names)
         self.assertIn("YuE2/smoke_yue2.py", names)
+        self.assertIn("YuE2/smoke_abc.py", names)
+        self.assertIn("YuE2/abc-studio-versions.json", names)
         self.assertFalse([n for n in names if "__pycache__" in n])
         self.assertEqual(builder.check(), len(names))
 

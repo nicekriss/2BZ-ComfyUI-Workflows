@@ -21,6 +21,8 @@ REQUIRED = [
     "install_yue2.py",
     "downloads.json",
     "smoke_yue2.py",
+    "smoke_abc.py",
+    "abc-studio-versions.json",
     "bridge-versions.json",
     "custom_nodes/ComfyUI-YuE2/live_progress.py",
     "custom_nodes/ComfyUI-YuE2/nodes.py",
@@ -56,6 +58,15 @@ def check():
         raise RuntimeError("downloads.json must pin the upstream YuE2 source checksum.")
 
     installer = (PACKAGE / "install_yue2.py").read_text(encoding="utf-8")
+    import ast
+    values = {node.targets[0].id: ast.literal_eval(node.value) for node in ast.parse(installer).body
+              if isinstance(node, ast.Assign) and isinstance(node.targets[0], ast.Name)
+              and node.targets[0].id in {"ABC_STUDIO_REF", "VERSION"}}
+    if studio["ref"] != values["ABC_STUDIO_REF"]:
+        raise RuntimeError("ABC Studio ref differs between installer and manifest.")
+    known = json.loads((PACKAGE / "abc-studio-versions.json").read_text(encoding="utf-8"))
+    if not known.get(studio["ref"]):
+        raise RuntimeError("Missing current ABC Studio file fingerprints.")
     if "refs/heads/" in installer:
         raise RuntimeError("Installer must pin releases, not track a moving branch.")
 
