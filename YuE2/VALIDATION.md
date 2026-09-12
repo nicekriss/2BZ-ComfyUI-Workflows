@@ -1,4 +1,15 @@
-# Validation · yue2-v0.1.0-rc5
+# Validation · yue2-v0.1.0-rc6
+
+## rc6 ABC Studio update verification (2026-09-12)
+
+- ABC Studio v0.3.0 source archive: 71,278 bytes, SHA256 `697c53cee3810125fc5ec182d60dead3b77a46d55c2aa041fc536d835bc347ca`. Old v0.2.0 archive and normalized file fingerprints independently verified.
+- 39 regression tests passed: official ABC upgrade/backup/rollback, clean install/reuse, custom-code preservation, corrupt download preservation, dependency-plan rejection and existing-package constraints.
+- Ran the installer with the actual ComfyUI Python 3.13.12 / Torch 2.12.1+cu130: existing YuE2 bridge/runtime/model files and current ABC Studio reused; WAV roundtrip and 440Hz pYIN smoke test passed. All existing shared package records were unchanged, with no new packages needed on this PC.
+- A separate clean Python 3.13 environment had no librosa/soundfile. The actual resolver/download/install path added 31 absent audio distributions, preserved all preexisting distributions, and passed 440Hz pYIN. This is a clean audio-dependency test, not a fresh GPU/ComfyUI installation.
+- Actual running ComfyUI on port 8188 reported ABC audio available with no missing dependencies and an existing separation model. ABCScoreInput registered. This release changes installer behavior, not the already-tested generation bridge or ABC v0.3.0 runtime; no new full-song generation was performed for rc6.
+- Extracted the installer ZIP and ran its complete entrypoint against a separate installation fixture containing the official v0.2.0 ABC archive, an existing rc5 bridge and references to the already-verified models/runtime. It installed v0.3.0, kept an intact v0.2.0 backup outside custom_nodes, and preserved the saved workflow byte-for-byte. No fixture ComfyUI server was started.
+- The earlier manual live ABC deployment lacked test/CI files. Only those release metadata files were synchronized with the official v0.3.0 archive before installation, with the previous CI file backed up. Runtime code did not change.
+
 
 ## rc5 live progress verification (2026-09-12)
 

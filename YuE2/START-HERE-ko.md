@@ -1,10 +1,10 @@
-# YuE2 음악 생성 설치기 · yue2-v0.1.0-rc5
+# YuE2 음악 생성 설치기 · yue2-v0.1.0-rc6
 
 가사와 음악 스타일을 입력해 보컬과 반주가 있는 곡을 만드는 ComfyUI 워크플로입니다.
 
 ## 다운로드와 설치
 
-1. **[2BZ-YuE2-installer-v0.1.0-rc5.zip 다운로드](https://github.com/nicekriss/2BZ-ComfyUI-Workflows/releases/download/yue2-v0.1.0-rc5/2BZ-YuE2-installer-v0.1.0-rc5.zip)**를 받아 압축을 풉니다. `Source code (zip)`이나 BAT 파일 하나만 받지 마세요.
+1. **[2BZ-YuE2-installer-v0.1.0-rc6.zip 다운로드](https://github.com/nicekriss/2BZ-ComfyUI-Workflows/releases/download/yue2-v0.1.0-rc6/2BZ-YuE2-installer-v0.1.0-rc6.zip)**를 받아 압축을 풉니다. `Source code (zip)`이나 BAT 파일 하나만 받지 마세요.
 2. **Install-YuE2.bat**을 더블클릭합니다.
 3. **ComfyUI 폴더**를 선택합니다. `main.py`와 `custom_nodes`가 있는 폴더입니다. 포터블은 그 위 폴더도 가능합니다. Desktop 앱의 EXE 설치 폴더가 아니라 실제 ComfyUI 인스턴스 폴더를 선택하세요.
 4. **모델 저장 폴더**를 선택합니다. 기본 `ComfyUI/models` 또는 이미 사용하는 공유 모델 폴더를 선택하면 됩니다.
@@ -24,22 +24,23 @@ Python은 `.venv`, `venv`, 포터블 `python_embeded`/`python_embedded`에서 �
 
 - 공식 YuE2 런타임을 준비하고, `custom_nodes/ComfyUI-YuE2`(이 저장소의 subprocess 노드 3개)와
   `custom_nodes/toobusy-abc-studio`(ABC Studio 연동 노드 1개)를 함께 설치합니다.
-- `user/2bz-yue2/runtime`에 별도 환경을 만들고, ComfyUI의 CUDA Torch와 기본 의존성을 참조합니다. ComfyUI 본체와 기존 Python 패키지는 수정하지 않습니다.
+- `user/2bz-yue2/runtime`에 별도 환경을 만들고, ComfyUI의 CUDA Torch와 기본 의존성을 참조합니다. ComfyUI 본체와 기존 Python 패키지 버전은 유지합니다. ABC 음원 분석에 없는 패키지만 ComfyUI Python에 추가합니다.
 - 공식 YuE 소스를 고정 commit으로 받고, 필요한 모델·설정·토크나이저·라이선스를 공식 Hugging Face에서 다운로드합니다.
 - SHA256을 확인합니다. 기존 파일이 정확하면 재사용하고, 다른 파일은 덮어쓰지 않습니다. 중단된 다운로드는 `.part`에서 이어받습니다.
-- 이미 설치된 패키지는 덮어쓰지 않고 유지합니다.
-  - `custom_nodes/ComfyUI-YuE2`가 이미 있으면 기존 환경을 보존하고 건너뜁니다.
-  - `custom_nodes/toobusy-abc-studio`가 이미 있으면 기존 스튜디오를 보존하고 건너뜁니다.
-- 실행 시에는 인터넷을 사용하지 않습니다. 설치 단계에는 GitHub·Hugging Face·PyPI 접속이 필요합니다.
+- ABC Studio 공식 v0.2.0 설치본은 전체 파일을 확인하고 v0.3.0으로 업데이트합니다. 기존 버전은 `user/2bz-yue2/backups`에 보관하며 교체 실패 시 복원합니다. 이미 v0.3.0이면 재사용합니다.
+- 직접 수정한 ABC 코드·추가 파일·구버전 Git 체크아웃은 자동 교체하지 않고 안내와 함께 중단합니다. 수정본을 백업한 뒤 별도로 업데이트하세요. 연결된 폴더도 자동 교체하지 않습니다.
+- YuE2 생성 노드는 공식 rc4이면 진행 표시가 있는 코드로 업데이트하고, 현재 코드·설정·모델·저장 워크플로는 유지합니다.
+- 설치 시 GitHub·Hugging Face·PyPI 접속이 필요합니다. ABC 노래 샘플의 첫 보컬 분리 때는 공식 모델 약 335MB를 추가로 내려받습니다. 모델 준비 후 분석과 생성은 로컬에서 실행됩니다.
 
 ## dependency 보존 원칙
 
 - **ComfyUI shared dependencies**: Torch, torchvision, torchaudio, xformers, triton, CUDA 관련 패키지는 설치·업데이트·다운그레이드하지 않습니다. 기존 numpy, safetensors 등도 호환 범위면 재사용합니다.
 - **YuE2 additional dependencies**: `install_yue2.py`의 `ADDITIONAL` 목록을 확인하고 부족한 것만 `user/2bz-yue2/runtime`에 설치합니다. Transformers 5.x처럼 YuE2 요구 버전과 다른 경우에만 subprocess 안에서 전용 버전을 사용합니다. ComfyUI의 버전은 유지합니다.
-- 모든 pip 호출은 YuE2 하위 경로만 허용하고 `--no-deps --only-binary=:all:`을 사용합니다. upstream `requirements.txt` / `pip install .` / 빌드 의존성 resolver는 실행하지 않습니다. SHA256 검증한 순수 Python `src/yue2`를 전용 runtime에 복사합니다.
+- **ABC audio dependencies**: librosa 0.11.x / soundfile 0.13.x와 하위 의존성을 ComfyUI Python에서 확인합니다. 기존 모든 패키지 버전을 고정한 설치 계획을 먼저 검사하고, 없는 wheel만 내려받아 `--no-deps --no-index`로 추가합니다. 기존 패키지 교체가 필요하면 변경 없이 오류로 중단합니다.
+- YuE2 전용 wheel 설치는 하위 runtime 경로만 허용하고 `--no-deps --only-binary=:all:`을 사용합니다. 소스 빌드나 upstream `pip install .`은 실행하지 않습니다.
 - **YuE2 optional dependencies**: vLLM/fast backend, triton, hf-xet은 자동 설치하지 않습니다. `pynvml`도 설치·교체하지 않습니다. 기존 pynvml 경고는 별개이며, nvidia-ml-py가 이미 있어도 본 설치기는 양쪽을 보존합니다.
-- 설치 전후 전체 패키지 버전·위치·RECORD 해시를 `user/2bz-yue2/audits/<UTC 시각>/`에 기록합니다. 설치 실패 때도 비교하며, 변경이 감지되면 경고와 오류로 종료합니다. Torch를 다시 설치하는 자동 rollback은 하지 않습니다.
-- `Check-YuE2.bat`은 모델 해시와 실제 모델/VAE loader·tokenizer import 및 가중치 loading 직전까지 확인합니다. 곡 생성은 별도 실행 검증입니다.
+- 설치 전후 전체 패키지 버전·위치·RECORD 해시를 `user/2bz-yue2/audits/<UTC 시각>/`에 기록합니다. 설치 실패 때도 비교하며, 사전 승인된 오디오 패키지 추가 이외의 변경이 감지되면 경고와 오류로 종료합니다. Torch를 다시 설치하는 자동 rollback은 하지 않습니다.
+- `Check-YuE2.bat`은 ABC v0.3.0 파일, 음원 분석 import·440Hz 피치 검사, 모델 해시와 실제 모델/VAE loader·tokenizer import 및 가중치 loading 직전까지 확인합니다. 곡 생성은 별도 실행 검증입니다.
 
 ## 처음 곡 만들기
 
@@ -52,7 +53,7 @@ Python은 `.venv`, `venv`, 포터블 `python_embeded`/`python_embedded`에서 �
 
 FLAC은 ComfyUI의 `output/YuE2/`에 저장됩니다. Desktop에서는 앱의 공유 output 폴더입니다. 생성별 하위 폴더에 오디오, 생성 기록, `generation.log`, `metrics.json`이 남습니다. 큐 중지는 ComfyUI 상단 중지 버튼을 사용합니다.
 
-공식 모델의 편집 가능한 악보·외부 ABC·커버 관련 기능 전체를 구현한 노드는 아닙니다. 이 패키지의 연결 범위는 **텍스트 스타일+가사 → 곡 생성**입니다.
+**③ 생성 → 악보 스튜디오 열기**에서 노래 파일의 보컬 멜로디 초안을 추출하거나 마이크 녹음을 인스/보컬 성부에 넣고 수정할 수 있습니다. **이 악보 쓰기** 후 `planning=full` 또는 `melody`로 생성합니다. SheetSage2 공식 채보 경로는 아직 포함하지 않습니다.
 
 ## 모델 수동 다운로드
 
@@ -83,7 +84,7 @@ FLAC은 ComfyUI의 `output/YuE2/`에 저장됩니다. Desktop에서는 앱의 �
 
 ## 진행 표시와 기존 설치 업데이트
 
-rc5는 ComfyUI 콘솔과 실행 중인 노드에 현재 단계를 표시합니다. 모델 확인·로딩 중에도 약 5초마다 상태가 나오며, 음악 생성은 생성 토큰 수·속도·경과 시간을 보여줍니다. 곡 길이가 자동으로 정해지는 단계에는 예상 완료 퍼센트를 만들지 않습니다. 오디오 합성·디코딩은 실제 단계 수로 진행률을 표시합니다. 전체 50%는 곡 생성량이 아닙니다.
+rc5부터 ComfyUI 콘솔과 실행 중인 노드에 현재 단계를 표시합니다. 모델 확인·로딩 중에도 약 5초마다 상태가 나오며, 음악 생성은 생성 토큰 수·속도·경과 시간을 보여줍니다. 곡 길이가 자동으로 정해지는 단계에는 예상 완료 퍼센트를 만들지 않습니다. 오디오 합성·디코딩은 실제 단계 수로 진행률을 표시합니다. 전체 50%는 곡 생성량이 아닙니다.
 
 rc4 사용자는 생성이 끝난 뒤 새 ZIP의 `Install-YuE2.bat`에서 같은 ComfyUI 폴더를 선택하고 재시작하세요. 공식 rc4 노드 코드를 확인한 경우에만 업데이트하며, 이전 코드는 `user/2bz-yue2/backups`에 보관합니다. 기존 설정·모델·실행 환경·저장 워크플로는 유지합니다. 직접 수정한 노드 코드는 자동으로 덮어쓰지 않으며, 업데이트가 생략됐다는 경고를 출력합니다.
 
