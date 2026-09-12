@@ -6,9 +6,9 @@ English users: open **2BZ_FastH3_USDU_EN.json** from the ZIP, then use its click
 
 ## YuE2 Music
 
-가사와 스타일로 보컬·반주가 있는 곡을 생성합니다. **[YuE2 설치 ZIP · v0.1.0-rc2](https://github.com/nicekriss/2BZ-ComfyUI-Workflows/releases/tag/yue2-v0.1.0-rc3)** → 압축 해제 → `Install-YuE2.bat` → ComfyUI·모델 폴더 선택 → 설치 완료 후 재시작.
+가사와 스타일로 보컬·반주가 있는 곡을 생성합니다. **rc4 설치기 후보**는 기존 ComfyUI Torch를 보존하며, Torch 2.12.1+cu130에서 설치·43.48초 생성 검증을 완료했습니다. 모델 약 7.8GB 자동 다운로드, 별도 subprocess 실행 환경과 한국어 예제 워크플로를 포함합니다.
 
-모델 약 7.8GB 자동 다운로드, 별도 실행 환경, 한국어 예제 워크플로가 포함됩니다. Windows·NVIDIA·Torch 2.10.x 대상 시험 배포입니다. [설치·사용 가이드](YuE2/START-HERE-ko.md) · [검증 범위](YuE2/VALIDATION.md). 모델 가중치: CC BY-NC 4.0.
+rc4 ZIP은 아직 공개 릴리스 전입니다. 저장소 루트에서 `python build_yue2_release.py --output dist/2BZ-YuE2-installer-v0.1.0-rc4.zip`으로 생성합니다. [설치·사용 가이드](YuE2/START-HERE-ko.md) · [검증 범위와 남은 한계](YuE2/VALIDATION.md). Windows·NVIDIA 대상 시험 배포이며 모델 가중치는 CC BY-NC 4.0입니다.
 
 ## FastH3 + USDU Video Restore
 

@@ -1,5 +1,15 @@
 # Changes
 
+## yue2-v0.1.0-rc4 (local candidate)
+
+- Warn on Torch versions other than 2.10 and test real loader imports instead of refusing installation.
+- Share ComfyUI CUDA Torch. Install only missing/incompatible additional packages into the subprocess runtime with resolver and source builds disabled; reject Torch/CUDA package targets.
+- Record all ComfyUI package versions, locations and RECORD hashes before/after, including failed installations; fail with a warning on changes.
+- Fix clean installation: pinned upstream source contains `src/yue2`, not a `ComfyUI-YuE2` node pack. Ship and install the repository subprocess bridge.
+- Remove the bridge's host-side soundfile dependency, transfer audio through NumPy, and accept the ABC argument supplied by ABC Studio v0.2.0.
+- Check actual model/VAE loader imports, shared Torch path, tokenizer and pipeline initialization before reporting readiness.
+- Leave pynvml and nvidia-ml-py untouched. No separate Torch installation or Torch downgrade.
+
 ## yue2-v0.1.0-rc3
 
 - `toobusy-abc-studio` is now pinned to release `v0.2.0` instead of tracking `main`, so two machines installing on different days get the same package.

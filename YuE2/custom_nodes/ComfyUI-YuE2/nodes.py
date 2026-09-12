@@ -5,7 +5,7 @@ import subprocess
 import time
 import uuid
 
-import soundfile as sf
+import numpy as np
 import torch
 
 import folder_paths
@@ -77,12 +77,16 @@ class YuE2LocalGenerate:
     FUNCTION = "generate"
     CATEGORY = "YuE2"
 
-    def generate(self, model, style, lyrics, seed, planning):
+    def generate(self, model, style, lyrics, seed, planning, abc=""):
+        if abc.strip() and planning == "off":
+            raise ValueError("ABC 악보를 사용할 때 planning을 full 또는 melody로 선택하세요.")
         mm.unload_all_models()
         mm.soft_empty_cache()
         output = Path(folder_paths.get_output_directory()).resolve() / "YuE2" / f"{time.strftime('%Y%m%d_%H%M%S')}_{seed}_{uuid.uuid4().hex[:6]}"
         output.mkdir(parents=True)
         request = {"model": model, "song": {"style": style, "lyrics": lyrics, "seed": seed, "cot": planning}, "output": str(output)}
+        if abc.strip():
+            request["song"]["abc"] = abc.strip()
         request_path = output / "job.json"
         request_path.write_text(json.dumps(request, ensure_ascii=False), encoding="utf-8")
         env = dict(os.environ, PYTHONUTF8="1", PYTHONNOUSERSITE="1", HF_HUB_OFFLINE="1", TRANSFORMERS_OFFLINE="1", HF_HUB_DISABLE_TELEMETRY="1")
@@ -99,7 +103,8 @@ class YuE2LocalGenerate:
                     process.wait()
         if process.returncode:
             raise RuntimeError(f"YuE2 failed. Log: {log_path}\n{log_path.read_text(encoding='utf-8')[-4000:]}")
-        audio, sample_rate = sf.read(output / "audio.flac", dtype="float32", always_2d=True)
+        audio = np.load(output / "audio.npy", allow_pickle=False)
+        sample_rate = json.loads((output / "result.json").read_text(encoding="utf-8"))["sample_rate"]
         return ({"waveform": torch.from_numpy(audio.T.copy()).unsqueeze(0), "sample_rate": sample_rate},)
 
 
