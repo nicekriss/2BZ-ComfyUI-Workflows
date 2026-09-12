@@ -1,7 +1,7 @@
-# Validation · yue2-v0.1.0-rc4 (local candidate)
+# Validation · yue2-v0.1.0-rc4
 
 Tested on 2026-09-12 against `D:\ComfyUI (1)\ComfyUI`, Python 3.13.12,
-RTX 4070 Ti SUPER 16GB, Torch 2.12.1+cu130. This candidate is not published yet.
+RTX 4070 Ti SUPER 16GB, Torch 2.12.1+cu130. This is a public release candidate; the tested scope is listed below.
 
 ## Current results
 
