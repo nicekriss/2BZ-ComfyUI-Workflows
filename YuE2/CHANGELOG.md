@@ -1,5 +1,11 @@
 # Changes
 
+## yue2-v0.1.0-rc8
+
+- Pin ABC Studio v0.4.1: retry transient Windows status-file replacement failures during transcription.
+- Preserve recognition and backup upgrades for official v0.4.0 installations.
+- Existing runtimes, model weights and saved workflows remain reusable.
+
 ## yue2-v0.1.0-rc7
 
 - Pin ABC Studio v0.4.0 with official SheetSage2/MERT2 transcription of instrumental and vocal melodies.
