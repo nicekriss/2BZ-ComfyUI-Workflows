@@ -1,5 +1,12 @@
 # Changes
 
+## yue2-v0.1.0-rc7
+
+- Pin ABC Studio v0.4.0 with official SheetSage2/MERT2 transcription of instrumental and vocal melodies.
+- Install a separate Python 3.11 / Torch 2.8.0 runtime; do not add audio packages to ComfyUI Python.
+- Support whole-song analysis with overlapping windows, per-part previews, lossless unedited ABC transfer, and responsive editor fixes.
+- Recognize and back up official ABC v0.2.0 and v0.3.0 installations during upgrade.
+
 ## yue2-v0.1.0-rc6
 
 - Pin ABC Studio v0.3.0 and its verified archive hash; include song transcription and explicit instrument/vocal microphone routing.

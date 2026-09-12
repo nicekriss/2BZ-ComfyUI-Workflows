@@ -1,4 +1,16 @@
-# Validation · yue2-v0.1.0-rc6
+# Validation · yue2-v0.1.0-rc7
+
+## rc7 SheetSage2 integration verification (2026-09-13)
+
+- ABC Studio v0.4.0 uses official SheetSage2 and MERT2 pinned models in an isolated Python 3.11 / Torch 2.8.0 environment. The real ComfyUI runtime remains Python 3.13.12 / Torch 2.12.1+cu130.
+- A 30.02-second source produced 52 vocal and 55 instrumental notes. A repeated 330.26-second input exercised two overlapping windows and produced both parts across the entire input.
+- Actual browser import/application retained the original ABC; connected input/generation nodes showed a single editor shortcut. Resize, note placement, graph reload and clone were checked.
+- Actual YuE2 score-conditioned generation completed twice; the reported failing excerpt rerun with the same style/lyrics/seed produced a 31.479-second result, no truncation. This is execution and a limited melody comparison, not a universal cover-quality guarantee.
+- Standalone transcription installer succeeded on the real PC. The portable Python fallback was independently downloaded, hash checked, extracted and run (Python 3.11.16).
+- The combined rc7 installer completed on the actual ComfyUI instance. All existing shared package versions, locations and RECORD hashes were unchanged; no host packages were added. Existing model files and both private runtimes were reused.
+- The official v0.3.0 archive upgraded to v0.4.0 in a separate fixture, with an exact v0.3.0 backup outside custom_nodes. The live development tree was first checked against the union of known v0.3/v0.4 fingerprints, backed up and synchronized to the complete official release.
+- 39 installer regression tests passed. ABC v0.4.0 archive: 87,305 bytes, SHA256 `28c8f548a688ff67930ca85ddbe9b406a9850866952b822d0370f922916688e5`.
+
 
 ## rc6 ABC Studio update verification (2026-09-12)
 

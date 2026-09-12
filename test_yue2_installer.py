@@ -121,7 +121,7 @@ class InstallerTests(unittest.TestCase):
                     patch.object(installer, "environment", return_value="shared"), \
                     patch.object(installer, "prepare_runtime", return_value=(state / "runtime/Scripts/python.exe", site)), \
                     patch.object(installer, "download_file"), patch.object(installer, "smoke_runtime"), \
-                    patch.object(installer, "_prepare_abc_audio"), patch.object(installer, "_install_abc"), \
+                    patch.object(installer, "_setup_sheetsage"), patch.object(installer, "_install_abc"), \
                     patch.object(installer, "_install_model_weights"):
                 installer.main()
             self.assertTrue((site / "yue2/__init__.py").is_file())
@@ -197,7 +197,7 @@ class InstallerTests(unittest.TestCase):
                     patch.object(installer, "_install_model_weights", return_value=None), \
                     patch.object(installer, "download_file", return_value=None), \
                     patch.object(installer, "_abc_status", return_value="current"), \
-                    patch.object(installer, "_prepare_abc_audio"), patch.object(installer, "_install_abc") as install_abc:
+                    patch.object(installer, "_setup_sheetsage"), patch.object(installer, "_install_abc") as install_abc:
                 installer.main()
 
     def test_custom_abc_is_preserved_and_stops_installation(self):
