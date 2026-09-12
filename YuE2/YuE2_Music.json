@@ -420,7 +420,7 @@
       "title": "처음 시작 · 설치기 사용법",
       "properties": {},
       "widgets_values": [
-        "**처음 설치할 때**\n\n[① 설치 ZIP 다운로드](https://github.com/nicekriss/2BZ-ComfyUI-Workflows/releases/tag/yue2-v0.1.0-rc6)\n\n② 압축 풀기 → YuE2 폴더\n\n③ `Install-YuE2.bat` 실행\n\n④ ComfyUI 폴더 선택\n`main.py`가 있는 실제 폴더\n\n⑤ 모델 저장 폴더 선택\n모델 약 7.8GB 자동 다운로드\n\n⑥ `INSTALLED` 확인 → 컴피 재시작\n`YuE2_Music.json` 열기\n\n[상세 가이드 · 오류 해결](https://github.com/nicekriss/2BZ-ComfyUI-Workflows/blob/main/YuE2/START-HERE-ko.md)\n\nWindows · NVIDIA · 기존 Torch 유지\n가중치: **CC BY-NC 4.0 · 비상업용**"
+        "**처음 설치할 때**\n\n[① 설치 ZIP 다운로드](https://github.com/nicekriss/2BZ-ComfyUI-Workflows/releases/tag/yue2-v0.1.0-rc7)\n\n② 압축 풀기 → YuE2 폴더\n\n③ `Install-YuE2.bat` 실행\n\n④ ComfyUI 폴더 선택\n`main.py`가 있는 실제 폴더\n\n⑤ 모델 저장 폴더 선택\n모델 약 7.8GB 자동 다운로드\n\n⑥ `INSTALLED` 확인 → 컴피 재시작\n`YuE2_Music.json` 열기\n\n[상세 가이드 · 오류 해결](https://github.com/nicekriss/2BZ-ComfyUI-Workflows/blob/main/YuE2/START-HERE-ko.md)\n\nWindows · NVIDIA · 기존 Torch 유지\n가중치: **CC BY-NC 4.0 · 비상업용**"
       ],
       "color": "#233",
       "bgcolor": "#355"

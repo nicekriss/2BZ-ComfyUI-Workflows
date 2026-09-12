@@ -17,9 +17,9 @@ from datetime import datetime, timezone
 HERE = Path(__file__).resolve().parent
 SOURCE_COMMIT = "92a73cc7652fcc1f937855e4b765e0a0edd7ff2e"
 SOURCE_ZIP_URL = f"https://codeload.github.com/multimodal-art-projection/YuE/zip/{SOURCE_COMMIT}"
-ABC_STUDIO_REF = "v0.3.0"
+ABC_STUDIO_REF = "v0.4.0"
 ABC_STUDIO_ZIP_URL = f"https://codeload.github.com/nicekriss/toobusy-abc-studio/zip/refs/tags/{ABC_STUDIO_REF}"
-VERSION = "0.1.0-rc6"
+VERSION = "0.1.0-rc7"
 PROTECTED = {"torch", "torchvision", "torchaudio", "xformers", "triton", "triton-windows"}
 AUDITED = sorted(PROTECTED | {"transformers", "numpy"})
 # Reuse compatible shared packages. Conflicts are overlaid ONLY in the subprocess.
@@ -433,6 +433,14 @@ def _smoke_abc_audio():
     run([sys.executable, "-I", "-X", "utf8", HERE / "smoke_abc.py"])
 
 
+def _setup_sheetsage(abc, root, models, check_only=False):
+    command = [sys.executable, "-I", "-X", "utf8", abc / "install_sheetsage2.py",
+               "--comfyui", root, "--models", models]
+    if check_only:
+        command.append("--check-only")
+    run(command)
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--root", required=True, type=Path)
@@ -457,7 +465,7 @@ def main():
             raise RuntimeError(f"toobusy-abc-studio installed but missing required node class: {abc_destination}")
         if _abc_status(abc_destination) != "current":
             raise RuntimeError("ABC Studio needs an update. Run Install-YuE2.bat first.")
-        _smoke_abc_audio()
+        _setup_sheetsage(abc_destination, root, models, check_only=True)
         config = json.loads((yue2_destination / "setup.json").read_text(encoding="utf-8"))
         _verify_node_setup(config, manifest)
         smoke_runtime(config["runtime"], environment(), config)
@@ -504,8 +512,8 @@ def main():
         _install_model_weights(config, manifest)
         smoke_runtime(config["runtime"], shared_site, config)
 
-        _prepare_abc_audio(state, audit, allowed_additions)
         _install_abc(abc_destination, state, manifest)
+        _setup_sheetsage(abc_destination, root, models)
 
         workflows = root / "user" / "default" / "workflows"
         workflows.mkdir(parents=True, exist_ok=True)
