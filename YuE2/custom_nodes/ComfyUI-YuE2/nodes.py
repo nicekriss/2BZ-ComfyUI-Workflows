@@ -1,4 +1,6 @@
 import json
+import logging
+import html
 import os
 from pathlib import Path
 import subprocess
@@ -10,6 +12,17 @@ import torch
 
 import folder_paths
 import comfy.model_management as mm
+from comfy.utils import ProgressBar
+from comfy_execution.utils import get_executing_context
+from server import PromptServer
+
+# ABC Studio can load this file directly rather than as a package.
+import importlib.util
+
+_progress_spec = importlib.util.spec_from_file_location("yue2_live_progress", Path(__file__).with_name("live_progress.py"))
+_progress_module = importlib.util.module_from_spec(_progress_spec)
+_progress_spec.loader.exec_module(_progress_module)
+LiveProgress = _progress_module.LiveProgress
 
 
 SETUP = Path(__file__).with_name("setup.json")
@@ -91,20 +104,41 @@ class YuE2LocalGenerate:
         request_path.write_text(json.dumps(request, ensure_ascii=False), encoding="utf-8")
         env = dict(os.environ, PYTHONUTF8="1", PYTHONNOUSERSITE="1", HF_HUB_OFFLINE="1", TRANSFORMERS_OFFLINE="1", HF_HUB_DISABLE_TELEMETRY="1")
         log_path = output / "generation.log"
-        with log_path.open("w", encoding="utf-8") as log:
+        context = get_executing_context()
+        node_id = context.node_id if context else None
+        bar = ProgressBar(1, node_id=node_id)
+
+        def show_status(text, count=None, changed=False):
+            nonlocal bar
+            if node_id is not None and PromptServer.instance is not None:
+                PromptServer.instance.send_progress_text(html.escape(text).replace("\n", "<br>"), node_id)
+            if changed:
+                bar = ProgressBar(count[1] if count else 1, node_id=node_id)
+                bar.update_absolute(0)
+            if count and count[1] > 0:
+                bar.update_absolute(count[0], count[1])
+
+        logging.info("[YuE2] 생성 시작 · 상세 로그: %s", log_path)
+        with log_path.open("w", encoding="utf-8") as log, log_path.open("r", encoding="utf-8", errors="replace") as reader:
+            progress = LiveProgress(reader, logging.info, show_status)
             process = subprocess.Popen([model["runtime"], "-u", str(Path(__file__).with_name("worker.py")), str(request_path)], stdout=log, stderr=subprocess.STDOUT, env=env, creationflags=subprocess.CREATE_NO_WINDOW)
             try:
                 while process.poll() is None:
+                    progress.poll()
                     mm.throw_exception_if_processing_interrupted()
-                    time.sleep(0.5)
+                    time.sleep(0.2)
             finally:
                 if process.poll() is None:
                     process.terminate()
                     process.wait()
+                progress.poll(final=True)
         if process.returncode:
+            show_status("생성 실패 · ComfyUI 콘솔의 오류를 확인하세요.")
             raise RuntimeError(f"YuE2 failed. Log: {log_path}\n{log_path.read_text(encoding='utf-8')[-4000:]}")
+        show_status("생성 완료 · 오디오 불러오는 중", changed=True)
         audio = np.load(output / "audio.npy", allow_pickle=False)
         sample_rate = json.loads((output / "result.json").read_text(encoding="utf-8"))["sample_rate"]
+        show_status(f"완료 · {len(audio) / sample_rate:.1f}초 · {sample_rate}Hz", (1, 1))
         return ({"waveform": torch.from_numpy(audio.T.copy()).unsqueeze(0), "sample_rate": sample_rate},)
 
 

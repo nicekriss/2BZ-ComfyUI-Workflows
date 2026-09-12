@@ -1,0 +1,7 @@
+{
+  "0.1.0-rc4": {
+    "__init__.py": "cebf06c8c0fd096d61ec31ae4a498671ff5f98d1cabdfd06d5d7df5d30f6a72c",
+    "nodes.py": "37f1ef4eb2a779af7f13720b3c7969bc2ed0a4c2415971e693750e051297f47a",
+    "worker.py": "a8fb3e831c6e5208c38287916143726c7f0db87294e35f8af3e6172aef5779cf"
+  }
+}

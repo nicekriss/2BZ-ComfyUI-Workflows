@@ -5,6 +5,7 @@ import json
 import zipfile
 from pathlib import Path
 import tempfile
+import shutil
 import unittest
 from types import SimpleNamespace
 from unittest.mock import patch
@@ -323,6 +324,109 @@ class InstallerTests(unittest.TestCase):
         for link in workflow["links"]:
             self.assertIn(link[1], nodes)
             self.assertIn(link[3], nodes)
+
+
+class ProgressTests(unittest.TestCase):
+    def setUp(self):
+        spec = importlib.util.spec_from_file_location("progress", BASE / "custom_nodes/ComfyUI-YuE2/live_progress.py")
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        self.temp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.temp.cleanup)
+        path = Path(self.temp.name) / "log"
+        self.writer = path.open("w", encoding="utf-8")
+        self.reader = path.open("r", encoding="utf-8")
+        self.addCleanup(self.writer.close)
+        self.addCleanup(self.reader.close)
+        self.logs, self.statuses = [], []
+        self.now = 0
+        self.progress = module.LiveProgress(self.reader, self.logs.append,
+            lambda *args: self.statuses.append(args), clock=lambda: self.now)
+
+    def append(self, text, final=False):
+        self.writer.write(text)
+        self.writer.flush()
+        self.progress.poll(final=final)
+
+    def test_partial_lines_are_not_lost_or_duplicated(self):
+        line = "[YuE2] Running Generating song: 42 tokens | elapsed 5s"
+        self.append(line[:20])
+        self.assertEqual(len(self.statuses), 1)
+        self.append(line[20:] + "\n")
+        self.assertEqual(self.logs.count(line), 1)
+        self.assertIn("음악 생성", self.statuses[-1][0])
+        self.assertEqual(self.statuses[-1][0], "음악 생성 · 5초\n42 토큰")
+        self.assertIsNone(self.statuses[-1][1])
+        self.progress.poll()
+        self.assertEqual(self.logs.count(line), 1)
+
+    def test_known_steps_reset_and_final_unterminated_line_is_drained(self):
+        self.append("[YuE2] Running Synthesizing audio: 16/32 steps (50%)\n")
+        self.assertEqual(self.statuses[-1][1:], ((16, 32), True))
+        self.append("[YuE2] Running Decoding audio: 1/3 chunks", final=True)
+        self.assertEqual(self.statuses[-1][1:], ((1, 3), True))
+
+    def test_silent_worker_reports_elapsed_without_fabricating_progress(self):
+        self.now = 5
+        self.progress.poll()
+        self.assertIn("전체 경과 5초", self.statuses[-1][0])
+        self.assertIsNone(self.statuses[-1][1])
+        count = len(self.logs)
+        self.progress.poll()
+        self.assertEqual(len(self.logs), count)
+
+    def test_error_and_truncation_status_are_not_success(self):
+        for state, label in [("Failed", "실패"), ("Cancelled", "취소"),
+                ("Finished (generation limit reached)", "생성 제한 도달")]:
+            self.append(f"[YuE2] {state} Generating song: 9000 tokens\n")
+            self.assertTrue(self.statuses[-1][0].startswith(label))
+
+
+class BridgeUpgradeTests(unittest.TestCase):
+    def test_custom_code_is_preserved(self):
+        with tempfile.TemporaryDirectory() as temp:
+            node = Path(temp) / "node"
+            node.mkdir()
+            custom = node / "nodes.py"
+            custom.write_text("# user changes")
+            self.assertFalse(installer._update_bridge(node, Path(temp) / "state"))
+            self.assertEqual(custom.read_text(), "# user changes")
+
+    def upgrade_fixture(self, temp):
+        node = Path(temp) / "node"
+        shutil.copytree(BASE / "custom_nodes/ComfyUI-YuE2", node, ignore=shutil.ignore_patterns("__pycache__"))
+        (node / "setup.json").write_text('{"runtime": "keep me"}')
+        (node / "personal.txt").write_text("keep extras")
+        (node / "nodes.py").write_text("# old known bridge")
+        known = {p.name: installer._code_digest(p) for p in node.glob("*.py")}
+        return node, known
+
+    def test_recognized_upgrade_keeps_setup_and_backup_outside_custom_nodes(self):
+        with tempfile.TemporaryDirectory() as temp:
+            node, known = self.upgrade_fixture(temp)
+            state = Path(temp) / "state"
+            with patch.object(installer.json, "loads", return_value={"old": known}):
+                self.assertTrue(installer._update_bridge(node, state))
+            self.assertEqual((node / "nodes.py").read_bytes(), (BASE / "custom_nodes/ComfyUI-YuE2/nodes.py").read_bytes())
+            self.assertEqual((node / "setup.json").read_text(), '{"runtime": "keep me"}')
+            self.assertEqual((node / "personal.txt").read_text(), "keep extras")
+            backup = next((state / "backups").iterdir())
+            self.assertEqual((backup / "nodes.py").read_text(), "# old known bridge")
+
+    def test_failed_promotion_restores_original(self):
+        with tempfile.TemporaryDirectory() as temp:
+            node, known = self.upgrade_fixture(temp)
+            rename = Path.rename
+            def fail_promotion(path, target):
+                if path.parent.name.startswith("bridge-update-"):
+                    raise OSError("promotion failed")
+                return rename(path, target)
+            with patch.object(installer.json, "loads", return_value={"old": known}), \
+                    patch.object(Path, "rename", fail_promotion):
+                with self.assertRaisesRegex(OSError, "promotion failed"):
+                    installer._update_bridge(node, Path(temp) / "state")
+            self.assertEqual((node / "nodes.py").read_text(), "# old known bridge")
+            self.assertEqual((node / "personal.txt").read_text(), "keep extras")
 
 
 if __name__ == "__main__":

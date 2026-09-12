@@ -1,5 +1,13 @@
 # Changes
 
+## yue2-v0.1.0-rc5
+
+- Relay worker output to the ComfyUI console while retaining each job's generation.log.
+- Show native node progress text immediately, including five-second heartbeats during silent preparation.
+- Report generated tokens for open-ended music generation and actual step/chunk progress for synthesis/decoding.
+- Upgrade recognized rc4 bridges with backup and rollback; preserve customized code, setup, models, runtime and shared Torch.
+- Fix the packaged workflow's stale rc3 download link and Torch 2.10-only label.
+
 ## yue2-v0.1.0-rc4
 
 - Warn on Torch versions other than 2.10 and test real loader imports instead of refusing installation.
