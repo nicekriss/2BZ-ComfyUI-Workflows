@@ -157,6 +157,21 @@ class InstallerTests(unittest.TestCase):
                 with self.assertRaisesRegex(RuntimeError, "missing required node class"):
                     installer.main()
 
+    def test_release_package_leaves_out_the_dead_bundled_node_copy(self):
+        # 설치기는 업스트림을 내려받는다. 예전에 같이 넣던 patched 사본이 ZIP 에
+        # 남아 있으면 아무도 설치하지 않는 코드를 누군가 고치고 있게 된다.
+        import importlib.util
+
+        spec = importlib.util.spec_from_file_location(
+            "builder", Path(__file__).parent / "build_yue2_release.py")
+        builder = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(builder)
+        names = {name for _, name in builder.members()}
+        self.assertIn("YuE2/install_yue2.py", names)
+        self.assertIn("YuE2/YuE2_Music.json", names)
+        self.assertFalse([n for n in names if "custom_nodes" in n or "__pycache__" in n])
+        self.assertEqual(builder.check(), len(names))
+
     def test_source_archive_is_verified_before_use(self):
         # 이름만 같고 내용이 다른 zip 이 남아 있으면 버리고 다시 받아야 한다.
         with tempfile.TemporaryDirectory() as temp:
