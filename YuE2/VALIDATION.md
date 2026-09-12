@@ -9,8 +9,10 @@ Same Windows / RTX 4070 Ti SUPER / Torch 2.12.1+cu130 environment below.
 - Prompt `b8771d4b-3dcf-4800-8468-3bb158de22b0` completed successfully: 43.479s, 48kHz stereo FLAC, full ffmpeg decode passed.
 - Captured 48 native progress text events. First status arrived at 0.014s; generated tokens, 32-step synthesis, chunk decoding and completion were received. Numeric synthesis progress was also received.
 - ComfyUI console contained the same worker progress lines while inference was running.
-- Separate browser test showed the Korean preparation message inside the executing ABC generate node immediately after Run. The user's existing canvas was not edited.
+- Separate browser test showed Korean preparation immediately after Run, then a compact two-line stage/tokens/speed display (for example music generation 25s, 415 tokens, 16.6/s). The user's existing canvas was not edited.
 - 31 regression tests passed, including partial log lines, silent-worker heartbeats, truthful step totals, customized-code preservation and failed-upgrade rollback.
+
+A later runtime audit detected 13 newly added audio-analysis distributions from concurrent ABC Studio development (an explicit librosa/soundfile installation). All original 186 distribution versions, locations and RECORD hashes remained unchanged. The rc5 installer itself added or changed no shared packages.
 
 ## rc4 installation and inference verification
 
