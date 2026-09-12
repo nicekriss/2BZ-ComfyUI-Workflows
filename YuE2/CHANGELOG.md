@@ -1,6 +1,6 @@
 # Changes
 
-## yue2-v0.1.0-rc4 (local candidate)
+## yue2-v0.1.0-rc4
 
 - Warn on Torch versions other than 2.10 and test real loader imports instead of refusing installation.
 - Share ComfyUI CUDA Torch. Install only missing/incompatible additional packages into the subprocess runtime with resolver and source builds disabled; reject Torch/CUDA package targets.
