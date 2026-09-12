@@ -1,6 +1,6 @@
 # Changes
 
-## yue2-v0.1.0-rc2
+## yue2-v0.1.0-rc3
 
 - `toobusy-abc-studio` is now pinned to release `v0.2.0` instead of tracking `main`, so two machines installing on different days get the same package.
 - Every source archive download is checked against a pinned sha256. A half-written zip left by an interrupted run used to be reported as `VERIFIED` on its filename alone and installed as-is; it is now discarded and fetched again.
@@ -8,6 +8,8 @@
 - `YuE2_Music.json` now uses `YuE2LocalGenerateWithABC` with optional `abc` input for ABC Studio integration.
 - Installer now installs official upstream ComfyUI-YuE2 source and `toobusy-abc-studio` package (separate node package) instead of local patched node copy.
 - Check flow now validates YuE2, ABC Studio package, and new workflow file presence.
+
+## yue2-v0.1.0-rc2
 
 - Synchronize the packaged workflow notes with the current canvas installer guide.
 - Link installation steps, folder selection, setup checks and troubleshooting directly from the workflow.

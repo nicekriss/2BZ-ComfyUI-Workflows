@@ -6,7 +6,7 @@ English users: open **2BZ_FastH3_USDU_EN.json** from the ZIP, then use its click
 
 ## YuE2 Music
 
-가사와 스타일로 보컬·반주가 있는 곡을 생성합니다. **[YuE2 설치 ZIP · v0.1.0-rc2](https://github.com/nicekriss/2BZ-ComfyUI-Workflows/releases/tag/yue2-v0.1.0-rc2)** → 압축 해제 → `Install-YuE2.bat` → ComfyUI·모델 폴더 선택 → 설치 완료 후 재시작.
+가사와 스타일로 보컬·반주가 있는 곡을 생성합니다. **[YuE2 설치 ZIP · v0.1.0-rc2](https://github.com/nicekriss/2BZ-ComfyUI-Workflows/releases/tag/yue2-v0.1.0-rc3)** → 압축 해제 → `Install-YuE2.bat` → ComfyUI·모델 폴더 선택 → 설치 완료 후 재시작.
 
 모델 약 7.8GB 자동 다운로드, 별도 실행 환경, 한국어 예제 워크플로가 포함됩니다. Windows·NVIDIA·Torch 2.10.x 대상 시험 배포입니다. [설치·사용 가이드](YuE2/START-HERE-ko.md) · [검증 범위](YuE2/VALIDATION.md). 모델 가중치: CC BY-NC 4.0.
 
