@@ -2,6 +2,7 @@ import importlib.util
 import hashlib
 import io
 import json
+import zipfile
 from pathlib import Path
 import tempfile
 import unittest
@@ -61,15 +62,134 @@ class InstallerTests(unittest.TestCase):
                 installer.download("https://example.invalid", p, hashlib.sha256(b"abcdef").hexdigest(), 6)
             self.assertEqual(p.read_bytes(), b"abcdef")
 
-    def test_existing_pack_stops_before_install(self):
+    def test_installer_keeps_existing_node_packs(self):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
             (root / "main.py").touch()
             node = root / "custom_nodes" / "ComfyUI-YuE2"
             node.mkdir(parents=True)
-            with patch("sys.argv", ["install", "--root", str(root)]), patch.object(installer, "environment", return_value="site"), patch.object(installer, "run", side_effect=AssertionError("mutation")):
-                with self.assertRaisesRegex(RuntimeError, "Existing node pack preserved"):
+            (node / "setup.json").write_text(json.dumps({
+                "runtime": str(root / "runtime" / "bin" / "python.exe"),
+                "model": str(root / "models" / "audio_encoders" / "YuE2-3B"),
+                "vae": str(root / "models" / "vae" / "YuE2-Vae"),
+            }, ensure_ascii=False), encoding="utf-8")
+            abc = root / "custom_nodes" / "toobusy-abc-studio"
+            abc.mkdir(parents=True)
+            (abc / "abc_studio_node").mkdir(parents=True)
+            (abc / "abc_studio_node" / "abc_studio.py").write_text(
+                "\"\"\"marker\"\"\"\nclass YuE2LocalGenerateWithABCUnavailable: pass\n"
+                "class YuE2LocalGenerateWithABC: pass\n\"YuE2LocalGenerateWithABC\"\n"
+                "\"2BZ YuE2 Generate + ABC\"",
+                encoding="utf-8",
+            )
+            with patch("sys.argv", ["install", "--root", str(root)]), \
+                    patch.object(installer, "environment", return_value="site"), \
+                    patch.object(installer, "run", return_value=None), \
+                    patch.object(installer, "_install_model_weights", return_value=None), \
+                    patch.object(installer, "download_file", return_value=None):
+                installer.main()
+
+    def test_stale_abc_studio_reinstalled_safely(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            (root / "main.py").touch()
+            node = root / "custom_nodes" / "ComfyUI-YuE2"
+            node.mkdir(parents=True)
+            (node / "setup.json").write_text(json.dumps({
+                "runtime": str(root / "runtime" / "bin" / "python.exe"),
+                "model": str(root / "models" / "audio_encoders" / "YuE2-3B"),
+                "vae": str(root / "models" / "vae" / "YuE2-Vae"),
+            }, ensure_ascii=False), encoding="utf-8")
+
+            abc = root / "custom_nodes" / "toobusy-abc-studio"
+            abc.mkdir(parents=True)
+            (abc / "abc_studio_node").mkdir(parents=True)
+            (abc / "abc_studio_node" / "abc_studio.py").write_text("class LegacyOnly: pass", encoding="utf-8")
+
+            state = root / "user" / "2bz-yue2"
+            state.mkdir(parents=True)
+            zip_path = state / "toobusy-abc-studio.zip"
+            with zipfile.ZipFile(zip_path, "w", compression=zipfile.ZIP_DEFLATED) as archive:
+                archive.writestr(
+                    "toobusy-abc-studio-main/abc_studio_node/abc_studio.py",
+                    "class YuE2LocalGenerateWithABC: pass",
+                )
+
+            with patch("sys.argv", ["install", "--root", str(root)]), \
+                    patch.object(installer, "environment", return_value="site"), \
+                    patch.object(installer, "run", return_value=None), \
+                    patch.object(installer, "_install_model_weights", return_value=None), \
+                    patch.object(installer, "download_file", side_effect=lambda *_a, **_k: None):
+                installer.main()
+
+            self.assertTrue((root / "custom_nodes" / "toobusy-abc-studio.old").exists())
+            self.assertTrue((root / "custom_nodes" / "toobusy-abc-studio").is_dir())
+
+    def test_missing_pack_detected_in_check_mode(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            (root / "main.py").touch()
+            (root / "custom_nodes").mkdir()
+            yue2 = root / "custom_nodes" / "ComfyUI-YuE2"
+            yue2.mkdir(parents=True)
+            with patch("sys.argv", ["install", "--root", str(root), "--check-only"]), \
+                    patch.object(installer, "environment", return_value="site"):
+                with self.assertRaisesRegex(RuntimeError, "Missing toobusy-abc-studio"):
                     installer.main()
+
+    def test_stale_toobusy_pack_detected_in_check_mode(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            (root / "main.py").touch()
+            yue2 = root / "custom_nodes" / "ComfyUI-YuE2"
+            yue2.mkdir(parents=True)
+            (yue2 / "setup.json").write_text(json.dumps({
+                "runtime": str(root / "runtime" / "bin" / "python.exe"),
+                "model": str(root / "models" / "audio_encoders" / "YuE2-3B"),
+                "vae": str(root / "models" / "vae" / "YuE2-Vae"),
+            }, ensure_ascii=False), encoding="utf-8")
+            abc = root / "custom_nodes" / "toobusy-abc-studio"
+            abc.mkdir(parents=True)
+            (abc / "abc_studio_node").mkdir(parents=True)
+            (abc / "abc_studio_node" / "abc_studio.py").write_text("class LegacyOnly: pass", encoding="utf-8")
+            with patch("sys.argv", ["install", "--root", str(root), "--check-only"]), \
+                    patch.object(installer, "environment", return_value="site"):
+                with self.assertRaisesRegex(RuntimeError, "missing required node class"):
+                    installer.main()
+
+    def test_source_archive_is_verified_before_use(self):
+        # 이름만 같고 내용이 다른 zip 이 남아 있으면 버리고 다시 받아야 한다.
+        with tempfile.TemporaryDirectory() as temp:
+            p = Path(temp) / "source.zip"
+            p.write_bytes(b"half written wreckage")
+            good = b"real archive"
+            digest = hashlib.sha256(good).hexdigest()
+            with patch.object(installer.urllib.request, "urlopen", return_value=Response(good)):
+                installer.download_file("https://example.invalid", p, digest)
+            self.assertEqual(p.read_bytes(), good)
+
+    def test_matching_archive_skips_the_network(self):
+        with tempfile.TemporaryDirectory() as temp:
+            p = Path(temp) / "source.zip"
+            p.write_bytes(b"real archive")
+            digest = hashlib.sha256(b"real archive").hexdigest()
+            with patch.object(installer.urllib.request, "urlopen", side_effect=AssertionError("network")):
+                installer.download_file("https://example.invalid", p, digest)
+
+    def test_corrupt_download_is_deleted_and_raises(self):
+        with tempfile.TemporaryDirectory() as temp:
+            p = Path(temp) / "source.zip"
+            with patch.object(installer.urllib.request, "urlopen", return_value=Response(b"tampered")):
+                with self.assertRaisesRegex(RuntimeError, "pinned checksum"):
+                    installer.download_file("https://example.invalid", p, "0" * 64)
+            self.assertFalse(p.exists(), "검증에 실패한 파일을 남겨 두면 다음 실행이 그걸 믿는다")
+
+    def test_abc_studio_is_pinned_to_a_release_not_a_moving_branch(self):
+        self.assertIn("refs/tags/", installer.ABC_STUDIO_ZIP_URL)
+        self.assertNotIn("refs/heads/", installer.ABC_STUDIO_ZIP_URL)
+        manifest = json.loads((BASE / "downloads.json").read_text(encoding="utf-8"))
+        self.assertEqual(manifest["abc_studio"]["ref"], installer.ABC_STUDIO_REF)
+        self.assertEqual(len(manifest["abc_studio"]["sha256"]), 64)
 
     def test_workflow_is_portable_and_links_resolve(self):
         text = (BASE / "YuE2_Music.json").read_text(encoding="utf-8")

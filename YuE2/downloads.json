@@ -78,5 +78,10 @@
       "sha256": "060985741d20e70613b4c189c7de106cabd3fb2109fbbfb6d705c9d619417dd0",
       "url": "https://huggingface.co/m-a-p/YuE2-Vae/resolve/95535e72a97bc0f09b8ada125d26b4009428c0e8/LICENSE"
     }
-  ]
+  ],
+  "abc_studio": {
+    "ref": "v0.2.0",
+    "sha256": "04da161df1269da37c73ca0c52f0d870f75339472f9dc695affc0f44ed2eb501",
+    "bytes": 43429
+  }
 }

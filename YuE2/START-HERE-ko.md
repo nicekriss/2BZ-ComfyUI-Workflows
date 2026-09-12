@@ -22,11 +22,14 @@ Python은 `.venv`, `venv`, 포터블 `python_embeded`/`python_embedded`에서 �
 
 ## 설치기가 하는 일
 
-- 자체 노드 3개를 `custom_nodes/ComfyUI-YuE2`에 설치합니다.
+- 공식 YuE2 런타임을 준비하고, `custom_nodes/ComfyUI-YuE2`(공식 노드 3개)와
+  `custom_nodes/toobusy-abc-studio`(ABC Studio 연동 노드 1개)를 함께 설치합니다.
 - `user/2bz-yue2/runtime`에 별도 환경을 만들고, ComfyUI의 CUDA Torch와 기본 의존성을 참조합니다. ComfyUI 본체와 기존 Python 패키지는 수정하지 않습니다.
 - 공식 YuE 소스를 고정 commit으로 받고, 필요한 모델·설정·토크나이저·라이선스를 공식 Hugging Face에서 다운로드합니다.
 - SHA256을 확인합니다. 기존 파일이 정확하면 재사용하고, 다른 파일은 덮어쓰지 않습니다. 중단된 다운로드는 `.part`에서 이어받습니다.
-- 이미 `ComfyUI-YuE2`가 설치되어 있으면 중단합니다. 기존 팩을 보관하려면 ComfyUI 종료 후 `custom_nodes` 밖으로 옮기고 설치하세요.
+- 이미 설치된 패키지는 덮어쓰지 않고 유지합니다.
+  - `custom_nodes/ComfyUI-YuE2`가 이미 있으면 기존 환경을 보존하고 건너뜁니다.
+  - `custom_nodes/toobusy-abc-studio`가 이미 있으면 기존 스튜디오를 보존하고 건너뜁니다.
 - 실행 시에는 인터넷을 사용하지 않습니다. 설치 단계에는 GitHub·Hugging Face·PyPI 접속이 필요합니다.
 
 ## 처음 곡 만들기

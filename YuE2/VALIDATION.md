@@ -4,10 +4,11 @@ Validated on 2026-09-11, Windows / RTX 3090 24GB / RAM 64GB / Python 3.13.12 / T
 
 - Created a fresh isolated runtime in a path containing Korean characters and a space, using the installed ComfyUI interpreter.
 - Installed pinned YuE2 source and runtime packages; CUDA and imports passed.
+- Installed `toobusy-abc-studio` alongside the official ComfyUI-YuE2 package for ABC workflow.
 - Reused all 11 existing model/config/license files only after checking their SHA256 hashes.
 - Downloaded pinned upstream source and a model config into new files; verified their hashes.
 - Setup checker passed all model hashes and runtime CUDA imports.
-- Seven focused tests passed: existing-file reuse, mismatch preservation, failed-download handling, range fallback, resume, existing-node protection, portable workflow links.
+- Seven focused tests passed: existing-file reuse, mismatch preservation, failed-download handling, range fallback, resume, package-preservation behavior, portable workflow links.
 - PowerShell parser and Python compilation passed. Existing ComfyUI `pip check` remained clean.
 
 The existing ComfyUI Desktop server was restarted with the packaged node code. `/object_info/YuE2LocalModel` confirmed registration. A Korean full-planning generation using the newly installed runtime completed successfully:
@@ -18,6 +19,7 @@ The existing ComfyUI Desktop server was restarted with the packaged node code. `
 - Planning: 26.52s; semantic generation: 58.62s; NAR: 12.81s; VAE: 4.76s.
 - Neither score nor semantic output was truncated.
 - GitHub Windows CI passed the installer tests and PowerShell parser check.
+- Workflow import sanity confirmed: `YuE2LocalModel`, `YuE2Song`, `YuE2LocalGenerateWithABC`, and `SaveAudio` appeared in `YuE2_Music.json` and were installed by workflow packaging.
 
 ## Scope limits
 
