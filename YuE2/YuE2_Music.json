@@ -2,7 +2,7 @@
   "id": "ed42f941-8c08-488d-93c4-f76fc6859227",
   "revision": 0,
   "last_node_id": 10,
-  "last_link_id": 7,
+  "last_link_id": 8,
   "nodes": [
     {
       "id": 1,
@@ -134,7 +134,7 @@
     },
     {
       "id": 3,
-      "type": "YuE2LocalGenerate",
+      "type": "YuE2LocalGenerateWithABC",
       "pos": [
         900,
         140
@@ -182,6 +182,15 @@
             "name": "planning"
           },
           "link": null
+        },
+        {
+          "localized_name": "abc",
+          "name": "abc",
+          "type": "STRING",
+          "widget": {
+            "name": "abc"
+          },
+          "link": 8
         }
       ],
       "outputs": [
@@ -194,17 +203,53 @@
           ]
         }
       ],
-      "title": "노래 생성",
+      "title": "노래 생성 · ABC 선택",
       "properties": {
-        "Node name for S&R": "YuE2LocalGenerate"
+        "Node name for S&R": "YuE2LocalGenerateWithABC"
       },
       "widgets_values": [
         831005,
         "fixed",
-        "full"
+        "full",
+        ""
       ],
       "color": "#323",
       "bgcolor": "#535"
+    },
+    {
+      "id": 5,
+      "type": "ABCScoreInput",
+      "pos": [
+        900,
+        360
+      ],
+      "size": [
+        340,
+        160
+      ],
+      "flags": {},
+      "order": 8,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "localized_name": "abc",
+          "name": "abc",
+          "type": "STRING",
+          "links": [
+            8
+          ]
+        }
+      ],
+      "title": "ABC 악보 입력",
+      "properties": {
+        "Node name for S&R": "ABCScoreInput"
+      },
+      "widgets_values": [
+        ""
+      ],
+      "color": "#233",
+      "bgcolor": "#355"
     },
     {
       "id": 4,
@@ -281,7 +326,7 @@
       "title": "설치 후 · 실행 / 저장 / 확인",
       "properties": {},
       "widgets_values": [
-        "설치 후: 가사 수정 → 스타일 지정 → Run\nstyle_override에 쓰면 장르보다 우선합니다.\n장르 프리셋을 쓰려면 이 칸을 비우세요.\nseed를 바꾸면 새로운 곡을 만듭니다.\nplanning: full=멜로디+코드 / melody=멜로디\n                off=악보 계획 없음. 길이는 자동 결정.\n\n완성곡은 위 플레이어에서 재생합니다.\nFLAC 저장: 컴피의 output/YuE2/ 폴더\nDesktop은 공유 output 폴더를 확인하세요.\n\n설치 확인: Check-YuE2.bat → 같은 컴피 선택\nUnknown 노드: 재시작 후 시작 로그 확인\n설치 오류: 왼쪽 상세 가이드 참고"
+        "설치 후: 가사 수정 → 스타일 지정 → Run\nstyle_override에 쓰면 장르보다 우선합니다.\n장르 프리셋을 쓰려면 이 칸을 비우세요.\nseed를 바꾸면 새로운 곡을 만듭니다.\nplanning: full=멜로디+코드 / melody=멜로디\n                off=악보 계획 없음. 길이는 자동 결정.\n\nABC로 만들고 싶으면 ABC 스튜디오에서 악보를 입력하고\n\"ABC 악보 입력\"의 abc를 \"노래 생성 · ABC 선택\" 노드의 abc에 연결하세요.\n\n완성곡은 위 플레이어에서 재생합니다.\nFLAC 저장: 컴피의 output/YuE2/ 폴더\nDesktop은 공유 output 폴더를 확인하세요.\n\n설치 확인: Check-YuE2.bat → 같은 컴피 선택\nUnknown 노드: 재시작 후 시작 로그 확인\n설치 오류: 왼쪽 상세 가이드 참고"
       ],
       "color": "#233",
       "bgcolor": "#355"
@@ -429,6 +474,14 @@
       3,
       0,
       "YUE2_MODEL"
+    ],
+    [
+      8,
+      5,
+      0,
+      3,
+      5,
+      "STRING"
     ]
   ],
   "groups": [
