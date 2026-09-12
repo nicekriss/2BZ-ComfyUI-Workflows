@@ -1,4 +1,13 @@
-# Validation · yue2-v0.1.0-rc7
+# Validation · yue2-v0.1.0-rc8
+
+## rc8 Windows status-file regression (2026-09-13)
+
+- Reproduced WinError 5 using a real Windows reader holding status.json open. The worker now retries transient replacement failures and still reports persistent access failures.
+- Four regression tests cover the Windows reader collision, complete JSON replacement, bounded retries and unrelated I/O errors.
+- Live ComfyUI 0.35.1 / RTX 3090 / Torch 2.10.0+cu130: 30-second range analysis completed while status was polled every 200ms; returned ABC, 73 instrumental notes and audio previews. Vocal notes were zero for this sample; this test establishes execution success, not transcription fidelity.
+- All 39 installer regression tests passed. A real official v0.4.0 archive upgraded to v0.4.1 with an exact v0.4.0 backup.
+- No host dependency or model change. The worker fix applies to new jobs without restarting ComfyUI.
+
 
 ## rc7 SheetSage2 integration verification (2026-09-13)
 

@@ -6,9 +6,9 @@ English users: open **2BZ_FastH3_USDU_EN.json** from the ZIP, then use its click
 
 ## YuE2 Music
 
-가사와 스타일로 보컬·반주가 있는 곡을 생성합니다. **[rc7 설치 ZIP 다운로드](https://github.com/nicekriss/2BZ-ComfyUI-Workflows/releases/download/yue2-v0.1.0-rc7/2BZ-YuE2-installer-v0.1.0-rc7.zip)**는 기존 ComfyUI Torch를 보존하며, Torch 2.12.1+cu130에서 설치·43.48초 생성 검증을 완료했습니다. 모델 약 7.8GB 자동 다운로드, 별도 subprocess 실행 환경과 한국어 예제 워크플로를 포함합니다.
+가사와 스타일로 보컬·반주가 있는 곡을 생성합니다. **[rc8 설치 ZIP 다운로드](https://github.com/nicekriss/2BZ-ComfyUI-Workflows/releases/download/yue2-v0.1.0-rc8/2BZ-YuE2-installer-v0.1.0-rc8.zip)**는 기존 ComfyUI Torch를 보존하며, Torch 2.12.1+cu130에서 설치·43.48초 생성 검증을 완료했습니다. 모델 약 7.8GB 자동 다운로드, 별도 subprocess 실행 환경과 한국어 예제 워크플로를 포함합니다.
 
-ZIP 압축을 풀고 `YuE2/Install-YuE2.bat`을 실행하세요. YuE2와 ABC Studio v0.4.0을 함께 설치합니다. [rc7 릴리스 안내](https://github.com/nicekriss/2BZ-ComfyUI-Workflows/releases/tag/yue2-v0.1.0-rc7). [설치·사용 가이드](YuE2/START-HERE-ko.md) · [검증 범위와 남은 한계](YuE2/VALIDATION.md). Windows·NVIDIA 대상 시험 배포이며 모델 가중치는 CC BY-NC 4.0입니다.
+ZIP 압축을 풀고 `YuE2/Install-YuE2.bat`을 실행하세요. YuE2와 ABC Studio v0.4.1을 함께 설치합니다. [rc8 릴리스 안내](https://github.com/nicekriss/2BZ-ComfyUI-Workflows/releases/tag/yue2-v0.1.0-rc8). [설치·사용 가이드](YuE2/START-HERE-ko.md) · [검증 범위와 남은 한계](YuE2/VALIDATION.md). Windows·NVIDIA 대상 시험 배포이며 모델 가중치는 CC BY-NC 4.0입니다.
 
 ## FastH3 + USDU Video Restore
 
