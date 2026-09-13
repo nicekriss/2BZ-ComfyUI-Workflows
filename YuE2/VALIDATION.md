@@ -1,5 +1,14 @@
 # Validation · yue2-v0.1.0-rc10
 
+## rc10 RTX 50 field confirmation and key picker (2026-09-14)
+
+- The rc9 fix is reported working by both commenters who hit the failure, on RTX 5060 Ti 16GB and RTX 5070 Ti 16GB. This confirmation arrived through YouTube comments; no RTX 50 card was exercised here, so it is user-reported rather than measured on this bench.
+- ABC Studio v0.4.4 adds the key picker. Verified in a browser against a served copy, not a static file, because module imports do not run from a file snapshot. Opening a score sets the picker from its `K:` field; changing the key updates the status line, the `K:` header and the ABC body together.
+- Pitch safety: a real 69-note two-voice score was cycled through `C`, `Eb`, `F#`, `C#m`, `none` and `Am`, reparsing after each change. Every pitch was unchanged each time. Changing the key relabels the signature and never transposes.
+- The piano roll shading follows the chosen key while note positions stay put, confirmed on screen.
+- ABC Studio tests: 5 JavaScript files and 5 Python files pass, including 5 new key tests. The module script inside `index.html` is not covered by that CI and was syntax-checked separately.
+
+
 ## rc10 installed package size (2026-09-14)
 
 - ABC Studio v0.4.2 shipped four Aegukga demo MP3s under `docs/audio/`, assets for the GitHub Pages comparison player with no role in the node. `_install_abc` copies the whole tag archive into `custom_nodes`, so every installation carried about 20MB of documentation audio.

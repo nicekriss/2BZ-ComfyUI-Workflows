@@ -17,7 +17,7 @@ from datetime import datetime, timezone
 HERE = Path(__file__).resolve().parent
 SOURCE_COMMIT = "92a73cc7652fcc1f937855e4b765e0a0edd7ff2e"
 SOURCE_ZIP_URL = f"https://codeload.github.com/multimodal-art-projection/YuE/zip/{SOURCE_COMMIT}"
-ABC_STUDIO_REF = "v0.4.3"
+ABC_STUDIO_REF = "v0.4.4"
 ABC_STUDIO_ZIP_URL = f"https://codeload.github.com/nicekriss/toobusy-abc-studio/zip/refs/tags/{ABC_STUDIO_REF}"
 VERSION = "0.1.0-rc10"
 PROTECTED = {"torch", "torchvision", "torchaudio", "xformers", "triton", "triton-windows"}
