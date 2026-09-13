@@ -1,5 +1,13 @@
 # Changes
 
+## yue2-v0.1.0-rc9
+
+- Pin ABC Studio v0.4.2: install a Torch build that carries RTX 50 (sm_120) kernels. The previous cu126 build had none, so transcription installed successfully and then failed on the first model call with "no kernel image is available for execution on the device".
+- Replace an already installed Torch whose CUDA build differs. pip treats 2.8.0+cu126 as satisfying torch==2.8.0 and would otherwise keep the wrong build.
+- Check the GPU against the installed Torch architecture list and run one real CUDA kernel before reporting success. The previous check only asked torch.cuda.is_available(), which stays true on a card the build has no kernels for.
+- Set the console to UTF-8 so Korean guidance stays readable on a code page 949 console.
+- Existing runtimes, model weights and saved workflows remain reusable.
+
 ## yue2-v0.1.0-rc8
 
 - Pin ABC Studio v0.4.1: retry transient Windows status-file replacement failures during transcription.
