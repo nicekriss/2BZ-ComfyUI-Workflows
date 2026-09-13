@@ -1,5 +1,12 @@
 # Changes
 
+## yue2-v0.1.0-rc10
+
+- Pin ABC Studio v0.4.4, which adds a key picker to the editor. Major and minor keys plus "no key signature" can now be chosen directly; previously a key only arrived from an opened file or a transcription. Choosing a key changes the key signature alone, never the pitches, and the piano roll dims rows outside the chosen key.
+- The same pin drops the documentation demo audio from installed copies. v0.4.2 carried about 20MB of Aegukga MP3s for the GitHub Pages player into every custom_nodes folder; the archive is back to 92,710 bytes from 18,242,956.
+- The rc9 RTX 50 fix is reported working by the two people who hit the failure.
+- Existing runtimes, model weights and saved workflows remain reusable.
+
 ## yue2-v0.1.0-rc9
 
 - Pin ABC Studio v0.4.2: install a Torch build that carries RTX 50 (sm_120) kernels. The previous cu126 build had none, so transcription installed successfully and then failed on the first model call with "no kernel image is available for execution on the device".

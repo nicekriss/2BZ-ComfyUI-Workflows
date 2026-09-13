@@ -80,8 +80,8 @@
     }
   ],
   "abc_studio": {
-    "ref": "v0.4.2",
-    "sha256": "ecd17e100346307f6be88e5d8ce06017a6a65ad7f50d22a5d44b34481d20cadd",
-    "bytes": 18242956
+    "ref": "v0.4.4",
+    "sha256": "379a274590fec0d9d51197c95684cf7592deffdf0bedca0916a745b753be12a2",
+    "bytes": 92710
   }
 }
