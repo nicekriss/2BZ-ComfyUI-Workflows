@@ -1,4 +1,13 @@
-# Validation · yue2-v0.1.0-rc8
+# Validation · yue2-v0.1.0-rc9
+
+## rc9 RTX 50 transcription fix (2026-09-14)
+
+- Cause confirmed on the live installation. The SheetSage2 runtime carried `torch 2.8.0+cu126` whose architectures are `sm_61 sm_70 sm_75 sm_80 sm_86 sm_90`, while RTX 50 cards are `sm_120`. The same machine's ComfyUI already ran `torch 2.10.0+cu130` including `sm_120`, so the isolated runtime was installing an older CUDA than the host it sits beside.
+- `torch 2.8.0+cu128` installed into a scratch Python 3.11 runtime reports `sm_61 sm_70 sm_75 sm_80 sm_86 sm_90 sm_100 sm_120`. It adds `sm_120` and keeps every architecture cu126 covered, so no currently supported card loses support.
+- RTX 3090 (sm_86) executed a real CUDA kernel on that build: `matmul(64x64).sum() = 262144.0`.
+- The new runtime check passed against that build and printed `{"torch": "2.8.0+cu128", "gpu": "NVIDIA GeForce RTX 3090", "arch": "sm_86"}`. The same check refused the existing cu126 runtime by name. Neither test modified the live installation.
+- Console encoding: under a forced code page 949 console the Korean guidance rendered as mojibake; with the launcher's UTF-8 console setting it renders correctly.
+- Not verified: no RTX 50 card was available. That `cu128` contains `sm_120` kernels is established; execution on an actual RTX 50 card is not.
 
 ## rc8 Windows status-file regression (2026-09-13)
 

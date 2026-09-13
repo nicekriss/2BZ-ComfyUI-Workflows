@@ -1,6 +1,10 @@
 param([string]$ComfyUIRoot, [string]$PythonExe, [string]$ModelsRoot, [switch]$CheckOnly)
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
+# Python reports in UTF-8. A Korean console defaults to code page 949 and
+# would render the installer's Korean guidance as mojibake, which is the
+# message a user most needs to read.
+try { [Console]::OutputEncoding = [System.Text.UTF8Encoding]::new() } catch { }
 try {
     Add-Type -AssemblyName System.Windows.Forms
     if (-not $ComfyUIRoot) {
