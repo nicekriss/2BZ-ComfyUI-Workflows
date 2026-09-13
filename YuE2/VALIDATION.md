@@ -1,4 +1,13 @@
-# Validation · yue2-v0.1.0-rc9
+# Validation · yue2-v0.1.0-rc10
+
+## rc10 installed package size (2026-09-14)
+
+- ABC Studio v0.4.2 shipped four Aegukga demo MP3s under `docs/audio/`, assets for the GitHub Pages comparison player with no role in the node. `_install_abc` copies the whole tag archive into `custom_nodes`, so every installation carried about 20MB of documentation audio.
+- v0.4.3 excludes `docs` from release archives with `/docs export-ignore`. The archive downloaded from codeload went from 18,242,956 bytes to 90,182 bytes, back to the 39 files v0.4.1 had, with no `docs` entries. Verified by downloading the published tag archive, not by inference.
+- The Pages player is unaffected: `export-ignore` applies to `git archive` only, and Pages serves the `docs` path of `main` directly. Both the site and `audio/aegukga-original.mp3` still answer with HTTP 206 to a range request, so seeking still works.
+- `git clone` and ComfyUI-Manager Git URL installs are unaffected.
+- No functional change to the node or the installer beyond the pin.
+
 
 ## rc9 RTX 50 transcription fix (2026-09-14)
 

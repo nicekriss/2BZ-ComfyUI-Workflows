@@ -1,5 +1,10 @@
 # Changes
 
+## yue2-v0.1.0-rc10
+
+- Pin ABC Studio v0.4.3, which excludes the documentation folder from its release archive. v0.4.2 carried about 20MB of Aegukga demo audio for the GitHub Pages player into every custom_nodes folder; the archive is back to 90,182 bytes from 18,242,956.
+- No functional change. Existing runtimes, model weights and saved workflows remain reusable.
+
 ## yue2-v0.1.0-rc9
 
 - Pin ABC Studio v0.4.2: install a Torch build that carries RTX 50 (sm_120) kernels. The previous cu126 build had none, so transcription installed successfully and then failed on the first model call with "no kernel image is available for execution on the device".
