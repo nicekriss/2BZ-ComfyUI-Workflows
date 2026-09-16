@@ -1,4 +1,16 @@
-# Validation · yue2-v0.1.0-rc10
+# Validation · yue2-v0.1.0-rc11
+
+## rc11 silent stretches and non-Korean consoles (2026-09-16)
+
+- A viewer reported the window showing no progress after picking the ComfyUI and models folders. The cause of that report is not established. What is established is that rc10 printed one line there and then imported ComfyUI's Torch with nothing else on screen.
+- Measured on this bench with a warm cache and an NVMe disk, `import torch` against the ComfyUI environment took 8.8 seconds. A cold cache or an antivirus scan makes it longer. Recording the installed package list and fetching a source archive were silent for the same reason.
+- rc11 prints what it is doing at all three points. Verified by running `environment()` under the ComfyUI interpreter with timestamps: the notice appears at 09:08:33.086 and the Torch and GPU lines at 09:08:34.956, so the message precedes the work rather than following it.
+- CI on the English Windows runner then exposed a real defect: on a cp1252 console every Korean line raised `UnicodeEncodeError` and killed the install, so the guidance meant to help was itself the crash. A Korean console encodes cp949 and handles Hangul, which is why this never appeared here. Reproduced locally with `PYTHONIOENCODING=cp1252` before fixing, and the same command passes afterwards.
+- The installer now reconfigures its own stdout and stderr to UTF-8 rather than trusting the launcher's `-X utf8`. This also covers the Korean planning guard shipped in rc9, which carried the same exposure. Confirmed that Korean still renders through the launcher path and that a run with no UTF-8 mode and `PYTHONIOENCODING=cp1252` no longer dies.
+- Installer tests: 39 pass, under both cp949 and cp1252.
+- No functional change to installation itself. Existing runtimes, model weights and saved workflows remain reusable.
+
+
 
 ## rc10 RTX 50 field confirmation and key picker (2026-09-14)
 
