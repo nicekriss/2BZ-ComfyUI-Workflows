@@ -4,6 +4,8 @@ import io
 import json
 import zipfile
 from pathlib import Path
+import subprocess
+import sys
 import tempfile
 import shutil
 import unittest
@@ -99,6 +101,7 @@ class InstallerTests(unittest.TestCase):
             (root / "custom_nodes").mkdir()
             with patch("sys.argv", ["install", "--root", str(root)]), \
                     patch.object(installer, "environment", return_value="site"), \
+                    patch.object(installer, "_install_abc"), \
                     patch.object(installer, "prepare_runtime", side_effect=RuntimeError("install failed")), \
                     patch.object(installer, "report_preservation") as audit:
                 with self.assertRaisesRegex(RuntimeError, "install failed"):
@@ -214,6 +217,52 @@ class InstallerTests(unittest.TestCase):
                     installer.main()
                 run.assert_not_called()
             self.assertEqual((abc / "custom.py").read_text(), "# user edits")
+
+    def test_running_comfyui_is_refused_before_any_work(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            (root / "main.py").touch()
+            (root / "custom_nodes").mkdir()
+            with patch("sys.argv", ["install", "--root", str(root)]), \
+                    patch.object(installer, "_running_comfyui", return_value=[(4242, "python.exe")]), \
+                    patch.object(installer, "environment", side_effect=AssertionError("work started")):
+                with self.assertRaisesRegex(RuntimeError, "ComfyUI가 실행 중") as caught:
+                    installer.main()
+            self.assertIn("PID 4242", str(caught.exception))
+            self.assertFalse((root / "user").exists())
+
+    def test_running_comfyui_matches_only_this_root(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root, other = Path(temp) / "ComfyUI", Path(temp) / "Other"
+            def proc(pid, cmdline, cwd):
+                return SimpleNamespace(info={"pid": pid, "exe": "python.exe", "cmdline": cmdline, "cwd": cwd})
+            processes = [
+                proc(1, ["python.exe", "-s", "ComfyUI\\main.py"], temp),  # Desktop and portable launch
+                proc(2, ["python.exe", str(root / "main.py")], None),     # absolute path, cwd denied
+                proc(3, ["python.exe", "main.py"], str(other)),           # another ComfyUI
+                proc(4, ["python.exe", "main.py"], None),                 # relative path, cwd unknown
+                proc(5, None, None),                                      # access denied
+            ]
+            psutil = SimpleNamespace(process_iter=lambda attrs: processes)
+            with patch.dict("sys.modules", {"psutil": psutil}):
+                self.assertEqual([pid for pid, _ in installer._running_comfyui(root.resolve())], [1, 2])
+
+    @unittest.skipUnless(importlib.util.find_spec("psutil"), "psutil is not installed")
+    def test_running_comfyui_detects_a_real_process(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp).resolve()
+            (root / "main.py").touch()
+            process = subprocess.Popen([sys.executable, "-c", "import time; time.sleep(60)", "main.py"], cwd=root)
+            try:
+                for _ in range(50):
+                    if process.pid in [pid for pid, _ in installer._running_comfyui(root)]:
+                        break
+                else:
+                    self.fail("running main.py was not detected")
+                self.assertEqual(installer._running_comfyui(root / "elsewhere"), [])
+            finally:
+                process.kill()
+                process.wait()
 
     def test_missing_pack_detected_in_check_mode(self):
         with tempfile.TemporaryDirectory() as temp:
@@ -411,6 +460,19 @@ class BridgeUpgradeTests(unittest.TestCase):
                     installer._update_bridge(node, Path(temp) / "state")
             self.assertEqual((node / "nodes.py").read_text(), "# old known bridge")
             self.assertEqual((node / "personal.txt").read_text(), "keep extras")
+
+    @unittest.skipUnless(sys.platform == "win32", "Windows refuses to move a folder with an open file")
+    def test_bridge_held_open_explains_in_korean_and_keeps_files(self):
+        with tempfile.TemporaryDirectory() as temp:
+            node, known = self.upgrade_fixture(temp)
+            state = Path(temp) / "state"
+            with patch.object(installer.json, "loads", return_value={"old": known}), \
+                    (node / "personal.txt").open("rb"):
+                with self.assertRaisesRegex(RuntimeError, "ComfyUI를 종료") as caught:
+                    installer._update_bridge(node, state)
+            self.assertIn("WinError", str(caught.exception))
+            self.assertEqual((node / "nodes.py").read_text(), "# old known bridge")
+            self.assertEqual(list((state / "backups").iterdir()), [])
 
 
 if __name__ == "__main__":

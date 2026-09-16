@@ -1,5 +1,12 @@
 # Changes
 
+## yue2-v0.1.0-rc12
+
+- A folder held open by another program stops the ABC Studio or bridge swap with a Korean message: close ComfyUI and any Explorer, terminal or editor window in that folder, then rerun. Before this, Windows surfaced a raw `PermissionError: [WinError 5]`. The existing folder was intact then and still is.
+- Refuse to start while this ComfyUI's `main.py` is running, before any download, hash check or file change. Detection uses the process path, not a port, so a different ComfyUI on the same PC is left alone. It is skipped when psutil is unavailable.
+- Swap ABC Studio at the start of installation instead of after the 7.8GB weight check, so a locked folder fails within seconds.
+- START-HERE, the workflow note and the README now say to close ComfyUI before running the installer, not only after `INSTALLED`.
+
 ## yue2-v0.1.0-rc11
 
 - Say what the installer is doing during the two stretches that printed nothing. After the folder pickers it printed one line and then imported ComfyUI's Torch, which reads a multi-gigabyte install and can take over a minute on a cold cache, so the window looked frozen. Recording the installed package list was silent for the same reason, and a source archive was only named after it finished downloading.
