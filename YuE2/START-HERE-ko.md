@@ -4,7 +4,7 @@
 
 ## 다운로드와 설치
 
-1. **[2BZ-YuE2-installer-v0.1.0-rc12.zip 다운로드](https://github.com/nicekriss/2BZ-ComfyUI-Workflows/releases/download/yue2-v0.1.0-rc12/2BZ-YuE2-installer-v0.1.0-rc12.zip)**를 받아 압축을 풉니다. `Source code (zip)`이나 BAT 파일 하나만 받지 마세요.
+1. **[설치 ZIP 다운로드 (항상 최신)](https://github.com/nicekriss/2BZ-ComfyUI-Workflows/releases/latest/download/2BZ-YuE2-installer.zip)**를 받아 압축을 풉니다. `Source code (zip)`이나 BAT 파일 하나만 받지 마세요.
 2. **ComfyUI를 종료하세요.** Desktop 앱도 완전히 닫습니다. `custom_nodes` 폴더를 열어 둔 탐색기·명령 프롬프트·편집기도 닫아 두세요. 켜 둔 채 설치하면 기존 노드 폴더를 교체하지 못해 설치가 중단됩니다.
 3. **Install-YuE2.bat**을 더블클릭합니다.
 4. **ComfyUI 폴더**를 선택합니다. `main.py`와 `custom_nodes`가 있는 폴더입니다. 포터블은 그 위 폴더도 가능합니다. Desktop 앱의 EXE 설치 폴더가 아니라 실제 ComfyUI 인스턴스 폴더를 선택하세요.
