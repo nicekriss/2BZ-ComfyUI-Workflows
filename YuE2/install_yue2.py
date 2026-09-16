@@ -202,6 +202,7 @@ def download_file(url, target, sha256):
         print(f"Discarding damaged archive and fetching again: {target}", flush=True)
         target.unlink()
     target.parent.mkdir(parents=True, exist_ok=True)
+    print(f"Downloading: {target.name}", flush=True)
     with urllib.request.urlopen(url, timeout=120) as response, target.open("wb") as output:
         while block := response.read(4 * 1024 * 1024):
             output.write(block)
@@ -216,6 +217,10 @@ def download_file(url, target, sha256):
 
 
 def environment():
+    # Importing Torch reads a multi-gigabyte install and can sit for a
+    # minute or more on a cold cache, with nothing else printing. Say so
+    # first, or the window looks frozen right after the folder pickers.
+    print("ComfyUI의 Torch를 확인하는 중입니다. 처음 한 번은 1분 넘게 걸릴 수 있습니다.", flush=True)
     import torch
     if sys.platform != "win32" or not (3, 10) <= sys.version_info[:2] <= (3, 13):
         raise RuntimeError("This installer supports Windows Python 3.10-3.13.")
@@ -482,6 +487,7 @@ def main():
 
     audit = state / "audits" / datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S.%fZ")
     audit.mkdir(parents=True)
+    print("설치 전 패키지 목록을 기록하는 중입니다.", flush=True)
     before = package_state()
     (audit / "environment-before.json").write_text(json.dumps(before, indent=2), encoding="utf-8")
     allowed_additions = set()
