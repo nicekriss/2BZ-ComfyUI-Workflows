@@ -12,6 +12,9 @@ from pathlib import Path
 import zipfile
 
 BASE = Path(__file__).resolve().parent
+
+# The permanent download link depends on this exact asset name.
+STABLE_NAME = "2BZ-YuE2-installer.zip"
 PACKAGE = BASE / "YuE2"
 SKIP_DIRS = {"__pycache__"}
 REQUIRED = [
@@ -86,8 +89,18 @@ def build(output):
             info.external_attr = 0o644 << 16
             archive.writestr(info, path.read_bytes())
     data = output.read_bytes()
+    digest = hashlib.sha256(data).hexdigest()
     print(f"{output.name}  {len(data):,} bytes  {count} files")
-    print("sha256", hashlib.sha256(data).hexdigest())
+    print("sha256", digest)
+    # Every release must also carry STABLE_NAME. The download link handed to
+    # viewers is /releases/latest/download/<STABLE_NAME>, and it resolves only
+    # while an asset of exactly that name sits on the newest release.
+    for name in sorted({output.name, STABLE_NAME}):
+        copy = output.parent / name
+        copy.write_bytes(data)
+        line = digest + "  " + name + chr(13) + chr(10)
+        copy.with_name(name + ".sha256").write_bytes(line.encode())
+    print("upload:", ", ".join(sorted({output.name, STABLE_NAME})))
     return output
 
 
