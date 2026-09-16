@@ -1,5 +1,6 @@
 import json
 import hashlib
+import sys
 import tempfile
 import unittest
 import zipfile
@@ -66,6 +67,17 @@ class ABCUpdateTests(unittest.TestCase):
             with self.assertRaisesRegex(OSError, 'locked'):
                 installer._install_abc(self.dest, self.state, self.manifest)
         self.assertEqual(installer._abc_status(self.dest), 'upgrade')
+
+    @unittest.skipUnless(sys.platform == 'win32', 'Windows refuses to move a folder with an open file')
+    def test_folder_held_open_explains_in_korean_and_keeps_old_version(self):
+        self.write_old()
+        with (self.dest / 'abc_studio_node/test.py').open('rb'):
+            with self.assertRaisesRegex(RuntimeError, 'ComfyUI를 종료') as caught:
+                installer._install_abc(self.dest, self.state, self.manifest)
+        self.assertIn('WinError', str(caught.exception))
+        self.assertEqual(installer._abc_status(self.dest), 'upgrade')
+        self.assertEqual(list((self.state / 'backups').iterdir()), [])
+        self.assertEqual([p.name for p in self.state.iterdir() if p.name.startswith('abc-update-')], [])
 
     def test_modified_and_git_old_installations_are_not_overwritten(self):
         self.write_old()

@@ -1,4 +1,4 @@
-# Validation · yue2-v0.1.0-rc11
+# Validation · yue2-v0.1.0-rc12
 
 ## rc11 silent stretches and non-Korean consoles (2026-09-16)
 
@@ -11,6 +11,20 @@
 - No functional change to installation itself. Existing runtimes, model weights and saved workflows remain reusable.
 
 
+
+## rc12 installing while ComfyUI or a folder is open (2026-09-14)
+
+A viewer reported that the installer worked only after they deleted the custom node folder themselves. Their error message was not available, so the cause below is what reproduces here, not a confirmed diagnosis of their machine.
+
+- Fixture: a separate clone of ComfyUI 0.35.1 on port 8199, using the `C:\comfy\ComfyUI` venv (Python 3.13, `--cpu`), with the official ABC Studio v0.4.2 tag archive plus the bundled bridge in `custom_nodes`. The installer classified that ABC copy as `upgrade`. `/object_info` listed `YuE2LocalGenerateWithABC`, and the ABC extension JS was served with HTTP 200 before the test. The live Desktop instance was not touched.
+- **ComfyUI running alone does not block the swap.** The real `_install_abc` upgraded v0.4.2 to v0.4.4 while that server was running with the node imported, and made a backup. Importing a node package does not leave file handles open in its folder.
+- **A handle inside the folder does.** With another process holding `__init__.py` open, or with its working directory inside `abc_studio_node`, `destination.rename(backup)` raised `PermissionError: [WinError 5] 액세스가 거부되었습니다`. Both times the folder stayed at v0.4.2, no backup was created and no staging folder was left, so a rerun after closing the holder is safe. In practice the holder might be an Explorer window, a terminal, an editor or antivirus software. Which one applied to the viewer is not known.
+- `_copy_node_package` never renames an existing folder: it prints `SKIP` and keeps the folder. Only `_install_abc` and `_update_bridge` move an installed folder. The bridge's generation subprocess inherits ComfyUI's working directory, not the node folder.
+- After the fix, the same two held-handle cases stop with the Korean "기존 폴더를 교체하지 못했습니다 … ComfyUI를 종료하고 …" message, with the original WinError appended. The folder is again left at v0.4.2.
+- The real `install_yue2.py` entrypoint, run against the running fixture root, refused before importing Torch: "ComfyUI가 실행 중이라 설치를 시작하지 않았습니다", listing both fixture PIDs (the venv launcher and its base interpreter). The state folder had the same entries before and after.
+- Process-path detection found the Desktop instance started as `ComfyUI\main.py` from `C:\comfy`. It did not attribute that instance to the fixture, and a root with no ComfyUI process returned nothing. A port check was rejected: this PC has another ComfyUI listening on 8188, so a port check would false-positive.
+- 44 installer tests pass with the ComfyUI venv, including real Windows open-handle tests for the ABC and bridge swaps and a real `main.py` process detection. Under a Python without psutil, which is what CI has, the live-process test is skipped and the other 43 pass.
+- Not verified: the viewer's actual error; a transcription job running during installation; a full end-to-end install through `Install-YuE2.bat` with model weights.
 
 ## rc10 RTX 50 field confirmation and key picker (2026-09-14)
 

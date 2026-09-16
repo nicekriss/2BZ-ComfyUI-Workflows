@@ -30,7 +30,7 @@ SOURCE_COMMIT = "92a73cc7652fcc1f937855e4b765e0a0edd7ff2e"
 SOURCE_ZIP_URL = f"https://codeload.github.com/multimodal-art-projection/YuE/zip/{SOURCE_COMMIT}"
 ABC_STUDIO_REF = "v0.4.4"
 ABC_STUDIO_ZIP_URL = f"https://codeload.github.com/nicekriss/toobusy-abc-studio/zip/refs/tags/{ABC_STUDIO_REF}"
-VERSION = "0.1.0-rc11"
+VERSION = "0.1.0-rc12"
 PROTECTED = {"torch", "torchvision", "torchaudio", "xformers", "triton", "triton-windows"}
 AUDITED = sorted(PROTECTED | {"transformers", "numpy"})
 # Reuse compatible shared packages. Conflicts are overlaid ONLY in the subprocess.
@@ -291,7 +291,10 @@ def _update_bridge(destination, state):
         shutil.copytree(destination, staged, symlinks=True, ignore=shutil.ignore_patterns("__pycache__"))
         for name in current:
             shutil.copy2(source / name, staged / name)
-        destination.rename(backup)
+        try:
+            destination.rename(backup)
+        except PermissionError as exc:
+            raise _folder_in_use(destination, exc) from exc
         try:
             staged.rename(destination)
         except BaseException:
@@ -303,6 +306,34 @@ def _update_bridge(destination, state):
 
 def _code_digest(path):
     return hashlib.sha256(path.read_bytes().replace(b"\r\n", b"\n")).hexdigest()
+
+
+def _folder_in_use(path, exc):
+    """Windows refuses to move a folder while any file or working directory inside it is open."""
+    return RuntimeError(
+        f"기존 폴더를 교체하지 못했습니다. 다른 프로그램이 이 폴더를 사용 중입니다: {path}\n"
+        "기존 폴더는 바뀌지 않았습니다. ComfyUI를 종료하고, 이 폴더를 열어 둔 탐색기·명령 프롬프트·편집기도 "
+        "닫은 뒤 Install-YuE2.bat을 다시 실행하세요.\n"
+        f"원래 오류: {exc}")
+
+
+def _running_comfyui(root):
+    """Processes running this ComfyUI's main.py. Empty when psutil is unavailable."""
+    try:
+        import psutil
+    except ImportError:
+        return []
+    target = os.path.normcase(os.path.realpath(root / "main.py"))
+    found = []
+    for proc in psutil.process_iter(["pid", "exe", "cmdline", "cwd"]):
+        info = proc.info
+        for arg in info.get("cmdline") or []:
+            if not arg.lower().endswith("main.py") or not (os.path.isabs(arg) or info.get("cwd")):
+                continue
+            if os.path.normcase(os.path.realpath(os.path.join(info.get("cwd") or "", arg))) == target:
+                found.append((info["pid"], info.get("exe") or ""))
+                break
+    return found
 
 
 def _install_model_weights(model_root, manifest):
@@ -389,7 +420,10 @@ def _install_abc(destination, state, manifest):
             backups = state / "backups"
             backups.mkdir(parents=True, exist_ok=True)
             backup = backups / ("toobusy-abc-studio-" + datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S.%fZ"))
-            destination.rename(backup)
+            try:
+                destination.rename(backup)
+            except PermissionError as exc:
+                raise _folder_in_use(destination, exc) from exc
         try:
             staged.rename(destination)
         except BaseException:
@@ -492,6 +526,12 @@ def main():
         return
 
     print(f"YuE2 Installer {VERSION}", flush=True)
+    running = _running_comfyui(root)
+    if running:
+        raise RuntimeError(
+            "ComfyUI가 실행 중이라 설치를 시작하지 않았습니다. 아무것도 변경하지 않았습니다.\n"
+            "ComfyUI(Desktop 앱 포함)를 완전히 종료한 뒤 Install-YuE2.bat을 다시 실행하세요.\n"
+            + "\n".join(f"실행 중: PID {pid} {exe}" for pid, exe in running))
     shared_site = environment()
     state = root / "user" / "2bz-yue2"
     state.mkdir(parents=True, exist_ok=True)
@@ -503,7 +543,8 @@ def main():
     (audit / "environment-before.json").write_text(json.dumps(before, indent=2), encoding="utf-8")
     allowed_additions = set()
     try:
-        _abc_status(abc_destination)
+        # Swap ABC Studio first: a folder held open fails in seconds, not after hashing 7.8GB of weights.
+        _install_abc(abc_destination, state, manifest)
         if yue2_destination.exists():
             config = json.loads((yue2_destination / "setup.json").read_text(encoding="utf-8"))
             _update_bridge(yue2_destination, state)
@@ -529,7 +570,6 @@ def main():
         _install_model_weights(config, manifest)
         smoke_runtime(config["runtime"], shared_site, config)
 
-        _install_abc(abc_destination, state, manifest)
         _setup_sheetsage(abc_destination, root, models)
 
         workflows = root / "user" / "default" / "workflows"
