@@ -15,6 +15,17 @@ import zipfile
 from datetime import datetime, timezone
 
 HERE = Path(__file__).resolve().parent
+
+# The Korean guidance has to survive a console that is not UTF-8. On an
+# English Windows the console encodes cp1252, which has no Hangul, and a
+# single Korean line raises UnicodeEncodeError and kills the install
+# rather than printing the advice it was trying to give. The launcher
+# passes -X utf8, but nothing guarantees the launcher is what ran us.
+for _stream in (sys.stdout, sys.stderr):
+    try:
+        _stream.reconfigure(encoding="utf-8", errors="replace")
+    except (AttributeError, OSError, ValueError):
+        pass
 SOURCE_COMMIT = "92a73cc7652fcc1f937855e4b765e0a0edd7ff2e"
 SOURCE_ZIP_URL = f"https://codeload.github.com/multimodal-art-projection/YuE/zip/{SOURCE_COMMIT}"
 ABC_STUDIO_REF = "v0.4.4"
