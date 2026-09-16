@@ -1,5 +1,10 @@
 # Changes
 
+## yue2-v0.1.0-rc11
+
+- Say what the installer is doing during the two stretches that printed nothing. After the folder pickers it printed one line and then imported ComfyUI's Torch, which reads a multi-gigabyte install and can take over a minute on a cold cache, so the window looked frozen. Recording the installed package list was silent for the same reason, and a source archive was only named after it finished downloading.
+- Force the installer's own output to UTF-8. On an English Windows the console encodes cp1252, which has no Hangul, so any Korean line raised UnicodeEncodeError and killed the install instead of printing the advice. The launcher passes -X utf8, but nothing guarantees the launcher is what ran it.
+
 ## yue2-v0.1.0-rc10
 
 - Pin ABC Studio v0.4.4, which adds a key picker to the editor. Major and minor keys plus "no key signature" can now be chosen directly; previously a key only arrived from an opened file or a transcription. Choosing a key changes the key signature alone, never the pitches, and the piano roll dims rows outside the chosen key.
