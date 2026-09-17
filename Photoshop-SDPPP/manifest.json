@@ -1,6 +1,6 @@
 {
   "release": "0.1.0-dev",
-  "name": "2BZ Photoshop AI (SD-PPP)",
+  "name": "베짱이 Photoshop AI",
   "verified": {
     "note": "RTX 3090 24GB + Photoshop 2026 + ComfyUI v0.35.1(Comfy Desktop)에서만 확인. 8GB는 미검증.",
     "photoshop_min": "25.0.0"
@@ -71,7 +71,7 @@
     "id": "sd-ppp2",
     "version": "2.0.0",
     "sha256": "5C6B83F6B09772795763640C976D1DDDD1FEB78B1B975F3BACE03A0533C83A84",
-    "license": "BSD-3-Clause (zombieyang/sd-ppp)",
+    "license": "BSD-3-Clause (plugin/LICENSE-sd-ppp.txt)",
     "focus_patch": {
       "target": "sdppp/photoshop.html",
       "before_sha256": "C6663525B5BB26EF6343EC27B160F8BC7D06FA872559FBCFE8F15709713FD226",
