@@ -25,6 +25,16 @@ ZIP 압축을 풀고 ComfyUI를 종료한 뒤 `YuE2/Install-YuE2.bat`을 실행�
 - OOM 때만 [선택적 메모리 보완](FastH3-USDU/MEMORY-ko.md). 기본 그래프는 추가 KJNodes 없이 유지합니다.
 - 상세 설치법: [FastH3-USDU/README.md](FastH3-USDU/README.md)
 
+## Photoshop AI (SD-PPP)
+
+포토샵에서 그린 선화를 ComfyUI로 채색하고 결과를 포토샵 레이어로 되돌려받습니다. 설치 도우미가 노드·모델·플러그인·워크플로우를 한 번에 잡아줍니다.
+
+[처음 시작하기](Photoshop-SDPPP/START-HERE-ko.md) · [상세 설명](Photoshop-SDPPP/README.md)
+
+- 선화 구조 유지 강도 조절, t2i / i2i 전환, 붓터치 LoRA 켜고 끄기
+- 플러그인 입력창 포커스 문제 자동 패치 (해시 일치 시에만, 복원 가능)
+- 확인한 환경: Windows 11 + RTX 3090 + Photoshop 2026. 8GB 환경은 미검증
+
 ## 주의
 
 이 저장소는 워크플로우와 설치 보조 스크립트만 제공합니다. 모델, ComfyUI, 타사 커스텀 노드와 CUDA 커널은 포함하거나 재배포하지 않습니다. 각 파일은 안내된 원본 배포처에서 직접 받습니다.

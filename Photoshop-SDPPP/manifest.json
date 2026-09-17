@@ -1,0 +1,83 @@
+{
+  "release": "0.1.0-dev",
+  "name": "베짱이 Photoshop AI",
+  "verified": {
+    "note": "RTX 3090 24GB + Photoshop 2026 + ComfyUI v0.35.1(Comfy Desktop)에서만 확인. 8GB는 미검증.",
+    "photoshop_min": "25.0.0"
+  },
+  "custom_nodes": [
+    {
+      "id": "sd-ppp",
+      "folder": "sd-ppp",
+      "repo": "zombieyang/sd-ppp",
+      "commit": "d965457928994ea2d0595fe56890ecc5bb60f42e",
+      "license": "BSD-3-Clause",
+      "requirements": false,
+      "provides": [
+        "(Photoshop 연결)"
+      ]
+    },
+    {
+      "id": "kjnodes",
+      "folder": "comfyui-kjnodes",
+      "repo": "kijai/ComfyUI-KJNodes",
+      "commit": "1289b52fbb6d64a339a4047b9ea74cf7758ccf1e",
+      "license": "GPL-3.0",
+      "requirements": true,
+      "provides": [
+        "CheckpointLoaderKJ",
+        "FloatConstant",
+        "LazySwitchKJ"
+      ]
+    }
+  ],
+  "models": [
+    {
+      "id": "zeniji-kwebtoon",
+      "role": "체크포인트",
+      "folder": "checkpoints/illustrious",
+      "file": "zenijiMixKWebtoon_v10.safetensors",
+      "url": "https://civitai.com/api/download/models/2300068?fileId=2191066",
+      "size": 7272682396,
+      "sha256": "C30137FCAA292A1C721C026D1E42F882F92A09F5178586849255E4C2D3D92AC8",
+      "source": "https://civitai.com/models/2032303"
+    },
+    {
+      "id": "anytest4-il2-b",
+      "role": "ControlNet (선화 구조 유지)",
+      "folder": "controlnet/test_controlnet2",
+      "file": "CN-anytest4_illustrious2_B.safetensors",
+      "url": "https://huggingface.co/2vXpSwA7/iroiro-lora/resolve/main/test_controlnet2/CN-anytest4_illustrious2_B.safetensors",
+      "size": 2502139968,
+      "sha256": "FD5781276E8A0D213BCF2EE6EDF7FEFEB68BE5C58219A3D0BFB7B8E88BF33A40",
+      "source": "https://huggingface.co/2vXpSwA7/iroiro-lora"
+    },
+    {
+      "id": "painterly-il",
+      "role": "붓터치 LoRA (C안)",
+      "folder": "loras/IL",
+      "file": "illustrious_style_painterly_v1.1.safetensors",
+      "url": "https://civitai.com/api/download/models/1676714?fileId=1577627",
+      "size": 202928908,
+      "sha256": "4DE235617DB610BE4484A438D5883D43F77991F6AC9AD2B31D415E1C8C17378F",
+      "source": "https://civitai.com/models/1478417"
+    }
+  ],
+  "workflow_name_map": {
+    "test_controlnet2\\CN-anytest4_illustrious2_B_fp16.safetensors": "test_controlnet2\\CN-anytest4_illustrious2_B.safetensors"
+  },
+  "plugin": {
+    "file": "sd-ppp/static/sd-ppp2_PS.ccx",
+    "id": "sd-ppp2",
+    "version": "2.0.0",
+    "sha256": "5C6B83F6B09772795763640C976D1DDDD1FEB78B1B975F3BACE03A0533C83A84",
+    "license": "BSD-3-Clause (plugin/LICENSE-sd-ppp.txt)",
+    "focus_patch": {
+      "target": "sdppp/photoshop.html",
+      "before_sha256": "C6663525B5BB26EF6343EC27B160F8BC7D06FA872559FBCFE8F15709713FD226",
+      "after_sha256": "5C532E8E331A8D9E6C15394EAC29A5AB6420A2F80677D494EB8D7F76EDFEC5E5",
+      "remove": "runNextModalState(async()=>{const _0x4aeb85=_0x3260;photoshop[_0x4aeb85(0x23bc)][_0x4aeb85(0x1164)]();},{'commandName':_0x2a91b6(0x1f93),'document':null,'suspendHistory':!0x1,'dontRecoverSelection':!0x0})[_0x2a91b6(0x95d)](_0x3b3a1a=>{const _0x242c3c=_0x2a91b6;log(_0x242c3c(0x37a),_0x3b3a1a);}),"
+    },
+    "source": "설치되는 sd-ppp 노드에 포함된 파일 (재배포하지 않음)"
+  }
+}
