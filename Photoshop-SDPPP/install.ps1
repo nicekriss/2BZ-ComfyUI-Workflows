@@ -203,16 +203,57 @@ while (-not $SkipRunningCheck) {
     if (-not (Ask '닫았으면 계속할까요? (아니오를 누르면 중단)')) { exit 0 }
 }
 
-function Get-File($url, $dest, $expectedSize) {
+function Get-File($url, $dest, $expectedSize, $header) {
     # curl.exe 이어받기(-C -). 실패하면 한 번 더 시도.
     $part = "$dest.part"
+    $curlArgs = @('-L', '--fail', '--retry', '3', '--retry-delay', '3', '-C', '-', '-o', $part)
+    if ($header) { $curlArgs += @('-H', $header) }
+    $ok = $false
     for ($try = 1; $try -le 2; $try++) {
-        & curl.exe -L --fail --retry 3 --retry-delay 3 -C - -o $part $url
-        if ($LASTEXITCODE -eq 0 -and (-not $expectedSize -or (Get-Item $part).Length -eq $expectedSize)) { break }
-        if ($LASTEXITCODE -eq 33 -and (Test-Path $part)) { Remove-Item $part -Force }  # 서버가 이어받기 미지원
+        & curl.exe @curlArgs $url
+        $code = $LASTEXITCODE
+        if ($code -eq 0 -and (Test-Path $part) -and (-not $expectedSize -or (Get-Item $part).Length -eq $expectedSize)) { $ok = $true; break }
+        if ($code -eq 33 -and (Test-Path $part)) { Remove-Item $part -Force }  # 서버가 이어받기 미지원
+        if ($code -eq 22) { break }  # 401/403/404 같은 HTTP 오류는 다시 시도해도 같다
     }
-    if (-not (Test-Path $part)) { throw "다운로드 실패: $url" }
+    if (-not $ok) { throw "다운로드 실패(curl $code): $url" }
     return $part
+}
+
+# Civitai는 제작자 설정에 따라 로그인한 사용자만 받을 수 있다. 키를 받거나, 직접 받은 파일을 이어받는다.
+$script:CivitaiKey = $null
+function Get-ModelFile($m, $dest) {
+    $isCivitai = $m.url -match '^https://civitai\.com/'
+    while ($true) {
+        $header = if ($isCivitai -and $script:CivitaiKey) { "Authorization: Bearer $($script:CivitaiKey)" } else { $null }
+        try { return (Get-File $m.url $dest $m.size $header) }
+        catch { if (-not $isCivitai) { throw } }
+
+        Write-Host ''
+        Warn "$($m.file): Civitai에 로그인한 사용자만 받을 수 있는 모델입니다."
+        Info '  [1] Civitai API 키 입력 (추천) - 한 번 입력하면 나머지 모델도 자동으로 받습니다'
+        Info '  [2] 브라우저에서 직접 받기'
+        Info '  [3] 설치 중단'
+        $c = (Read-Host '  선택').Trim()
+        if ($c -eq '1') {
+            Info '  브라우저에서 Civitai 계정 설정을 엽니다. 로그인 후 맨 아래 API Keys에서 "Add API key"로 만든 키를 복사하세요.'
+            Start-Process 'https://civitai.com/user/account'
+            $k = (Read-Host '  API 키 붙여넣기 (저장하지 않습니다)').Trim()
+            if ($k) { $script:CivitaiKey = $k }
+        } elseif ($c -eq '2') {
+            Info "  모델 페이지를 엽니다. 로그인 후 '$($m.file)' 을 받아주세요."
+            Start-Process $m.source
+            Read-Host '  다운로드가 끝나면 Enter' | Out-Null
+            $downloads = try { (New-Object -ComObject Shell.Application).NameSpace('shell:Downloads').Self.Path } catch { Join-Path $env:USERPROFILE 'Downloads' }
+            $found = @($dest, (Join-Path $downloads $m.file)) | Where-Object { Test-Path $_ } | Select-Object -First 1
+            if (-not $found) { Warn "파일을 찾지 못했습니다. '$downloads' 또는 '$(Split-Path $dest)' 에 '$($m.file)' 이름으로 두고 다시 선택하세요."; continue }
+            if ($found -ne $dest) { Move-Item $found "$dest.part" -Force; return "$dest.part" }
+            return $dest
+        } else {
+            Info '설치를 중단했습니다. 다시 실행하면 받은 곳부터 이어갑니다.'
+            exit 1
+        }
+    }
 }
 
 # ─────────────────────────────────────────────
@@ -283,13 +324,14 @@ foreach ($m in $Manifest.models) {
         continue
     }
     Info "$($m.role) 받는 중: $($m.file)"
-    $part = Get-File $m.url $dest $m.size
+    $part = Get-ModelFile $m $dest
+    Info "$($m.file) 확인 중(해시)..."
     if ((Get-FileHash $part -Algorithm SHA256).Hash -ne $m.sha256) {
         Remove-Item $part -Force
         Fail "$($m.file): 해시 불일치로 삭제했습니다. 설치 도우미를 다시 실행하면 이 파일만 다시 받습니다."
         exit 1
     }
-    Move-Item $part $dest -Force
+    if ($part -ne $dest) { Move-Item $part $dest -Force }
     Ok "$($m.file)"
 }
 Save-State 'models' 'done'
