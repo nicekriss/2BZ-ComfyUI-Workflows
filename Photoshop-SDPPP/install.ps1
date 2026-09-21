@@ -133,8 +133,34 @@ if (-not $ModelsPath) {
             if ($m) { $ModelsPath = $m.Matches[0].Groups[1].Value.Trim() }
         }
     }
+    $KnownModelsPath = $ModelsPath   # ComfyUI가 이미 알고 있는 폴더
+
+    # SSD가 좁으면 다른 드라이브(HDD)에 둘 수 있게 물어본다. 점검 모드에서는 묻지 않는다.
+    if (-not $CheckOnly) {
+        $needAll = [math]::Round((($Manifest.models | Measure-Object -Property size -Sum).Sum) / 1GB, 1)
+        Info ''
+        Info "모델 파일(약 ${needAll}GB)을 어디에 저장할까요?"
+        $fixed = @(Get-CimInstance Win32_LogicalDisk -Filter 'DriveType=3' | Sort-Object DeviceID)
+        foreach ($d in $fixed) {
+            $mark = if ($ModelsPath.StartsWith($d.DeviceID, [StringComparison]::OrdinalIgnoreCase)) { ' ← 기본' } else { '' }
+            Info ("    {0}  여유 {1,6:N0}GB / 전체 {2,6:N0}GB{3}" -f $d.DeviceID, ($d.FreeSpace / 1GB), ($d.Size / 1GB), $mark)
+        }
+        Info "  그냥 Enter = 기본 위치 ($ModelsPath)"
+        Info '  다른 드라이브에 두려면 드라이브 문자만 입력 (예: D)'
+        $ans = (Read-Host '  선택').Trim().TrimEnd(':', '\')
+        if ($ans -match '^[a-zA-Z]$') {
+            if ($fixed.DeviceID -contains "$($ans.ToUpper()):") { $ModelsPath = "$($ans.ToUpper()):\AI_Models" }
+            else { Warn "$($ans.ToUpper()): 드라이브를 찾지 못해 기본 위치를 사용합니다." }
+        } elseif ($ans -match '^[a-zA-Z]:\\') {
+            $ModelsPath = $ans
+        }
+    }
+} else {
+    $KnownModelsPath = $null
 }
-Ok "모델 폴더: $ModelsPath"
+# ComfyUI가 모르는 폴더면 나중에 extra_model_paths.yaml로 등록해야 한다
+$RegisterModelsPath = ($ModelsPath -ne $KnownModelsPath) -and ($ModelsPath -ne (Join-Path $ComfyPath 'models'))
+Ok "모델 폴더: $ModelsPath$(if ($RegisterModelsPath) { '  (ComfyUI에 자동 등록합니다)' })"
 
 $needBytes = ($Manifest.models | ForEach-Object {
     $dest = Join-Path $ModelsPath (Join-Path $_.folder $_.file)
@@ -216,6 +242,33 @@ Save-State 'nodes' 'done'
 
 # ─────────────────────────────────────────────
 Step 4 '모델 준비'
+if ($RegisterModelsPath) {
+    # main.py 옆의 extra_model_paths.yaml은 ComfyUI가 시작할 때 자동으로 읽는다.
+    New-Item -ItemType Directory -Force $ModelsPath | Out-Null
+    $extra = Join-Path $ComfyPath 'extra_model_paths.yaml'
+    $existing = if (Test-Path $extra) { [IO.File]::ReadAllText($extra) } else { '' }
+    if ($existing -match [regex]::Escape($ModelsPath)) {
+        Ok "ComfyUI에 이미 등록된 폴더입니다: $ModelsPath"
+    } else {
+        $key = 'psai_models'
+        if ($existing -match "(?m)^$key\s*:") { $key = "psai_models_$(Get-Date -Format yyyyMMddHHmmss)" }
+        $block = @(
+            "$key`:",
+            "  base_path: '$ModelsPath'",
+            "  checkpoints: checkpoints/",
+            "  controlnet: controlnet/",
+            "  loras: loras/",
+            "  vae: vae/",
+            "  upscale_models: upscale_models/",
+            ''
+        ) -join "`n"
+        if ($existing -and -not $existing.EndsWith("`n")) { $existing += "`n" }
+        if ($existing) { Copy-Item $extra "$extra.bak-$(Get-Date -Format yyyyMMddHHmmss)" }
+        [IO.File]::WriteAllText($extra, $existing + $block, (New-Object System.Text.UTF8Encoding($false)))
+        Ok "ComfyUI에 모델 폴더 등록: $ModelsPath"
+    }
+    Save-State 'models_path' $ModelsPath
+}
 foreach ($m in $Manifest.models) {
     $dir = Join-Path $ModelsPath ($m.folder -replace '/', '\')
     $dest = Join-Path $dir $m.file
