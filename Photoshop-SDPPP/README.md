@@ -11,6 +11,7 @@
 | `manifest.json` | 설치할 노드 커밋·모델 URL·SHA256·패치 해시를 고정한 목록 |
 | `tools\patch-sdppp-focus.ps1` | SD-PPP 입력창 포커스 패치 (해시가 일치할 때만 적용, `-Restore`로 복원) |
 | `tools\build-pack.ps1` | 워크플로우를 배포용으로 정리·검사 (제작자용) |
+| `AI-그림-원리.html` | 초보자용 원리 설명 — 디퓨전·ControlNet·LoRA·denoise·seed를 슬라이더로 만져보는 페이지 (오프라인 동작) |
 | `workflows\2BZ_Photoshop_Sketch_Color.json` | 선화 채색 워크플로우 (t2i / i2i 전환, LoRA 강도 조절) |
 
 옵션: `install.ps1 -CheckOnly`(점검만), `-ComfyPath`, `-ModelsPath`.
