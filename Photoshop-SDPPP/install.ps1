@@ -406,3 +406,12 @@ Info '3. 워크플로우 선택 → 이미지 가져오기 → 실행'
 Info '4. 결과가 Photoshop 새 레이어로 들어오는지'
 Info '네 가지가 되면 사용 준비 완료입니다.'
 Save-State 'status' 'installed-needs-first-test'
+
+# AI 그림이 처음인 사람을 위한 원리 설명 (슬라이더로 직접 만져보는 페이지)
+$explainer = Join-Path $Root 'AI-그림-원리.html'
+if (Test-Path $explainer) {
+    Write-Host ''
+    Info 'AI 그림이 처음이라면: 같은 폴더의 "AI-그림-원리.html"에 원리를 그림으로 정리해 두었습니다.'
+    Info '패널의 구조 유지 강도, denoise, LoRA 강도가 무슨 일을 하는지 슬라이더로 직접 확인할 수 있습니다.'
+    if (Ask '지금 열어볼까요?') { Start-Process $explainer }
+}
