@@ -3,7 +3,8 @@
 param(
     [string]$ComfyPath,          # ComfyUI 폴더(main.py가 있는 곳)를 직접 지정
     [string]$ModelsPath,         # 모델 폴더를 직접 지정
-    [switch]$CheckOnly          # 점검만 하고 아무것도 바꾸지 않음
+    [switch]$CheckOnly,         # 점검만 하고 아무것도 바꾸지 않음
+    [switch]$SkipRunningCheck   # (시험용) ComfyUI/Photoshop 실행 중 검사를 건너뜀
 )
 $ErrorActionPreference = 'Stop'
 $Root = $PSScriptRoot
@@ -142,7 +143,7 @@ if (-not $ModelsPath) {
         Info "모델 파일(약 ${needAll}GB)을 어디에 저장할까요?"
         $fixed = @(Get-CimInstance Win32_LogicalDisk -Filter 'DriveType=3' | Sort-Object DeviceID)
         foreach ($d in $fixed) {
-            $mark = if ($ModelsPath.StartsWith($d.DeviceID, [StringComparison]::OrdinalIgnoreCase)) { ' ← 기본' } else { '' }
+            $mark = if ($ModelsPath.StartsWith($d.DeviceID, [StringComparison]::OrdinalIgnoreCase)) { '  (기본)' } else { '' }
             Info ("    {0}  여유 {1,6:N0}GB / 전체 {2,6:N0}GB{3}" -f $d.DeviceID, ($d.FreeSpace / 1GB), ($d.Size / 1GB), $mark)
         }
         Info "  그냥 Enter = 기본 위치 ($ModelsPath)"
@@ -189,7 +190,7 @@ $Temp = Join-Path $Root 'downloads'
 New-Item -ItemType Directory -Force $Temp | Out-Null
 
 # 실행 중이면 새 노드·플러그인이 반영되지 않는다. 강제로 끄지 않고 사용자가 닫게 한다.
-while ($true) {
+while (-not $SkipRunningCheck) {
     $busy = @()
     if (Get-Process 'ComfyUI' -ErrorAction SilentlyContinue) { $busy += 'ComfyUI' }
     foreach ($port in 8188, 8000) {
@@ -227,7 +228,9 @@ foreach ($n in $nodes) {
         continue
     }
     Info "$($n.folder) 받는 중..."
-    $zip = Get-File "https://github.com/$($n.repo)/archive/$($n.commit).zip" (Join-Path $Temp "$($n.id).zip") $null
+    $zip = Join-Path $Temp "$($n.id).zip"
+    $part = Get-File "https://github.com/$($n.repo)/archive/$($n.commit).zip" $zip $null
+    Move-Item $part $zip -Force   # Expand-Archive는 .zip 확장자만 받는다
     $ex = Join-Path $Temp "$($n.id)_x"
     if (Test-Path $ex) { Remove-Item $ex -Recurse -Force }
     Expand-Archive $zip $ex -Force
@@ -341,7 +344,7 @@ foreach ($port in 8188, 8000, 8189) {
 if (-not $base) {
     Warn 'ComfyUI 서버 응답이 없습니다(8188/8000/8189). ComfyUI 설정의 포트를 확인하세요.'
 } else {
-    Ok "ComfyUI 서버: $base  ← SD-PPP 패널에 이 주소를 입력하세요"
+    Ok "ComfyUI 서버: $base  (SD-PPP 패널에 이 주소를 입력하세요)"
     Set-Clipboard $base
     Info '  (주소를 클립보드에 복사했습니다)'
     $missing = @()

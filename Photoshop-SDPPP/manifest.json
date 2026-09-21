@@ -1,5 +1,5 @@
 {
-  "release": "0.1.0-dev",
+  "release": "0.1.2",
   "name": "베짱이 Photoshop AI",
   "verified": {
     "note": "RTX 3090 24GB + Photoshop 2026 + ComfyUI v0.35.1(Comfy Desktop)에서만 확인. 8GB는 미검증.",
