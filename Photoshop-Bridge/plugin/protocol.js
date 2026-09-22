@@ -1,5 +1,6 @@
 /* Pure data operations; also run under Node's test runner. */
 const {applyRecipe, migrateRecipe} = require("./model-settings.js");
+const {applyInpaint} = require("./inpaint.js");
 function padPixels(bytes, width, height, components, bounds, canvasWidth, canvasHeight) {
   if (bytes.length !== width * height * components) throw new Error("픽셀 길이가 맞지 않습니다.");
   if (![1, 3, 4].includes(components)) throw new Error("지원하지 않는 채널 수입니다.");
@@ -53,7 +54,7 @@ function makePrompt(template, settings, inputs) {
   if (settings.maskExpand !== undefined) g["62"].inputs.expand = settings.maskExpand;
   if (settings.maskBlur !== undefined) g["62"].inputs.blur_radius = settings.maskBlur;
   Object.assign(g["10"].inputs, {seed: settings.seed, steps: settings.steps, cfg: settings.cfg, denoise: settings.denoise});
-  return applyRecipe(g, migrateRecipe(settings, template));
+  return applyInpaint(applyRecipe(g, migrateRecipe(settings, template)), settings, inputs.main);
 }
 
 function resultNames(history) {

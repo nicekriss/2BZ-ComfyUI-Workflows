@@ -1,5 +1,6 @@
 const {capture, applyResult} = require("./photoshop.js");
 const {makePrompt, resultNames} = require("./protocol.js");
+const {selectionBounds} = require("./inpaint.js");
 const config = require("./config.json");
 const template = require("./pro-template.json");
 const manifest = require("./manifest.json");
@@ -178,6 +179,7 @@ async function syncInput(role) {
   }
   const {pixels, fileBytes, selection: ignoredMask, ...meta} = captured;
   inputState[role] = {...meta, ...info, selection, base};
+  if (captured.selection) inputState[role].selectionBounds = selectionBounds(captured.selection, captured.width, captured.height);
   inputState[role].syncedAt = Date.now();
   delete inputPreviews[role];
   $(role + "Info").textContent = captured.label + " · " + info.width + " × " + info.height + (selection ? " · 선택 영역 포함" : "") + " · 싱크 완료";

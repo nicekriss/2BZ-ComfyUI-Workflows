@@ -1,0 +1,79 @@
+{
+  "baseline-zeniji-native": {
+    "size": [
+      1024,
+      1024
+    ],
+    "outside_mask_plus_50px_max_difference": 0
+  },
+  "crop-full": {
+    "size": [
+      1024,
+      1024
+    ],
+    "outside_mask_plus_50px_max_difference": 0
+  },
+  "crop": {
+    "size": [
+      1024,
+      1024
+    ],
+    "outside_mask_plus_50px_max_difference": 0
+  },
+  "differential": {
+    "size": [
+      1024,
+      1024
+    ],
+    "outside_mask_plus_50px_max_difference": 0
+  },
+  "production-color": {
+    "size": [
+      1024,
+      1024
+    ],
+    "outside_mask_plus_50px_max_difference": 0
+  },
+  "production-final-zeniji-native": {
+    "size": [
+      1024,
+      1024
+    ],
+    "outside_mask_plus_50px_max_difference": 0
+  },
+  "production": {
+    "size": [
+      1024,
+      1024
+    ],
+    "outside_mask_plus_50px_max_difference": 0
+  },
+  "production-zeniji-low": {
+    "size": [
+      1024,
+      1024
+    ],
+    "outside_mask_plus_50px_max_difference": 0
+  },
+  "production-zeniji-native-color": {
+    "size": [
+      1024,
+      1024
+    ],
+    "outside_mask_plus_50px_max_difference": 0
+  },
+  "production-zeniji-native": {
+    "size": [
+      1024,
+      1024
+    ],
+    "outside_mask_plus_50px_max_difference": 0
+  },
+  "production-zeniji": {
+    "size": [
+      1024,
+      1024
+    ],
+    "outside_mask_plus_50px_max_difference": 0
+  }
+}
