@@ -58,6 +58,9 @@ input[type=checkbox] { width: 16px; height: 16px; min-width: 16px; min-height: 1
 .negativeCard .fieldLabel { color: #ffb7c0; }
 #negative { background: #53323b; border-color: #80545f; color: #ffe3e7; }
 .sectionCaption { color: #8696a9; font-size: 10px; font-weight: bold; margin-top: 12px; margin-bottom: 3px; }
+.settingsHeading { align-items: center; justify-content: space-between; margin-top: 10px; }
+.settingsHeading .sectionCaption { margin: 0; }
+.settingsHeading .action { flex: 0 0 auto; }
 .fold { display: flex; align-items: center; width: 100%; color: #cad5e1; padding: 0 9px; height: 31px; min-height: 31px; margin-top: 5px; background: #2b333e; border: 1px solid #394451; border-radius: 5px; cursor: pointer; }
 .fold:hover { background: #354352; }
 .fold.negativeFold { background: #3b2b32; color: #e3a6b1; border-color: #60424d; }

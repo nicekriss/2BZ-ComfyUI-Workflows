@@ -24,10 +24,10 @@
       <select id="workflow" aria-label="작업 종류"><option value="pro" selected>라인아트 채색 Pro · 전체 기능</option><option value="roundtrip">이미지 왕복 검사 · 생성 없음</option></select>
       <div id="mainInput" class="inputSlot"></div>
       <div class="promptCard positiveCard"><label class="fieldLabel" for="prompt">+ 파지티브 <span>그림에 담을 내용</span></label>
-      <textarea id="prompt" rows="3" placeholder="어떤 그림으로 완성할까요?"></textarea></div>
+      <textarea id="prompt" rows="3"></textarea></div>
       <div class="fold negativeFold" data-fold="negativePanel" role="button" tabindex="0">▸ 네거티브 · 제외할 내용</div>
       <div id="negativePanel" class="promptCard negativeCard hidden"><label class="fieldLabel" for="negative">− 네거티브 <span>그림에서 제외할 내용</span></label><textarea id="negative" rows="3"></textarea></div>
-      <div class="sectionCaption">생성 옵션</div>
+      <div class="row settingsHeading"><div class="sectionCaption">생성 옵션</div><div id="resetSettings" data-action class="quiet" title="프롬프트·생성 옵션·모델·LoRA를 기본값으로 복원">설정 초기화</div></div>
       <div class="fold" data-fold="modelsPanel" role="button" tabindex="0">▸ 모델 · LoRA</div>
       <div id="modelsPanel" class="foldBody hidden">
         <label class="fieldLabel" for="checkpointChoice">모델</label>
@@ -61,6 +61,7 @@
       <div class="fold" data-fold="retouch" role="button" tabindex="0">▸ 부분 수정</div>
       <div id="retouch" class="foldBody hidden">
         <div class="checkRow"><input type="checkbox" id="inpaint"><label for="inpaint">싱크한 선택 영역만 수정</label></div>
+        <p class="muted">켜면 라인아트가 꺼져요. 필요하면 다시 켤 수 있어요.</p>
         <label class="settingRow"><span>영역 확장 (px)</span><input type="number" id="maskExpand" value="8" min="-16384" max="16384" step="1"></label>
         <label class="settingRow"><span>가장자리 흐림</span><input type="number" id="maskBlur" value="6" min="0" max="100" step="0.1"></label>
         <p class="muted">영역을 선택한 뒤 입력을 다시 싱크하세요.</p>

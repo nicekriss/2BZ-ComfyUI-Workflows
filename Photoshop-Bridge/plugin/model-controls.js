@@ -139,6 +139,6 @@ function createModelControls({$, document, storage, template, actionControl, req
     renderPresets(String(presets.length - 1)); $("modelPresetName").value = "";
     changed(); status("모델·LoRA 조합을 저장했어요.");
   });
-  return {getRecipe, refresh, validate, updateButtons};
+  return {getRecipe, refresh, validate, updateButtons, reset: () => setRecipe(M.defaultRecipe(template))};
 }
 module.exports = {createModelControls};

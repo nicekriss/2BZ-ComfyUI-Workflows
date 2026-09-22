@@ -2,7 +2,7 @@
   "manifestVersion": 5,
   "id": "toobusy.photoshop.bridge",
   "name": "TooBusy AI",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "main": "index.html",
   "host": {
     "app": "PS",

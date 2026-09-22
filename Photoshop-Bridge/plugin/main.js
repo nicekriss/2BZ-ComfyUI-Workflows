@@ -1,6 +1,7 @@
 const {capture, applyResult} = require("./photoshop.js");
 const {makePrompt, resultNames} = require("./protocol.js");
 const {selectionBounds} = require("./inpaint.js");
+const inpaintSettings = require("./inpaint-settings.js");
 const config = require("./config.json");
 const template = require("./pro-template.json");
 const manifest = require("./manifest.json");
@@ -108,6 +109,7 @@ function updateButtons() {
   $("openResultViewer").disabled = false;
   $("viewerSync").disabled = busy || !connected;
   $("installUpdate").disabled = busy || !!pending;
+  $("resetSettings").disabled = busy || !!pending;
   $("exportLastWorkflow").disabled = busy || !localStorage.getItem("toobusy.lastPrompt");
   $("generate").disabled = busy || !connected || !inputState.main || !!pending;
   $("generate").textContent = pending ? "생성 중…" : ($("workflow").value === "roundtrip" ? "이미지 왕복 검사" : "이미지 생성");
@@ -146,7 +148,7 @@ async function operation(fn) {
   finally { busy = false; updateButtons(); }
 }
 function settings(includeUnusedModels = true) {
-  const s = {workflow: $("workflow").value, prompt: $("prompt").value, negative: $("negative").value};
+  const s = {workflow: $("workflow").value, prompt: $("prompt").value, negative: $("negative").value, inpaintLineartPolicy: inpaintSettings.POLICY};
   if (!["roundtrip", "pro"].includes(s.workflow)) throw new Error("작업 종류를 선택하세요.");
   for (const id of boolKeys) s[id] = $(id).checked;
   for (const id of numKeys) {
@@ -379,8 +381,11 @@ for (const [role, title] of [["main", "입력 이미지"], ["reference", "뎁스
 const modelControls = createModelControls({$, document, storage: localStorage, template, actionControl, request, address, operation, changed: () => { persist(); updateButtons(); }, status});
 $("prompt").value = template["2"].inputs.text;
 $("negative").value = template["3"].inputs.text;
+const generationDefaults = {workflow: "pro", prompt: template["2"].inputs.text, negative: template["3"].inputs.text};
+for (const id of boolKeys) generationDefaults[id] = $(id).checked;
+for (const id of numKeys) generationDefaults[id] = $(id).value;
 try {
-  const saved = JSON.parse(localStorage.getItem("toobusy.settings") || "null");
+  const saved = inpaintSettings.restore(JSON.parse(localStorage.getItem("toobusy.settings") || "null"));
   if (saved) for (const [id, value] of Object.entries(saved)) if ($(id)) { if (boolKeys.includes(id)) $(id).checked = value; else $(id).value = value; }
   pending = JSON.parse(localStorage.getItem("toobusy.pending") || "null");
   const savedResults = JSON.parse(localStorage.getItem("toobusy.results") || "[]");
@@ -396,6 +401,7 @@ for (const button of all("[data-fold]")) {
   button.onclick = () => { target.classList.toggle("hidden"); const closed = target.classList.contains("hidden"); button.textContent = (closed ? "▸ " : "▾ ") + button.textContent.slice(2); button.setAttribute("aria-expanded", String(!closed)); localStorage.setItem(key, closed ? "closed" : "open"); };
 }
 for (const element of all("input, textarea, select")) element.addEventListener("change", persist);
+for (const id of ["prompt", "negative"]) $(id).addEventListener("input", persist);
 $("server").addEventListener("change", () => { connected = false; $("connectionStatus").textContent = "주소 변경됨 · 다시 연결하세요."; $("connectionToggle").textContent = "연결 설정"; $("connectionToggle").classList.remove("connected"); updateButtons(); });
 for (const button of all("[data-tab]")) button.onclick = () => switchTab(button.getAttribute("data-tab"));
 for (const element of all("[data-tab], [data-fold]")) element.addEventListener("keydown", (event) => {
@@ -406,7 +412,17 @@ for (const element of all("[data-tab], [data-fold]")) element.addEventListener("
 });
 $("connectionToggle").onclick = () => { $("connectionPanel").classList.toggle("hidden"); $("connectionToggle").setAttribute("aria-expanded", String(!$("connectionPanel").classList.contains("hidden"))); };
 $("img2img").addEventListener("change", () => { $("denoise").value = $("img2img").checked ? "0.75" : "1"; persist(); });
-$("inpaint").addEventListener("change", () => { if ($("inpaint").checked) $("denoise").value = "0.75"; persist(); });
+inpaintSettings.bind({inpaint: $("inpaint"), lineart: $("lineart"), denoise: $("denoise"), persist, status});
+$("resetSettings").onclick = () => {
+  if (busy || pending) return;
+  for (const [id, value] of Object.entries(generationDefaults)) {
+    if (boolKeys.includes(id)) $(id).checked = value;
+    else $(id).value = value;
+  }
+  modelControls.reset();
+  persist(); updateButtons();
+  status("생성 설정을 기본값으로 돌렸어요.");
+};
 $("connect").onclick = () => operation(checkConnection);
 $("exportLastWorkflow").onclick = () => operation(() => exportWorkflow(null));
 for (const button of all("[data-export-result]")) button.onclick = () => operation(() => exportWorkflow(results[Number($("resultList").value)]));

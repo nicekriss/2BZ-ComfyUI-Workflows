@@ -29,7 +29,7 @@ ZIP 압축을 풀고 ComfyUI를 종료한 뒤 `YuE2/Install-YuE2.bat`을 실행�
 
 자체 제작 Photoshop 패널에서 이미지 싱크, 별도 결과 창, 모델 교체·LoRA 배합과 라인아트·뎁스·포즈 제어를 사용합니다. **기존 SD-PPP 제품도 계속 제공하며, 서로 별도 제품입니다.**
 
-**[Bridge 설치 ZIP · v0.2.3](https://github.com/nicekriss/2BZ-ComfyUI-Workflows/releases/tag/photoshop-bridge-v0.2.3)** · [설치 안내](Photoshop-Bridge/START-HERE-ko.md) · [기능과 검증 범위](Photoshop-Bridge/README.md)
+**[Bridge 설치 ZIP · v0.2.4](https://github.com/nicekriss/2BZ-ComfyUI-Workflows/releases/tag/photoshop-bridge-v0.2.4)** · [설치 안내](Photoshop-Bridge/START-HERE-ko.md) · [기능과 검증 범위](Photoshop-Bridge/README.md)
 
 Windows용 기존 ComfyUI에 필요한 노드·모델·플러그인을 추가하는 시험 배포입니다. 새 ComfyUI를 설치하지 않습니다. 의뢰인 PC의 전체 설치·최종 생성은 추가 검수 대상입니다.
 
