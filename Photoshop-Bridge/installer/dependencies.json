@@ -1,0 +1,83 @@
+{
+  "version": 1,
+  "models": [
+    {
+      "path": "checkpoints/illustrious/zenijiMixKWebtoon_v10.safetensors",
+      "url": "https://civitai.com/api/download/models/2300068?fileId=2191066",
+      "sha256": "c30137fcaa292a1c721c026d1e42f882f92a09f5178586849255e4c2d3d92ac8",
+      "size": 7272682396,
+      "source": "https://civitai.com/model-versions/2300068"
+    },
+    {
+      "path": "loras/IL/illustrious_style_painterly_v1.1.safetensors",
+      "url": "https://civitai.com/api/download/models/1676714?fileId=1577627",
+      "sha256": "4de235617db610be4484a438d5883d43f77991f6ac9ad2b31d415e1c8c17378f",
+      "size": 202928908,
+      "source": "https://civitai.com/model-versions/1676714"
+    },
+    {
+      "path": "controlnet/test_controlnet2/CN-anytest4_illustrious2_B_fp16.safetensors",
+      "url": "https://huggingface.co/2vXpSwA7/iroiro-lora/resolve/e4fca51111b6420ab7652fb8b28b66622a88f295/test_controlnet2/CN-anytest4_illustrious2_B.safetensors",
+      "sha256": "fd5781276e8a0d213bcf2ee6edf7fefeb68be5c58219a3d0bfb7b8e88bf33a40",
+      "size": 2502139968,
+      "source": "https://huggingface.co/2vXpSwA7/iroiro-lora",
+      "convert_fp16": true,
+      "installed_sha256": "18ecee526c5a9f9bfabf71ed036f6dd7006c66014b92bf8ccf06869db3deceed",
+      "accepted_installed_sha256": [
+        "18ecee526c5a9f9bfabf71ed036f6dd7006c66014b92bf8ccf06869db3deceed",
+        "66c1ddc082a89b648340ac857af613c08e474f3a55d7bb8b29ccb899c486f4d6"
+      ]
+    },
+    {
+      "path": "controlnet/xinsir/controlnet-union-sdxl-promax.safetensors",
+      "url": "https://huggingface.co/xinsir/controlnet-union-sdxl-1.0/resolve/801a4a3fa3d4c936f4feea95b98607bc6726f80c/diffusion_pytorch_model_promax.safetensors",
+      "sha256": "9fae2e50cb431bfcbe05822b59ec2228df545ef27f711dea8949e9f4ed9f7cdc",
+      "size": 2513342408,
+      "source": "https://huggingface.co/xinsir/controlnet-union-sdxl-1.0"
+    },
+    {
+      "path": "geometry_estimation/depth_anything_3_mono_large.safetensors",
+      "url": "https://huggingface.co/Comfy-Org/Depth-Anything-3/resolve/248c0c2c1fca3cf3046db1d0d3d5256f2d078f41/geometry_estimation/depth_anything_3_mono_large.safetensors",
+      "sha256": "9b44eda5bedba5b4e125686fdb79d1db309c1b9785277576eb930f885b008f96",
+      "size": 1336748056,
+      "source": "https://huggingface.co/Comfy-Org/Depth-Anything-3"
+    },
+    {
+      "path": "checkpoints/sdpose_wholebody_fp16.safetensors",
+      "url": "https://huggingface.co/Comfy-Org/SDPose/resolve/f122ac7976997885e3bfeab2bb3a537a6bc250bc/checkpoints/sdpose_wholebody_fp16.safetensors",
+      "sha256": "63d01f9a7494560693b24767f4469d59c9d3266b31ff0a253e74d1e611442721",
+      "size": 1916645792,
+      "source": "https://huggingface.co/Comfy-Org/SDPose"
+    },
+    {
+      "path": "ipadapter/ip-adapter-plus_sdxl_vit-h.safetensors",
+      "url": "https://huggingface.co/h94/IP-Adapter/resolve/018e402774aeeddd60609b4ecdb7e298259dc729/sdxl_models/ip-adapter-plus_sdxl_vit-h.safetensors",
+      "sha256": "3f5062b8400c94b7159665b21ba5c62acdcd7682262743d7f2aefedef00e6581",
+      "size": 847517512,
+      "source": "https://huggingface.co/h94/IP-Adapter"
+    },
+    {
+      "path": "clip_vision/CLIP-ViT-H-14-laion2B-s32B-b79K.safetensors",
+      "url": "https://huggingface.co/h94/IP-Adapter/resolve/018e402774aeeddd60609b4ecdb7e298259dc729/models/image_encoder/model.safetensors",
+      "sha256": "6ca9667da1ca9e0b0f75e46bb030f7e011f44f86cbfb8d5a36590fcd7507b030",
+      "size": 2528373448,
+      "source": "https://huggingface.co/h94/IP-Adapter"
+    }
+  ],
+  "nodes": [
+    {
+      "name": "comfyui-kjnodes",
+      "url": "https://codeload.github.com/kijai/ComfyUI-KJNodes/zip/d3cfe21625e5170126ce06fbfcfe1d88108688c3",
+      "sha256": "cf4d48541219ecf8ef693b7fc25871eae9fbb6e417449871b39753bc087a6109",
+      "size": 1131840,
+      "commit": "d3cfe21625e5170126ce06fbfcfe1d88108688c3"
+    },
+    {
+      "name": "ComfyUI_IPAdapter_plus",
+      "url": "https://codeload.github.com/cubiq/ComfyUI_IPAdapter_plus/zip/a0f451a5113cf9becb0847b92884cb10cbdec0ef",
+      "sha256": "c6c49c82aa65cb96b93bdf9f9b547f9c95310a2668a7a9aaa0285cccf4590347",
+      "size": 306422,
+      "commit": "a0f451a5113cf9becb0847b92884cb10cbdec0ef"
+    }
+  ]
+}

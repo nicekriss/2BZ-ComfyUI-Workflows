@@ -25,11 +25,19 @@ ZIP 압축을 풀고 ComfyUI를 종료한 뒤 `YuE2/Install-YuE2.bat`을 실행�
 - OOM 때만 [선택적 메모리 보완](FastH3-USDU/MEMORY-ko.md). 기본 그래프는 추가 KJNodes 없이 유지합니다.
 - 상세 설치법: [FastH3-USDU/README.md](FastH3-USDU/README.md)
 
+## TooBusy AI Photoshop Bridge
+
+자체 제작 Photoshop 패널에서 이미지 싱크, 별도 결과 창, 모델 교체·LoRA 배합과 라인아트·뎁스·포즈 제어를 사용합니다. **기존 SD-PPP 제품도 계속 제공하며, 서로 별도 제품입니다.**
+
+**[Bridge 설치 ZIP · v0.2.0](https://github.com/nicekriss/2BZ-ComfyUI-Workflows/releases/tag/photoshop-bridge-v0.2.0)** · [설치 안내](Photoshop-Bridge/START-HERE-ko.md) · [기능과 검증 범위](Photoshop-Bridge/README.md)
+
+Windows용 기존 ComfyUI에 필요한 노드·모델·플러그인을 추가하는 시험 배포입니다. 새 ComfyUI를 설치하지 않습니다. 의뢰인 PC의 전체 설치·최종 생성은 추가 검수 대상입니다.
+
 ## Photoshop AI (SD-PPP)
 
 포토샵에서 그린 선화를 ComfyUI로 채색하고 결과를 포토샵 레이어로 되돌려받습니다. 설치 도우미가 노드·모델·플러그인·워크플로우를 한 번에 잡아줍니다.
 
-[처음 시작하기](Photoshop-SDPPP/START-HERE-ko.md) · [상세 설명](Photoshop-SDPPP/README.md)
+[SD-PPP 설치 ZIP · v0.1.4](https://github.com/nicekriss/2BZ-ComfyUI-Workflows/releases/tag/photoshop-sdppp-v0.1.4) · [처음 시작하기](Photoshop-SDPPP/START-HERE-ko.md) · [상세 설명](Photoshop-SDPPP/README.md)
 
 - 선화 구조 유지 강도 조절, t2i / i2i 전환, 붓터치 LoRA 켜고 끄기
 - 플러그인 입력창 포커스 문제 자동 패치 (해시 일치 시에만, 복원 가능)
@@ -37,7 +45,7 @@ ZIP 압축을 풀고 ComfyUI를 종료한 뒤 `YuE2/Install-YuE2.bat`을 실행�
 
 ## 주의
 
-이 저장소는 워크플로우와 설치 보조 스크립트만 제공합니다. 모델, ComfyUI, 타사 커스텀 노드와 CUDA 커널은 포함하거나 재배포하지 않습니다. 각 파일은 안내된 원본 배포처에서 직접 받습니다.
+이 저장소는 워크플로우, 설치 도우미와 자체 제작 Photoshop Bridge 플러그인을 제공합니다. 모델, ComfyUI, 타사 커스텀 노드와 CUDA 커널은 포함하거나 재배포하지 않습니다. 각 파일은 안내된 원본 배포처에서 직접 받습니다.
 
 ## 제작
 

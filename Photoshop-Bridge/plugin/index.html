@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head><meta charset="utf-8"><link rel="stylesheet" href="style.css"></head>
+<body>
+<div id="app">
+  <div class="topbar"><div class="identity"><span class="brand">TooBusy <span class="brandAccent">AI</span></span><span class="brandSub">CREATE WITH COMFYUI</span></div><div id="connectionToggle" data-action class="quiet" title="연결 설정" aria-expanded="false">연결 확인</div></div>
+  <div id="connectionPanel" class="connection hidden">
+    <div class="row"><input id="server" aria-label="ComfyUI 주소" value="http://127.0.0.1:8189"><div id="connect" data-action>연결</div></div>
+    <p id="connectionStatus" class="muted">이 PC의 ComfyUI 주소</p>
+    <div id="importConnection" data-action class="secondary">설치 연결 파일 열기</div>
+  </div>
+  <div class="tabs" role="tablist">
+    <div id="workTab" data-tab="work" class="tab active" role="tab" aria-selected="true" tabindex="0">작업</div>
+    <div id="resultsTab" data-tab="results" class="tab" role="tab" aria-selected="false" tabindex="0">결과</div>
+  </div>
+  <div class="viewerLaunch row"><div id="openInputViewer" data-action class="secondary">입력 창 열기</div><div id="openResultViewer" data-action class="secondary">결과 창 열기</div></div>
+  <div id="content">
+    <div id="workView" class="view">
+      <select id="workflow" aria-label="작업 종류"><option value="pro" selected>라인아트 채색 Pro · 전체 기능</option><option value="roundtrip">이미지 왕복 검사 · 생성 없음</option></select>
+      <div id="mainInput" class="inputSlot"></div>
+      <div class="promptCard positiveCard"><label class="fieldLabel" for="prompt">+ 파지티브 <span>그림에 담을 내용</span></label>
+      <textarea id="prompt" rows="3" placeholder="어떤 그림으로 완성할까요?"></textarea></div>
+      <div class="fold negativeFold" data-fold="negativePanel" role="button" tabindex="0">▸ 네거티브 · 제외할 내용</div>
+      <div id="negativePanel" class="promptCard negativeCard hidden"><label class="fieldLabel" for="negative">− 네거티브 <span>그림에서 제외할 내용</span></label><textarea id="negative" rows="3"></textarea></div>
+      <div class="sectionCaption">생성 옵션</div>
+      <div class="fold" data-fold="modelsPanel" role="button" tabindex="0">▸ 모델 · LoRA</div>
+      <div id="modelsPanel" class="foldBody hidden">
+        <label class="fieldLabel" for="checkpointChoice">모델</label>
+        <select id="checkpointChoice" aria-label="모델"></select>
+        <div class="modelTools"><span id="modelLibraryStatus" class="muted">설치된 모델 확인 전</span><div id="refreshModels" data-action class="secondary">새로고침</div></div>
+        <div class="modelSectionLabel">LoRA 배합 <span>위에서부터 적용 · 최대 8개</span></div>
+        <div id="loraRows"></div>
+        <div id="addLora" data-action class="secondary">+ LoRA 추가</div>
+        <p class="muted">체크를 끄거나 강도를 0으로 두면 적용하지 않아요. LoRA 트리거 단어는 파지티브에 직접 입력하세요.</p>
+        <div class="modelSectionLabel">내 조합</div>
+        <div class="row modelPresetRow"><select id="modelPreset" aria-label="저장된 모델 조합"></select><div id="loadModelPreset" data-action class="secondary">불러오기</div></div>
+        <div class="row modelPresetRow"><input id="modelPresetName" maxlength="40" placeholder="새 조합 이름" aria-label="새 조합 이름"><div id="saveModelPreset" data-action class="secondary">저장</div></div>
+        <div id="restoreModels" data-action class="secondary">기본 모델·LoRA 조합 복원</div>
+      </div>
+      <div class="fold" data-fold="basic" role="button" tabindex="0">▾ 라인아트 · 베이스 컬러</div>
+      <div id="basic" class="foldBody">
+        <div class="checkRow"><input type="checkbox" id="img2img"><label for="img2img">베이스 컬러 위에 덧그리기</label></div>
+        <div class="settingRow"><div class="checkRow"><input type="checkbox" id="lineart" checked><label for="lineart">라인아트 구조 유지</label></div><input aria-label="라인아트 강도" type="number" id="lineartStrength" value="0.85" min="0" max="2" step="0.05"></div>
+      </div>
+      <div class="fold" data-fold="structure" role="button" tabindex="0">▸ 뎁스 · 포즈</div>
+      <div id="structure" class="foldBody hidden">
+        <div id="referenceInput" class="inputSlot"></div>
+        <div class="settingRow"><div class="checkRow"><input type="checkbox" id="depth"><label for="depth">뎁스</label></div><input aria-label="뎁스 강도" type="number" id="depthStrength" value="0.6" min="0" max="2" step="0.05"></div>
+        <div class="settingRow"><div class="checkRow"><input type="checkbox" id="pose"><label for="pose">포즈</label></div><input aria-label="포즈 강도" type="number" id="poseStrength" value="0.8" min="0" max="2" step="0.05"></div>
+      </div>
+      <div class="fold" data-fold="styling" role="button" tabindex="0">▸ 스타일 참조</div>
+      <div id="styling" class="foldBody hidden">
+        <div id="styleInput" class="inputSlot"></div>
+        <div class="settingRow"><div class="checkRow"><input type="checkbox" id="style"><label for="style">스타일 사용</label></div><input aria-label="스타일 강도" type="number" id="styleStrength" value="0.6" min="0" max="2" step="0.05"></div>
+      </div>
+      <div class="fold" data-fold="retouch" role="button" tabindex="0">▸ 부분 수정</div>
+      <div id="retouch" class="foldBody hidden">
+        <div class="checkRow"><input type="checkbox" id="inpaint"><label for="inpaint">싱크한 선택 영역만 수정</label></div>
+        <label class="settingRow"><span>영역 확장 (px)</span><input type="number" id="maskExpand" value="8" min="-16384" max="16384" step="1"></label>
+        <label class="settingRow"><span>가장자리 흐림</span><input type="number" id="maskBlur" value="6" min="0" max="100" step="0.1"></label>
+        <p class="muted">영역을 선택한 뒤 입력을 다시 싱크하세요.</p>
+      </div>
+      <div class="fold" data-fold="advanced" role="button" tabindex="0">▸ 고급 설정</div>
+      <div id="advanced" class="foldBody hidden">
+        <label class="settingRow"><span>변형 강도</span><input type="number" id="denoise" value="1" min="0" max="1" step="0.05"></label>
+        <label class="settingRow"><span>단계</span><input type="number" id="steps" value="28" min="1" max="100" step="1"></label>
+        <label class="settingRow"><span>CFG</span><input type="number" id="cfg" value="5.5" min="0" max="30" step="0.5"></label>
+        <label class="settingRow"><span>시드</span><input type="number" id="seed" value="260910" min="0" max="4294967295" step="1"></label>
+      </div>
+    </div>
+    <div id="resultsView" class="view hidden">
+      <select id="resultList" aria-label="생성 결과"><option value="">아직 결과가 없습니다.</option></select>
+      <div class="previewFrame resultFrame"><p id="emptyResult" class="muted">생성한 이미지가 여기에 표시됩니다.</p><img id="preview" class="hidden" alt="선택한 생성 결과">
+        <span class="resultPosition" aria-live="polite">0 / 0</span>
+        <div data-action data-result-nav="previous" class="resultArrow previous" title="이전 결과" aria-label="이전 결과"><img src="icons/previous.svg" alt=""></div>
+        <div data-action data-result-nav="next" class="resultArrow next" title="다음 결과" aria-label="다음 결과"><img src="icons/next.svg" alt=""></div>
+        <div data-action data-result-nav="latest" class="resultLatest" title="가장 최근 생성한 결과 보기" aria-label="최신 결과 보기">최신 결과</div>
+      </div>
+      <p id="resultInfo" class="muted">결과를 확인한 뒤 적용하세요.</p>
+      <div class="applyToolbar" role="group" aria-label="결과 적용">
+        <div id="applyCanvas" data-action class="iconAction" title="캔버스에 넣기" aria-label="캔버스에 넣기"><img src="icons/canvas.svg" width="20" height="20" alt=""></div>
+        <div id="applyNew" data-action class="iconAction" title="새 이미지로 열기" aria-label="새 이미지로 열기"><img src="icons/new-image.svg" width="20" height="20" alt=""></div>
+        <div id="applySelection" data-action class="iconAction" title="선택 영역에 넣기" aria-label="선택 영역에 넣기"><img src="icons/selection.svg" width="20" height="20" alt=""></div>
+        <span class="applyHint">결과 적용</span>
+      </div>
+    </div>
+  </div>
+  <div class="footer">
+    <div id="generate" data-action class="primary">이미지 생성</div>
+    <div class="recovery"><div id="resume" data-action class="secondary hidden">결과 다시 확인</div><div id="stopWait" data-action class="secondary hidden">대기 중지</div><div id="forget" data-action class="secondary hidden">추적 종료</div></div>
+    <p id="status" role="status">입력을 싱크하면 생성할 수 있습니다.</p>
+  </div>
+</div>
+<div id="inputViewer" class="viewer hidden">
+  <div class="viewerHeading"><span class="brand">입력 미리보기</span><span class="muted">마지막 싱크 이미지</span></div>
+  <select id="inputViewerRole" aria-label="확인할 입력"><option value="main" selected>입력 이미지</option><option value="reference">뎁스 · 포즈 참조</option><option value="style">스타일 참조</option></select>
+  <div class="previewFrame"><p id="inputViewerEmpty" class="muted">먼저 이미지를 싱크하세요.</p><img id="inputViewerImage" class="hidden" alt="마지막으로 싱크한 이미지"></div>
+  <div id="inputViewerMeta" class="viewerMeta">아직 싱크한 이미지가 없습니다.</div>
+  <p class="muted viewerNote">캔버스를 수정해도 자동 갱신되지 않아요.<br>다시 싱크하면 이 창에도 반영됩니다.</p>
+  <div id="viewerSync" data-action class="primary">현재 소스로 다시 싱크</div>
+</div>
+<div id="resultViewer" class="viewer hidden">
+  <div class="viewerHeading"><span class="brand">결과 미리보기</span><span class="muted">이미지 확인 · 캔버스 적용</span></div>
+  <select id="viewerResultList" aria-label="생성 결과 선택"><option value="">아직 결과가 없습니다.</option></select>
+  <div class="previewFrame resultFrame"><p id="viewerEmptyResult" class="muted">생성한 이미지가 여기에 표시됩니다.</p><img id="viewerResultImage" class="hidden" alt="선택한 생성 결과">
+    <span class="resultPosition" aria-live="polite">0 / 0</span>
+    <div data-action data-result-nav="previous" class="resultArrow previous" title="이전 결과" aria-label="이전 결과"><img src="icons/previous.svg" alt=""></div>
+    <div data-action data-result-nav="next" class="resultArrow next" title="다음 결과" aria-label="다음 결과"><img src="icons/next.svg" alt=""></div>
+    <div data-action data-result-nav="latest" class="resultLatest" title="가장 최근 생성한 결과 보기" aria-label="최신 결과 보기">최신 결과</div>
+  </div>
+  <p id="viewerResultInfo" class="viewerMeta">결과를 확인한 뒤 적용하세요.</p>
+  <div class="applyToolbar" role="group" aria-label="결과 적용">
+    <div id="viewerApplyCanvas" data-action class="iconAction" title="캔버스에 넣기" aria-label="캔버스에 넣기"><img src="icons/canvas.svg" width="20" height="20" alt=""></div>
+    <div id="viewerApplyNew" data-action class="iconAction" title="새 이미지로 열기" aria-label="새 이미지로 열기"><img src="icons/new-image.svg" width="20" height="20" alt=""></div>
+    <div id="viewerApplySelection" data-action class="iconAction" title="선택 영역에 넣기" aria-label="선택 영역에 넣기"><img src="icons/selection.svg" width="20" height="20" alt=""></div>
+    <span class="applyHint">결과 적용</span>
+  </div>
+  <p id="viewerStatus" class="viewerStatus" role="status">결과를 기다리고 있어요.</p>
+</div>
+<script src="main.js"></script>
+</body>
+</html>
+

@@ -11,3 +11,7 @@ This repository does not redistribute the following third-party models or custom
 
 All trademarks, model weights, source code, and other third-party materials remain subject to their respective owners' terms and licenses.
 
+
+## TooBusy AI Photoshop Bridge installer
+
+The installer executable bundles Python, Tcl/Tk, requests, urllib3, certifi, charset-normalizer, idna, psutil and PyYAML using PyInstaller. The release ZIP includes their license notices in `licenses/`; the executable also embeds the collected notices. Model weights and third-party ComfyUI node packages are downloaded from upstream, not bundled. See `Photoshop-Bridge/installer/dependencies.json` for pinned sources and hashes. Photoshop, Creative Cloud and ComfyUI are separately installed products. This independently developed Bridge does not bundle SD-PPP.
