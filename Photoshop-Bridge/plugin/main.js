@@ -2,6 +2,10 @@ const {capture, applyResult} = require("./photoshop.js");
 const {makePrompt, resultNames} = require("./protocol.js");
 const config = require("./config.json");
 const template = require("./pro-template.json");
+const manifest = require("./manifest.json");
+const updater = require("./updater.js");
+const {executionGraph} = require("./workflow-export.js");
+let availableUpdate = null;
 const {connection, applyPaths} = require("./connection.js");
 try { const saved = localStorage.getItem("toobusy.connection"); if (saved) { const value = connection(JSON.parse(saved)); config.token = value.token; applyPaths(template,value); } } catch (_) { /* An invalid saved connection must be imported again. */ }
 const {base64, inputPreviewPath} = require("./preview.js");
@@ -102,6 +106,8 @@ function updateButtons() {
   $("openInputViewer").disabled = false;
   $("openResultViewer").disabled = false;
   $("viewerSync").disabled = busy || !connected;
+  $("installUpdate").disabled = busy || !!pending;
+  $("exportLastWorkflow").disabled = busy || !localStorage.getItem("toobusy.lastPrompt");
   $("generate").disabled = busy || !connected || !inputState.main || !!pending;
   $("generate").textContent = pending ? "생성 중…" : ($("workflow").value === "roundtrip" ? "이미지 왕복 검사" : "이미지 생성");
   $("resume").classList.toggle("hidden", !pending);
@@ -109,6 +115,7 @@ function updateButtons() {
   $("stopWait").classList.toggle("hidden", !pending || !busy);
   $("stopWait").disabled = !pending || !busy;
   const selected = results[Number($("resultList").value)];
+  for (const button of all("[data-export-result]")) button.disabled = busy || !selected;
   for (const id of ["applyNew", "applySelection", "viewerApplyNew", "viewerApplySelection"]) $(id).disabled = busy || !selected;
   for (const id of ["applyCanvas", "viewerApplyCanvas"]) $(id).disabled = busy || !selected || !selected.input.documentID;
   updateResultNavigation();
@@ -205,9 +212,10 @@ async function generate() {
     s.modelRecipe = modelControls.validate();
   }
   const graph = makePrompt(template, s, inputState);
+  localStorage.setItem("toobusy.lastPrompt", JSON.stringify(executionGraph(graph)));
   const clientId = "toobusy-" + Date.now() + "-" + Math.random().toString(16).slice(2);
   status("ComfyUI에 작업을 제출합니다…");
-  pending = {base, id: null, clientId, input: {...inputState.main}, label: s.workflow === "roundtrip" ? "왕복 검사" : "라인아트 채색", modelRecipe: s.workflow === "pro" ? s.modelRecipe : null, started: Date.now()};
+  pending = {base, id: null, clientId, graph, input: {...inputState.main}, label: s.workflow === "roundtrip" ? "왕복 검사" : "라인아트 채색", modelRecipe: s.workflow === "pro" ? s.modelRecipe : null, started: Date.now()};
   persistPending();
   try {
     const response = await (await request(base, "/prompt", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({prompt: graph, client_id: clientId})})).json();
@@ -327,10 +335,24 @@ async function showInputPreview() {
 }
 async function openViewer(id) {
   try {
-    const me = Array.from(pluginManager.plugins).find((plugin) => plugin.id === "toobusy.photoshop.bridge.dev");
+    const me = Array.from(pluginManager.plugins).find((plugin) => plugin.id === manifest.id);
     if (!me) throw new Error("플러그인을 찾지 못했습니다.");
     await me.showPanel(id);
   } catch (error) { status("창을 열지 못했어요. 포토샵 플러그인 메뉴에서 미리보기를 열어주세요.", true); console.error(error); }
+}
+async function exportWorkflow(item) {
+  let graph = item ? item.graph : JSON.parse(localStorage.getItem("toobusy.lastPrompt") || "null");
+  if (!graph && item && item.id) {
+    const history = await (await request(item.base, "/history/" + encodeURIComponent(item.id))).json();
+    const record = history[item.id];
+    graph = record && record.prompt && record.prompt[2];
+  }
+  if (!graph) throw new Error("이 결과의 실행 기록이 없습니다. 다시 생성한 결과부터 워크플로우를 저장할 수 있습니다.");
+  const {storage} = require("uxp");
+  const file = await storage.localFileSystem.getFileForSaving("TooBusy-execution-" + (item && item.started || Date.now()) + ".json", {types: ["json"]});
+  if (!file) { status("워크플로우 저장을 취소했습니다."); return; }
+  await file.write(JSON.stringify(executionGraph(graph), null, 2));
+  status("워크플로우 저장 완료 · 같은 ComfyUI의 새 탭에 JSON을 끌어 놓으세요. 싱크 이미지와 마스크는 해당 ComfyUI에 보관되어 있습니다.");
 }
 async function fetchPixels(item, width, height) {
   let path = "/toobusy/ps/v1/result?name=" + encodeURIComponent(item.name);
@@ -384,6 +406,44 @@ $("connectionToggle").onclick = () => { $("connectionPanel").classList.toggle("h
 $("img2img").addEventListener("change", () => { $("denoise").value = $("img2img").checked ? "0.75" : "1"; persist(); });
 $("inpaint").addEventListener("change", () => { if ($("inpaint").checked) $("denoise").value = "0.75"; persist(); });
 $("connect").onclick = () => operation(checkConnection);
+$("exportLastWorkflow").onclick = () => operation(() => exportWorkflow(null));
+for (const button of all("[data-export-result]")) button.onclick = () => operation(() => exportWorkflow(results[Number($("resultList").value)]));
+$("pluginVersion").textContent = "TooBusy AI · v" + manifest.version;
+$("checkUpdate").onclick = () => operation(async () => {
+  availableUpdate = null;
+  $("installUpdate").classList.add("hidden");
+  $("updatePage").classList.add("hidden");
+  $("updateStatus").textContent = "새 버전을 확인하고 있습니다…";
+  try {
+    availableUpdate = await updater.check(manifest.version);
+    if (!availableUpdate) { $("updateStatus").textContent = "현재 v" + manifest.version + " · 최신 버전입니다."; return; }
+    $("updateStatus").textContent = "v" + availableUpdate.version + " 업데이트가 있습니다. " + (availableUpdate.asset ? "Adobe 설치 화면에서 업데이트를 마치세요." : "이 버전은 배포 페이지에서 설치 파일을 받아주세요.");
+    $("installUpdate").textContent = "v" + availableUpdate.version + " 업데이트 받기";
+    $("installUpdate").classList.toggle("hidden", !availableUpdate.asset);
+    $("updatePage").classList.remove("hidden");
+  } catch (error) {
+    $("updateStatus").textContent = error.message;
+    $("updatePage").classList.remove("hidden");
+  }
+});
+$("installUpdate").onclick = () => operation(async () => {
+  if (pending) throw new Error("진행 중인 이미지 생성이 끝난 뒤 업데이트하세요.");
+  try {
+    $("updateStatus").textContent = "업데이트를 다운로드하고 검증하고 있습니다…";
+    const bytes = await updater.download(availableUpdate);
+    const {storage, shell} = require("uxp");
+    const folder = await storage.localFileSystem.getDataFolder();
+    const file = await folder.createFile("TooBusyAI-" + availableUpdate.version + ".ccx", {overwrite: true});
+    await file.write(bytes, {format: storage.formats.binary});
+    const error = await shell.openPath(file.nativePath, "TooBusy AI 업데이트를 Adobe 설치 화면에서 엽니다. 모델과 연결 설정은 유지됩니다.");
+    if (error) throw new Error("Adobe 설치 화면을 열지 못했습니다. 배포 페이지에서 CCX 파일을 받아 열어주세요.");
+    $("updateStatus").textContent = "Adobe 설치 화면을 열었습니다. 설치 후 플러그인을 다시 열어 버전을 확인하세요.";
+  } catch (error) { $("updateStatus").textContent = error.message; throw error; }
+});
+$("updatePage").onclick = () => operation(async () => {
+  const error = await require("uxp").shell.openExternal(availableUpdate ? availableUpdate.page : updater.RELEASES + "/tag/photoshop-bridge-v" + manifest.version, "TooBusy AI 공식 배포 페이지를 엽니다.");
+  if (error) throw new Error("배포 페이지를 열지 못했습니다. 인터넷 연결을 확인하세요.");
+});
 $("importConnection").onclick = () => operation(async () => {
   if (pending) throw new Error("진행 중인 결과 확인을 마친 뒤 연결을 바꾸세요.");
   const fs = require("uxp").storage.localFileSystem;

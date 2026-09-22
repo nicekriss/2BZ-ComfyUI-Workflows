@@ -8,6 +8,11 @@
     <div class="row"><input id="server" aria-label="ComfyUI 주소" value="http://127.0.0.1:8189"><div id="connect" data-action>연결</div></div>
     <p id="connectionStatus" class="muted">이 PC의 ComfyUI 주소</p>
     <div id="importConnection" data-action class="secondary">설치 연결 파일 열기</div>
+    <div id="exportLastWorkflow" data-action class="secondary">마지막 실행 워크플로우 저장</div>
+    <div class="row updateRow"><span id="pluginVersion" class="muted"></span><div id="checkUpdate" data-action class="secondary">업데이트 확인</div></div>
+    <p id="updateStatus" class="muted">모델과 연결 설정을 유지하며 플러그인을 업데이트합니다.</p>
+    <div id="installUpdate" data-action class="hidden">업데이트 받기</div>
+    <div id="updatePage" data-action class="quiet hidden">배포 페이지 열기</div>
   </div>
   <div class="tabs" role="tablist">
     <div id="workTab" data-tab="work" class="tab active" role="tab" aria-selected="true" tabindex="0">작업</div>
@@ -77,6 +82,7 @@
         <div data-action data-result-nav="latest" class="resultLatest" title="가장 최근 생성한 결과 보기" aria-label="최신 결과 보기">최신 결과</div>
       </div>
       <p id="resultInfo" class="muted">결과를 확인한 뒤 적용하세요.</p>
+      <div data-action data-export-result class="quiet">이 결과의 워크플로우 저장</div>
       <div class="applyToolbar" role="group" aria-label="결과 적용">
         <div id="applyCanvas" data-action class="iconAction" title="캔버스에 넣기" aria-label="캔버스에 넣기"><img src="icons/canvas.svg" width="20" height="20" alt=""></div>
         <div id="applyNew" data-action class="iconAction" title="새 이미지로 열기" aria-label="새 이미지로 열기"><img src="icons/new-image.svg" width="20" height="20" alt=""></div>
@@ -109,6 +115,7 @@
     <div data-action data-result-nav="latest" class="resultLatest" title="가장 최근 생성한 결과 보기" aria-label="최신 결과 보기">최신 결과</div>
   </div>
   <p id="viewerResultInfo" class="viewerMeta">결과를 확인한 뒤 적용하세요.</p>
+  <div data-action data-export-result class="quiet">이 결과의 워크플로우 저장</div>
   <div class="applyToolbar" role="group" aria-label="결과 적용">
     <div id="viewerApplyCanvas" data-action class="iconAction" title="캔버스에 넣기" aria-label="캔버스에 넣기"><img src="icons/canvas.svg" width="20" height="20" alt=""></div>
     <div id="viewerApplyNew" data-action class="iconAction" title="새 이미지로 열기" aria-label="새 이미지로 열기"><img src="icons/new-image.svg" width="20" height="20" alt=""></div>

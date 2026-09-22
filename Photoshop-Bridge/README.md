@@ -1,12 +1,12 @@
-# TooBusy AI Photoshop Bridge · 설치기 v0.2.1
+# TooBusy AI Photoshop Bridge · v0.2.2
 
 캔버스·파일·레이어를 입력으로 동기화하고 ComfyUI 생성 결과를 Photoshop에 적용하는 자체 제작 UXP 플러그인입니다.
 
-**[설치 ZIP 다운로드](https://github.com/nicekriss/2BZ-ComfyUI-Workflows/releases/tag/photoshop-bridge-v0.2.1)** → `2BZ-TooBusyAI-Photoshop-Bridge-v0.2.1.zip`을 받아 압축을 풀고 `TooBusyAI-Setup.exe`를 실행하세요. Windows용 기존 ComfyUI 환경에 필요한 구성을 추가합니다.
+**[설치 ZIP 다운로드](https://github.com/nicekriss/2BZ-ComfyUI-Workflows/releases/tag/photoshop-bridge-v0.2.2)** → `2BZ-TooBusyAI-Photoshop-Bridge-v0.2.2.zip`을 받아 압축을 풀고 `TooBusyAI-Setup.exe`를 실행하세요. Windows용 기존 ComfyUI 환경에 필요한 구성을 추가합니다.
 
 [설치 순서](START-HERE-ko.md) · [검증 범위](VALIDATION.md)
 
-설치기 0.2.1은 Civitai API 키 입력·인증 재시도·자동 이어받기를 지원합니다. 포함된 Photoshop 플러그인은 0.2.0입니다.
+0.2.2는 플러그인 안의 업데이트 확인과 실제 실행 워크플로우 저장을 지원합니다. 기존 사용자는 같은 릴리스의 CCX만 열어 업데이트하세요. 설치기는 Civitai API 키 인증과 이어받기를 지원합니다.
 
 ## 두 가지 Photoshop 연동 제품
 

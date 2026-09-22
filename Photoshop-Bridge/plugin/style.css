@@ -30,7 +30,11 @@ input[type=checkbox] { width: 16px; height: 16px; min-width: 16px; min-height: 1
 .row input, .row select { flex: 1; min-width: 0; width: 0; }
 .row .action { margin-left: 6px; }
 .syncAction { min-width: 54px; }
-.connection { flex-shrink: 0; padding: 0 12px 10px; }
+.connection { flex-shrink: 0; padding: 0 12px 10px; max-height: 40vh; overflow: auto; }
+.connection > .action { margin-top: 6px; }
+.updateRow { justify-content: space-between; margin-top: 9px; }
+.updateRow .muted { margin-top: 0; }
+[data-export-result] { margin-top: 6px; }
 .tabs { display: flex; flex-shrink: 0; padding: 0 12px 10px; }
 .tab { display: flex; align-items: center; justify-content: center; flex: 1; height: 32px; border: 1px solid #35414e; border-radius: 6px; background: #272e37; color: #9baabb; cursor: pointer; }
 .tab + .tab { margin-left: 5px; }

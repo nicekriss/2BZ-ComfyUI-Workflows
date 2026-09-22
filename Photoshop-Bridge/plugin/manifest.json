@@ -2,7 +2,7 @@
   "manifestVersion": 5,
   "id": "toobusy.photoshop.bridge",
   "name": "TooBusy AI",
-  "version": "0.2.0",
+  "version": "0.2.2",
   "main": "index.html",
   "host": {
     "app": "PS",
@@ -149,6 +149,14 @@
     },
     "network": {
       "domains": "all"
+    },
+    "launchProcess": {
+      "schemes": [
+        "https"
+      ],
+      "extensions": [
+        ".ccx"
+      ]
     }
   },
   "icons": [

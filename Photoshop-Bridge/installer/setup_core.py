@@ -327,4 +327,10 @@ class Engine:
         source=self.data/'TooBusyAI.ccx'
         if not source.is_file():raise SetupError('CCX 패키지가 포함되지 않았습니다.')
         target=self.state/'TooBusyAI.ccx';shutil.copy2(source,target)
+        workflows=self.data/'workflows'
+        if workflows.is_dir():
+            destination=self.state/'workflows';destination.mkdir(exist_ok=True)
+            for item in workflows.iterdir():
+                if item.is_file() and not (destination/item.name).exists():shutil.copy2(item,destination/item.name)
+            self.log('ComfyUI에서 열 수 있는 워크플로우: '+str(destination))
         return target

@@ -21,6 +21,16 @@ class InstallerTests(unittest.TestCase):
         self.root=self.base/'client Comfy';self.root.mkdir();(self.root/'main.py').touch();(self.root/'custom_nodes').mkdir()
         self.e=Engine(self.data,self.base/'state',lambda _:None)
     def tearDown(self):self.temp.cleanup()
+    def test_export_plugin_includes_workflow_without_overwriting_user_edits(self):
+        (self.data/'TooBusyAI.ccx').write_bytes(b'ccx')
+        workflows=self.data/'workflows';workflows.mkdir()
+        (workflows/'TooBusy.api.json').write_text('{}')
+        self.assertEqual(self.e.export_plugin().read_bytes(),b'ccx')
+        target=self.e.state/'workflows/TooBusy.api.json'
+        self.assertEqual(target.read_text(),'{}')
+        target.write_text('user edit')
+        self.e.export_plugin()
+        self.assertEqual(target.read_text(),'user edit')
     def test_path_boundary_and_endpoint(self):
         for path in ['../user-data','C:/Windows','/absolute','a/../../b']:
             with self.assertRaises(SetupError):inside(self.root,path)

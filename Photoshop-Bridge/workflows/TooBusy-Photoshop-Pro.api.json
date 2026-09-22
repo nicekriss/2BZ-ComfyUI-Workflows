@@ -1,0 +1,820 @@
+{
+  "1": {
+    "class_type": "CheckpointLoaderKJ",
+    "_meta": {
+      "title": "Illustrious · FP8 weights"
+    },
+    "inputs": {
+      "ckpt_name": "illustrious\\zenijiMixKWebtoon_v10.safetensors",
+      "weight_dtype": "fp8_e4m3fn",
+      "compute_dtype": "default",
+      "patch_cublaslinear": false,
+      "sage_attention": "disabled",
+      "enable_fp16_accumulation": false
+    }
+  },
+  "17": {
+    "class_type": "LoraLoader",
+    "_meta": {
+      "title": "# 붓터치 LoRA · 강도 0 = 끔"
+    },
+    "inputs": {
+      "model": [
+        "1",
+        0
+      ],
+      "clip": [
+        "1",
+        1
+      ],
+      "lora_name": "IL\\illustrious_style_painterly_v1.1.safetensors",
+      "strength_model": 0.55,
+      "strength_clip": 0.55
+    }
+  },
+  "2": {
+    "class_type": "CLIPTextEncode",
+    "_meta": {
+      "title": "# 프롬프트"
+    },
+    "inputs": {
+      "clip": [
+        "17",
+        1
+      ],
+      "text": "best quality, hand-drawn character illustration, solo, upper body portrait, simple background, clean outlines, soft painted shading"
+    }
+  },
+  "3": {
+    "class_type": "CLIPTextEncode",
+    "_meta": {
+      "title": "# 네거티브 프롬프트"
+    },
+    "inputs": {
+      "clip": [
+        "17",
+        1
+      ],
+      "text": "worst quality, low quality, lowres, blurry, jpeg artifacts, text, watermark, signature, extra arms, extra fingers, missing fingers, fused fingers, malformed hands, dislocated wrist, distorted face, crossed eyes, duplicate person, photorealistic, 3d render, oversaturated colors"
+    }
+  },
+  "4": {
+    "class_type": "LoadImage",
+    "_meta": {
+      "title": "# Photoshop 입력 (라인아트 / 색 밑칠 · 선택 영역 = 인페인팅 범위)"
+    },
+    "inputs": {
+      "image": "choose-input-image.png"
+    }
+  },
+  "25": {
+    "class_type": "GetImageSize",
+    "_meta": {
+      "title": "Photoshop 입력 픽셀 크기"
+    },
+    "inputs": {
+      "image": [
+        "4",
+        0
+      ]
+    }
+  },
+  "8": {
+    "class_type": "EmptyLatentImage",
+    "_meta": {
+      "title": "입력 크기 자동 · 빈 Latent"
+    },
+    "inputs": {
+      "width": [
+        "25",
+        0
+      ],
+      "height": [
+        "25",
+        1
+      ],
+      "batch_size": 1
+    }
+  },
+  "31": {
+    "class_type": "VAEEncode",
+    "_meta": {
+      "title": "캔버스 → Latent"
+    },
+    "inputs": {
+      "pixels": [
+        "4",
+        0
+      ],
+      "vae": [
+        "1",
+        2
+      ]
+    }
+  },
+  "32": {
+    "class_type": "LazySwitchKJ",
+    "_meta": {
+      "title": "# 생성 방식 · 끄면 t2i / 켜면 i2i"
+    },
+    "inputs": {
+      "switch": false,
+      "on_false": [
+        "8",
+        0
+      ],
+      "on_true": [
+        "31",
+        0
+      ]
+    }
+  },
+  "7": {
+    "class_type": "ControlNetLoader",
+    "_meta": {
+      "title": "라인아트 ControlNet (anytest v4)"
+    },
+    "inputs": {
+      "control_net_name": "test_controlnet2\\CN-anytest4_illustrious2_B_fp16.safetensors"
+    }
+  },
+  "9": {
+    "class_type": "ControlNetApplyAdvanced",
+    "_meta": {
+      "title": "# 라인아트 강도 (구조 유지)"
+    },
+    "inputs": {
+      "positive": [
+        "2",
+        0
+      ],
+      "negative": [
+        "3",
+        0
+      ],
+      "control_net": [
+        "7",
+        0
+      ],
+      "image": [
+        "4",
+        0
+      ],
+      "vae": [
+        "1",
+        2
+      ],
+      "strength": 0.85,
+      "start_percent": 0.0,
+      "end_percent": 0.8
+    }
+  },
+  "53": {
+    "class_type": "PrimitiveBoolean",
+    "_meta": {
+      "title": "# 라인아트 ControlNet 켜기"
+    },
+    "inputs": {
+      "value": false
+    }
+  },
+  "54": {
+    "class_type": "LazySwitchKJ",
+    "_meta": {
+      "title": "라인아트 · positive"
+    },
+    "inputs": {
+      "switch": [
+        "53",
+        0
+      ],
+      "on_false": [
+        "2",
+        0
+      ],
+      "on_true": [
+        "9",
+        0
+      ]
+    }
+  },
+  "55": {
+    "class_type": "LazySwitchKJ",
+    "_meta": {
+      "title": "라인아트 · negative"
+    },
+    "inputs": {
+      "switch": [
+        "53",
+        0
+      ],
+      "on_false": [
+        "3",
+        0
+      ],
+      "on_true": [
+        "9",
+        1
+      ]
+    }
+  },
+  "67": {
+    "class_type": "LoadImage",
+    "_meta": {
+      "title": "# 참조 사진 (뎁스·포즈용)"
+    },
+    "inputs": {
+      "image": "choose-input-image.png"
+    }
+  },
+  "35": {
+    "class_type": "ImageScale",
+    "_meta": {
+      "title": "참조 사진을 캔버스 크기에 맞춤"
+    },
+    "inputs": {
+      "image": [
+        "67",
+        0
+      ],
+      "upscale_method": "lanczos",
+      "width": [
+        "25",
+        0
+      ],
+      "height": [
+        "25",
+        1
+      ],
+      "crop": "center"
+    }
+  },
+  "40": {
+    "class_type": "ControlNetLoader",
+    "_meta": {
+      "title": "유니온 ControlNet (뎁스·포즈 공용)"
+    },
+    "inputs": {
+      "control_net_name": "xinsir\\controlnet-union-sdxl-promax.safetensors"
+    }
+  },
+  "36": {
+    "class_type": "PrimitiveBoolean",
+    "_meta": {
+      "title": "# 뎁스 ControlNet 켜기"
+    },
+    "inputs": {
+      "value": false
+    }
+  },
+  "37": {
+    "class_type": "LoadDA3Model",
+    "_meta": {
+      "title": "Depth Anything 3"
+    },
+    "inputs": {
+      "model_name": "depth_anything_3_mono_large.safetensors",
+      "weight_dtype": "default"
+    }
+  },
+  "38": {
+    "class_type": "DA3Inference",
+    "_meta": {
+      "title": "깊이 추출"
+    },
+    "inputs": {
+      "da3_model": [
+        "37",
+        0
+      ],
+      "image": [
+        "35",
+        0
+      ],
+      "resolution": 504,
+      "resize_method": "upper_bound_resize",
+      "mode": "mono"
+    }
+  },
+  "39": {
+    "class_type": "DA3Render",
+    "_meta": {
+      "title": "깊이 맵"
+    },
+    "inputs": {
+      "da3_geometry": [
+        "38",
+        0
+      ],
+      "output": "depth",
+      "output.normalization": "v2_style",
+      "output.apply_sky_clip": false
+    }
+  },
+  "41": {
+    "class_type": "SetUnionControlNetType",
+    "_meta": {
+      "title": "타입: depth"
+    },
+    "inputs": {
+      "control_net": [
+        "40",
+        0
+      ],
+      "type": "depth"
+    }
+  },
+  "42": {
+    "class_type": "ControlNetApplyAdvanced",
+    "_meta": {
+      "title": "# 뎁스 강도"
+    },
+    "inputs": {
+      "positive": [
+        "54",
+        0
+      ],
+      "negative": [
+        "55",
+        0
+      ],
+      "control_net": [
+        "41",
+        0
+      ],
+      "image": [
+        "39",
+        0
+      ],
+      "vae": [
+        "1",
+        2
+      ],
+      "strength": 0.6,
+      "start_percent": 0.0,
+      "end_percent": 0.8
+    }
+  },
+  "43": {
+    "class_type": "LazySwitchKJ",
+    "_meta": {
+      "title": "뎁스 · positive"
+    },
+    "inputs": {
+      "switch": [
+        "36",
+        0
+      ],
+      "on_false": [
+        "54",
+        0
+      ],
+      "on_true": [
+        "42",
+        0
+      ]
+    }
+  },
+  "44": {
+    "class_type": "LazySwitchKJ",
+    "_meta": {
+      "title": "뎁스 · negative"
+    },
+    "inputs": {
+      "switch": [
+        "36",
+        0
+      ],
+      "on_false": [
+        "55",
+        0
+      ],
+      "on_true": [
+        "42",
+        1
+      ]
+    }
+  },
+  "45": {
+    "class_type": "PrimitiveBoolean",
+    "_meta": {
+      "title": "# 포즈 ControlNet 켜기"
+    },
+    "inputs": {
+      "value": false
+    }
+  },
+  "46": {
+    "class_type": "CheckpointLoaderSimple",
+    "_meta": {
+      "title": "SDPose (포즈 추출용)"
+    },
+    "inputs": {
+      "ckpt_name": "sdpose_wholebody_fp16.safetensors"
+    }
+  },
+  "47": {
+    "class_type": "SDPoseKeypointExtractor",
+    "_meta": {
+      "title": "포즈 추출"
+    },
+    "inputs": {
+      "model": [
+        "46",
+        0
+      ],
+      "vae": [
+        "46",
+        2
+      ],
+      "image": [
+        "35",
+        0
+      ],
+      "batch_size": 16
+    }
+  },
+  "48": {
+    "class_type": "SDPoseDrawKeypoints",
+    "_meta": {
+      "title": "포즈 뼈대 그리기"
+    },
+    "inputs": {
+      "keypoints": [
+        "47",
+        0
+      ],
+      "draw_body": true,
+      "draw_hands": true,
+      "draw_face": true,
+      "draw_feet": false,
+      "stick_width": 4,
+      "face_point_size": 3,
+      "score_threshold": 0.3,
+      "draw_head": true
+    }
+  },
+  "49": {
+    "class_type": "SetUnionControlNetType",
+    "_meta": {
+      "title": "타입: openpose"
+    },
+    "inputs": {
+      "control_net": [
+        "40",
+        0
+      ],
+      "type": "openpose"
+    }
+  },
+  "50": {
+    "class_type": "ControlNetApplyAdvanced",
+    "_meta": {
+      "title": "# 포즈 강도"
+    },
+    "inputs": {
+      "positive": [
+        "43",
+        0
+      ],
+      "negative": [
+        "44",
+        0
+      ],
+      "control_net": [
+        "49",
+        0
+      ],
+      "image": [
+        "48",
+        0
+      ],
+      "vae": [
+        "1",
+        2
+      ],
+      "strength": 0.8,
+      "start_percent": 0.0,
+      "end_percent": 0.8
+    }
+  },
+  "51": {
+    "class_type": "LazySwitchKJ",
+    "_meta": {
+      "title": "포즈 · positive"
+    },
+    "inputs": {
+      "switch": [
+        "45",
+        0
+      ],
+      "on_false": [
+        "43",
+        0
+      ],
+      "on_true": [
+        "50",
+        0
+      ]
+    }
+  },
+  "52": {
+    "class_type": "LazySwitchKJ",
+    "_meta": {
+      "title": "포즈 · negative"
+    },
+    "inputs": {
+      "switch": [
+        "45",
+        0
+      ],
+      "on_false": [
+        "44",
+        0
+      ],
+      "on_true": [
+        "50",
+        1
+      ]
+    }
+  },
+  "56": {
+    "class_type": "LoadImage",
+    "_meta": {
+      "title": "# 스타일 참조 (IP-Adapter용)"
+    },
+    "inputs": {
+      "image": "choose-input-image.png"
+    }
+  },
+  "57": {
+    "class_type": "PrimitiveBoolean",
+    "_meta": {
+      "title": "# IP-Adapter 켜기"
+    },
+    "inputs": {
+      "value": false
+    }
+  },
+  "58": {
+    "class_type": "IPAdapterModelLoader",
+    "_meta": {
+      "title": "IP-Adapter 모델"
+    },
+    "inputs": {
+      "ipadapter_file": "ip-adapter-plus_sdxl_vit-h.safetensors"
+    }
+  },
+  "68": {
+    "class_type": "CLIPVisionLoader",
+    "_meta": {
+      "title": "CLIP 비전 (ViT-H)"
+    },
+    "inputs": {
+      "clip_name": "CLIP-ViT-H-14-laion2B-s32B-b79K.safetensors"
+    }
+  },
+  "59": {
+    "class_type": "IPAdapterAdvanced",
+    "_meta": {
+      "title": "# IP-Adapter 강도"
+    },
+    "inputs": {
+      "model": [
+        "17",
+        0
+      ],
+      "ipadapter": [
+        "58",
+        0
+      ],
+      "image": [
+        "56",
+        0
+      ],
+      "clip_vision": [
+        "68",
+        0
+      ],
+      "weight": 0.6,
+      "weight_type": "linear",
+      "combine_embeds": "concat",
+      "start_at": 0.0,
+      "end_at": 1.0,
+      "embeds_scaling": "V only"
+    }
+  },
+  "60": {
+    "class_type": "LazySwitchKJ",
+    "_meta": {
+      "title": "IP-Adapter · model"
+    },
+    "inputs": {
+      "switch": [
+        "57",
+        0
+      ],
+      "on_false": [
+        "17",
+        0
+      ],
+      "on_true": [
+        "59",
+        0
+      ]
+    }
+  },
+  "61": {
+    "class_type": "PrimitiveBoolean",
+    "_meta": {
+      "title": "# 인페인팅 켜기 (선택 영역만 다시 그림)"
+    },
+    "inputs": {
+      "value": false
+    }
+  },
+  "62": {
+    "class_type": "GrowMaskWithBlur",
+    "_meta": {
+      "title": "선택 영역 가장자리 부드럽게"
+    },
+    "inputs": {
+      "mask": [
+        "4",
+        1
+      ],
+      "expand": 8,
+      "incremental_expandrate": 0.0,
+      "tapered_corners": true,
+      "flip_input": false,
+      "blur_radius": 6.0,
+      "lerp_alpha": 1.0,
+      "decay_factor": 1.0,
+      "fill_holes": false
+    }
+  },
+  "63": {
+    "class_type": "SetLatentNoiseMask",
+    "_meta": {
+      "title": "선택 영역만 다시 그리기"
+    },
+    "inputs": {
+      "samples": [
+        "31",
+        0
+      ],
+      "mask": [
+        "62",
+        0
+      ]
+    }
+  },
+  "64": {
+    "class_type": "LazySwitchKJ",
+    "_meta": {
+      "title": "인페인팅 · latent"
+    },
+    "inputs": {
+      "switch": [
+        "61",
+        0
+      ],
+      "on_false": [
+        "32",
+        0
+      ],
+      "on_true": [
+        "63",
+        0
+      ]
+    }
+  },
+  "10": {
+    "class_type": "KSampler",
+    "_meta": {
+      "title": "# 생성 · i2i/인페인팅이면 denoise 0.6~0.8"
+    },
+    "inputs": {
+      "model": [
+        "60",
+        0
+      ],
+      "positive": [
+        "51",
+        0
+      ],
+      "negative": [
+        "52",
+        0
+      ],
+      "latent_image": [
+        "64",
+        0
+      ],
+      "seed": 260910,
+      "steps": 28,
+      "cfg": 5.5,
+      "sampler_name": "dpmpp_2m",
+      "scheduler": "karras",
+      "denoise": 1.0
+    }
+  },
+  "11": {
+    "class_type": "VAEDecodeTiled",
+    "_meta": {
+      "title": "타일 VAE"
+    },
+    "inputs": {
+      "samples": [
+        "10",
+        0
+      ],
+      "vae": [
+        "1",
+        2
+      ],
+      "tile_size": 512,
+      "overlap": 64,
+      "temporal_size": 64,
+      "temporal_overlap": 8
+    }
+  },
+  "6": {
+    "class_type": "ImageScale",
+    "_meta": {
+      "title": "Photoshop 입력 크기로 출력"
+    },
+    "inputs": {
+      "image": [
+        "11",
+        0
+      ],
+      "upscale_method": "lanczos",
+      "width": [
+        "25",
+        0
+      ],
+      "height": [
+        "25",
+        1
+      ],
+      "crop": "disabled"
+    }
+  },
+  "65": {
+    "class_type": "ImageCompositeMasked",
+    "_meta": {
+      "title": "원본 위에 선택 영역만 합성"
+    },
+    "inputs": {
+      "destination": [
+        "4",
+        0
+      ],
+      "source": [
+        "6",
+        0
+      ],
+      "x": 0,
+      "y": 0,
+      "resize_source": false,
+      "mask": [
+        "62",
+        0
+      ]
+    }
+  },
+  "66": {
+    "class_type": "LazySwitchKJ",
+    "_meta": {
+      "title": "인페인팅 · 결과"
+    },
+    "inputs": {
+      "switch": [
+        "61",
+        0
+      ],
+      "on_false": [
+        "6",
+        0
+      ],
+      "on_true": [
+        "65",
+        0
+      ]
+    }
+  },
+  "12": {
+    "class_type": "SaveImage",
+    "_meta": {
+      "title": "저장"
+    },
+    "inputs": {
+      "images": [
+        "66",
+        0
+      ],
+      "filename_prefix": "2BZ_PS/pro"
+    }
+  }
+}

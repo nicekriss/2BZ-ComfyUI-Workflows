@@ -24,6 +24,7 @@ with zipfile.ZipFile(ccx) as archive:
 shutil.copy2(ccx,data/'TooBusyAI.ccx')
 for name in ['dependencies.json','convert_model.py']:shutil.copy2(root/'installer'/name,data/name)
 shutil.copy2(root/'plugin/pro-template.json',data/'pro-template.json')
+shutil.copytree(root/'workflows',data/'workflows',dirs_exist_ok=True)
 (data/'comfy_node').mkdir(exist_ok=True)
 for name in ['__init__.py','pixels.py']:shutil.copy2(root/'comfy_node'/name,data/'comfy_node'/name)
 subprocess.run([sys.executable,'-m','PyInstaller','--noconfirm','--onefile','--windowed','--name','TooBusyAI-Setup','--distpath',str(root/'release'),'--workpath',str(work/'pyinstaller'),'--specpath',str(work),'--add-data',str(data)+';data','--collect-all','requests','--collect-all','certifi','--collect-all','psutil','--collect-all','yaml',str(root/'installer/setup.py')],check=True)
