@@ -7,12 +7,31 @@ from pathlib import Path
 import queue
 import sys
 import threading
+import webbrowser
 import tkinter as tk
-from tkinter import ttk, filedialog, messagebox
+from tkinter import ttk, filedialog, messagebox, simpledialog
 
-from setup_core import Engine, SetupError, resolve_root
+from setup_core import Engine, SetupError, resolve_root, api_token
 
 DATA=Path(getattr(sys,'_MEIPASS',Path(__file__).parent))/'data'
+
+class CivitaiDialog(simpledialog.Dialog):
+    def __init__(self,parent,rejected):
+        self.rejected=rejected
+        super().__init__(parent,'Civitai 인증 후 다운로드 계속')
+    def body(self,master):
+        reason='입력한 키로 다운로드할 수 없었습니다. 키와 계정의 모델 이용권한을 확인하세요.' if self.rejected else '이 모델은 Civitai 로그인이 필요합니다.'
+        ttk.Label(master,text=reason,wraplength=460,foreground='#17212c',background='#f0f0f0').pack(anchor='w',pady=8)
+        ttk.Button(master,text='① Civitai API 키 발급 페이지 열기',command=lambda:webbrowser.open('https://civitai.com/user/account')).pack(anchor='w',pady=8)
+        ttk.Label(master,text='계정 설정 → API Keys에서 만든 키를 아래에 붙여넣으세요.\n확인을 누르면 다운로드가 자동으로 이어집니다.\n키는 이번 실행에서만 사용하며 파일에 저장하지 않습니다.',foreground='#17212c',background='#f0f0f0').pack(anchor='w',pady=8)
+        self.entry=ttk.Entry(master,show='*',width=56);self.entry.pack(fill='x',pady=8)
+        return self.entry
+    def validate(self):
+        try:
+            self.result=api_token(self.entry.get())
+            if not self.result:raise SetupError('Civitai API 키를 붙여넣거나 취소를 눌러주세요.')
+            return True
+        except SetupError as exc:messagebox.showerror('API 키 확인',str(exc),parent=self);return False
 def state_for(root):
     identity=hashlib.sha256(str(Path(root).resolve()).lower().encode()).hexdigest()[:12]
     return Path(os.environ.get('LOCALAPPDATA',Path.home()))/'TooBusyAI'/'Setup'/identity
@@ -36,7 +55,7 @@ def cli():
     return True
 
 def gui():
-    window=tk.Tk();window.title('TooBusy AI 설치 도우미');window.geometry('800x730');window.minsize(760,680)
+    window=tk.Tk();window.title('TooBusy AI 설치 도우미 0.2.1');window.geometry('800x810');window.minsize(760,760)
     window.configure(bg='#17212c');style=ttk.Style();style.theme_use('clam')
     style.configure('.',font=('맑은 고딕',10));style.configure('TFrame',background='#17212c');style.configure('TLabel',background='#17212c',foreground='#e5edf7')
     style.configure('TButton',padding=(12,8),background='#31465b',foreground='#e5edf7');style.map('TButton',background=[('active','#44617d')])
@@ -54,12 +73,24 @@ def gui():
         entry=ttk.Entry(row,textvariable=var);entry.pack(side='left',fill='x',expand=True);controls.append(entry)
         button=ttk.Button(row,text='폴더 선택',command=lambda v=var:browse(v));button.pack(side='right',padx=(8,0));controls.append(button)
     row=ttk.Frame(frame);row.pack(fill='x');ttk.Label(row,text='ComfyUI 주소').pack(side='left');entry=ttk.Entry(row,textvariable=urlvar,width=36);entry.pack(side='left',padx=12);controls.append(entry)
+    tokenvar=tk.StringVar()
+    ttk.Label(frame,text='Civitai API 키 (선택 · 필요한 경우 설치 중에도 입력할 수 있어요)').pack(anchor='w',pady=(14,4))
+    row=ttk.Frame(frame);row.pack(fill='x')
+    entry=ttk.Entry(row,textvariable=tokenvar,show='*');entry.pack(side='left',fill='x',expand=True);controls.append(entry)
+    ttk.Button(row,text='API 키 발급 페이지',command=lambda:webbrowser.open('https://civitai.com/user/account')).pack(side='right',padx=(8,0))
+    ttk.Label(frame,text='계정 설정 → API Keys에서 만든 키를 붙여넣으세요. 이번 실행에서만 사용하며 파일에 저장하지 않습니다.',font=('맑은 고딕',9),foreground='#9aafc4').pack(anchor='w',pady=(4,0))
     ttk.Label(frame,text='① 점검 → ComfyUI 종료 → ② 설치 → ComfyUI 재실행 → ③ 연결 검사',foreground='#90d9ff').pack(anchor='w',pady=(18,8))
     actions=ttk.Frame(frame);actions.pack(fill='x')
     events=queue.Queue();working=False;cancel=threading.Event()
-    log=tk.Text(frame,height=13,bg='#0f1720',fg='#d5e3f1',insertbackground='white',relief='flat',font=('맑은 고딕',9),wrap='word',state='disabled');log.pack(fill='both',expand=True,pady=(14,10))
+    log=tk.Text(frame,height=8,bg='#0f1720',fg='#d5e3f1',insertbackground='white',relief='flat',font=('맑은 고딕',9),wrap='word',state='disabled');log.pack(fill='both',expand=True,pady=(14,10))
+    def request_token(rejected):
+        answer=queue.Queue(maxsize=1);events.put(('auth',(rejected,answer)))
+        while not cancel.is_set():
+            try:return answer.get(timeout=0.15)
+            except queue.Empty:pass
+        return None
     def engine():
-        root=resolve_root(rootvar.get());return root,Engine(DATA,state_for(root),lambda text:events.put(('log',text)),cancel.is_set)
+        root=resolve_root(rootvar.get());return root,Engine(DATA,state_for(root),lambda text:events.put(('log',text)),cancel.is_set,tokenvar.get(),request_token)
     def task(action):
         nonlocal working
         if working:return
@@ -96,7 +127,16 @@ def gui():
         nonlocal working
         try:
             while True:
-                kind,text=events.get_nowait();log.configure(state='normal');log.insert('end',text+'\n');log.see('end');log.configure(state='disabled')
+                kind,text=events.get_nowait()
+                if kind=='auth':
+                    rejected,answer=text
+                    if cancel.is_set():answer.put(None);continue
+                    status.set('Civitai API 키를 입력하면 다운로드가 자동으로 계속됩니다.')
+                    # The worker waits for this main-thread dialog; no installation restart.
+                    value=CivitaiDialog(window,rejected).result
+                    if value:tokenvar.set(value.strip());status.set('Civitai 인증 후 다운로드를 계속합니다…')
+                    answer.put(value);continue
+                log.configure(state='normal');log.insert('end',text+'\n');log.see('end');log.configure(state='disabled')
                 if kind in ('done','error'):
                     working=False;stop.configure(state='disabled');status.set(text)
                     for c in controls:c.configure(state='normal')

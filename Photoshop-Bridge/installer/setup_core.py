@@ -10,12 +10,23 @@ import subprocess
 import tempfile
 import time
 import zipfile
+from urllib.parse import urlsplit, urljoin
 
 import requests
 
 FIELDS = {'1':('ckpt_name','checkpoints'), '17':('lora_name','loras'), '7':('control_net_name','controlnet'), '40':('control_net_name','controlnet'), '37':('model_name','geometry_estimation'), '46':('ckpt_name','checkpoints'), '58':('ipadapter_file','ipadapter'), '68':('clip_name','clip_vision')}
 class SetupError(RuntimeError): pass
 class Cancelled(SetupError): pass
+
+def civitai_endpoint(url):
+    parsed=urlsplit(url)
+    return parsed.scheme=='https' and parsed.netloc=='civitai.com' and parsed.path.startswith('/api/')
+
+def api_token(value):
+    value=str(value or '').strip()
+    if value and (len(value)>4096 or not all(33<=ord(c)<=126 for c in value)):
+        raise SetupError('Civitai API 키만 붙여넣으세요. 공백이나 줄바꿈은 포함할 수 없습니다.')
+    return value
 
 def read_json(path): return json.loads(Path(path).read_text(encoding='utf-8-sig'))
 def write_json(path, value):
@@ -110,15 +121,50 @@ def existing_model(root, model, roots):
     return candidates[0] if candidates else None
 
 class Engine:
-    def __init__(self,data,state,log=print,cancel=lambda:False):
+    def __init__(self,data,state,log=print,cancel=lambda:False,civitai_token='',request_token=None):
         self.data=Path(data); self.state=Path(state); self.state.mkdir(parents=True,exist_ok=True)
         self.manifest=read_json(self.data/'dependencies.json');self.cancel=cancel
+        self.civitai_token=api_token(civitai_token);self.request_token=request_token
         def record(message):
             with (self.state/'setup.log').open('a',encoding='utf-8') as f:f.write(time.strftime('%Y-%m-%d %H:%M:%S')+' '+message+'\n')
             log(message)
         self.log=record
     def check_cancel(self):
         if self.cancel():raise Cancelled('중지했습니다. 다운로드는 다음 실행에서 이어받습니다.')
+    def download_response(self,url,headers):
+        # Credentials belong only to Civitai's HTTPS API, never a redirected CDN.
+        origin=url;redirects=0
+        while True:
+            self.check_cancel()
+            parsed=urlsplit(url)
+            if parsed.scheme!='https' or parsed.username or parsed.password:
+                raise SetupError('안전한 HTTPS 다운로드 주소가 아닙니다.')
+            current=dict(headers)
+            if civitai_endpoint(origin) and civitai_endpoint(url) and self.civitai_token:
+                current['Authorization']='Bearer '+self.civitai_token
+            try:response=requests.get(url,headers=current,stream=True,timeout=(30,90),allow_redirects=False)
+            except requests.RequestException:
+                raise SetupError('다운로드 서버에 연결하지 못했습니다. 인터넷 연결을 확인하고 설치를 다시 누르세요. 받은 부분은 이어받습니다.') from None
+            if response.status_code in (301,302,303,307,308):
+                location=response.headers.get('Location');response.close()
+                if not location:raise SetupError('다운로드 서버의 이동 주소가 비어 있습니다.')
+                redirects+=1
+                if redirects>10:raise SetupError('다운로드 주소 이동이 너무 많습니다. 잠시 후 다시 시도하세요.')
+                url=urljoin(url,location);continue
+            if response.status_code in (401,403) and civitai_endpoint(origin) and civitai_endpoint(url):
+                response.close()
+                if not self.request_token:
+                    raise SetupError('Civitai 인증이 필요합니다. 설치 창의 Civitai API 키를 입력하고 설치를 다시 누르세요.')
+                self.log('Civitai 인증을 기다립니다. 키를 입력하면 이 모델부터 자동으로 이어갑니다.')
+                token=self.request_token(bool(self.civitai_token))
+                self.check_cancel()
+                if not token:raise Cancelled('Civitai 인증을 취소했습니다. 받은 파일은 보존되며 다음 설치에서 이어받습니다.')
+                self.civitai_token=api_token(token)
+                url=origin;redirects=0;continue
+            if response.status_code not in (200,206):
+                status=response.status_code;response.close()
+                raise SetupError(f'다운로드 서버가 HTTP {status}를 반환했습니다. 잠시 후 설치를 다시 눌러주세요. 받은 부분은 보존됩니다.')
+            return response
     def inspect(self,root,extra=None):
         root=resolve_root(root);python=runtime(root);roots=model_roots(root,extra)
         write_json(self.state/'model-roots.json',{'root':str(root),'extra':str(extra or ''),'paths':{k:[str(p) for p in v] for k,v in roots.items()}})
@@ -147,22 +193,23 @@ class Engine:
         headers={'User-Agent':'TooBusySetup/0.2'}
         if offset:headers['Range']=f'bytes={offset}-'
         self.log('다운로드: '+destination.name)
-        with requests.get(item['url'],headers=headers,stream=True,timeout=(30,90)) as response:
-            if response.status_code in (401,403): raise SetupError('다운로드 제공자가 로그인을 요구합니다. 안내된 모델을 직접 받아 지정한 모델 폴더에 넣고 다시 실행하세요: '+item.get('source',item['url']))
-            response.raise_for_status()
+        with self.download_response(item['url'],headers) as response:
             if response.status_code==206:
                 content_range=response.headers.get('Content-Range','')
                 if not content_range.startswith(f'bytes {offset}-') or not content_range.endswith('/'+str(item['size'])): raise SetupError('다운로드 이어받기 응답이 올바르지 않습니다.')
             else:offset=0
             last=0;done=offset
             with partial.open('ab' if offset else 'wb') as out:
-                for block in response.iter_content(4*1024*1024):
-                    self.check_cancel()
-                    if not block:continue
-                    out.write(block);done+=len(block)
-                    if done>item['size']:raise SetupError('다운로드가 예상 크기를 초과했습니다.')
-                    if time.monotonic()-last>3:
-                        self.log(f'{destination.name}: {done/item["size"]:.0%}');last=time.monotonic()
+                try:
+                    for block in response.iter_content(4*1024*1024):
+                        self.check_cancel()
+                        if not block:continue
+                        out.write(block);done+=len(block)
+                        if done>item['size']:raise SetupError('다운로드가 예상 크기를 초과했습니다.')
+                        if time.monotonic()-last>3:
+                            self.log(f'{destination.name}: {done/item["size"]:.0%}');last=time.monotonic()
+                except requests.RequestException:
+                    raise SetupError('다운로드 연결이 끊겼습니다. 설치를 다시 누르면 받은 부분부터 이어갑니다.') from None
         if partial.stat().st_size!=item['size'] or sha(partial,self.cancel)!=item['sha256']:
             partial.rename(partial.with_name(partial.name+'.failed-'+secrets.token_hex(4)))
             raise SetupError('다운로드 무결성 검사 실패. 모델로 설치하지 않았습니다. 다시 설치하면 새로 받습니다: '+destination.name)
