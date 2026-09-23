@@ -1,5 +1,9 @@
 # Changelog
 
+## Qwen-Image 2.1 license note — 2026-09-24
+
+- Added a license warning to the Qwen-Image 2.1 README and the root README: the model is under the Qwen Research License (research/evaluation only). Unlike FLUX.1 [dev], it has no clause allowing commercial use of outputs, so commercial work should use the Apache 2.0 Qwen-Image 2512 / Edit 2511 until Qwen clarifies.
+
 ## Qwen-Image 2.1 — 2026-09-23
 
 - Added `Qwen-Image-2.1/` with three workflows: 01 T2I, 02 Image Edit, 03 Upscale 2K. Core ComfyUI 0.37.0+ only, no custom nodes.

@@ -14,6 +14,7 @@ Qwen-Image 2.1 리뷰에서 쓴 워크플로 3종입니다. 커스텀 노드 없
 - 02 Image Edit: 이미지 편집, 레퍼런스 최대 10장
 - 03 Upscale 2K: 편집 모드를 업스케일러로 써서 0.3MP → 2K
 - 확인한 환경: RTX 3090 24GB, RTX 4070 Ti SUPER 16GB (int8 convrot 모델 세트)
+- ⚠ 모델은 Qwen Research License(연구·평가용)입니다. 협찬·외주·판매용 등 상업 작업에는 아직 쓰지 마세요. [자세히](Qwen-Image-2.1/README.md#-라이선스-상업-이용-주의)
 
 ## YuE2 Music
 
