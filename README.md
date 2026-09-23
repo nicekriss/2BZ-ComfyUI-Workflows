@@ -4,6 +4,17 @@
 
 English users: open **2BZ_FastH3_USDU_EN.json** from the ZIP, then use its clickable model-download note. [English setup guide](FastH3-USDU/START-HERE-en.md).
 
+## Qwen-Image 2.1
+
+Qwen-Image 2.1 리뷰에서 쓴 워크플로 3종입니다. 커스텀 노드 없이 ComfyUI 0.37.0 이상 코어만으로 돌아갑니다. 모델 다운로드 링크와 저장 경로가 워크플로 안 메모에 들어 있습니다.
+
+[Qwen-Image-2.1 폴더](Qwen-Image-2.1/) · [사용 안내](Qwen-Image-2.1/README.md) · [테스트 기록](Qwen-Image-2.1/TEST-RECORD-ko.md)
+
+- 01 T2I: 텍스트 → 이미지, 1MP·2K 네이티브·투명 PNG
+- 02 Image Edit: 이미지 편집, 레퍼런스 최대 10장
+- 03 Upscale 2K: 편집 모드를 업스케일러로 써서 0.3MP → 2K
+- 확인한 환경: RTX 3090 24GB, RTX 4070 Ti SUPER 16GB (int8 convrot 모델 세트)
+
 ## YuE2 Music
 
 가사와 스타일로 보컬·반주가 있는 곡을 생성합니다. **[설치 ZIP 다운로드](https://github.com/nicekriss/2BZ-ComfyUI-Workflows/releases/latest/download/2BZ-YuE2-installer.zip)**는 기존 ComfyUI Torch를 보존하며, Torch 2.12.1+cu130에서 설치·43.48초 생성 검증을 완료했습니다. 모델 약 7.8GB 자동 다운로드, 별도 subprocess 실행 환경과 한국어 예제 워크플로를 포함합니다.

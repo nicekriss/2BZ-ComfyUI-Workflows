@@ -1,5 +1,12 @@
 # Changelog
 
+## Qwen-Image 2.1 — 2026-09-23
+
+- Added `Qwen-Image-2.1/` with three workflows: 01 T2I, 02 Image Edit, 03 Upscale 2K. Core ComfyUI 0.37.0+ only, no custom nodes.
+- Graphs are the official Comfy templates with 2BZ role colors, a read-first column (clickable direct model downloads and save folders, usage order) and notes beside key nodes. Node positions, links and widget values were verified unchanged against the templates.
+- Included the Korean test record (RTX 3090 / RTX 4070 Ti SUPER timings, 25 vs 40 steps, edit seed failure mode, scheduler shift check, upscale and character sheet results) and the 03 sample input.
+- 04 AutoDetail is not published yet; it needs toobusy 0.5.3 nodes and will ship with the next video.
+
 ## v1.2.1 — 2026-09-07
 
 - Added four direct model download links and destination folders to the workflow's MarkdownNote.
