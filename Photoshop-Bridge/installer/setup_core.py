@@ -243,10 +243,14 @@ class Engine:
     def bridge(self,root):
         target=inside(root/'custom_nodes','toobusy_photoshop_bridge');source=self.data/'comfy_node'
         if target.exists():
-            for name in ['__init__.py','pixels.py']:
-                if not (target/name).is_file() or sha(target/name)!=sha(source/name):raise SetupError('기존 Bridge 버전이 다릅니다. 기존 설치를 유지했으며 별도 업데이트가 필요합니다.')
             token=read_json(target/'pairing.json')['token']
             if not re.fullmatch('[a-fA-F0-9]{64}',token):raise SetupError('기존 Bridge 연결 정보가 올바르지 않습니다.')
+            # Our own node: refresh its code in place and keep the pairing key so the plugin stays connected.
+            changed=[name for name in ['__init__.py','pixels.py'] if not (target/name).is_file() or sha(target/name)!=sha(source/name)]
+            for name in changed:
+                temporary=target/(name+'.updating');shutil.copy2(source/name,temporary);os.replace(temporary,target/name)
+            shutil.rmtree(target/'__pycache__',ignore_errors=True) if changed else None
+            self.log('Bridge 노드 업데이트: '+', '.join(changed) if changed else 'Bridge 노드 최신 상태 유지')
         else:
             token=secrets.token_hex(32)
             staging=target.with_name('.toobusy-bridge-'+secrets.token_hex(4));staging.mkdir()
