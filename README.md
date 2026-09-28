@@ -4,6 +4,16 @@
 
 English users: open **2BZ_FastH3_USDU_EN.json** from the ZIP, then use its clickable model-download note. [English setup guide](FastH3-USDU/START-HERE-en.md).
 
+## LTX 2.5 IC-LoRA — 물 · 밤 · 사람 지우기
+
+찍어둔 영상에 사람·카메라·배경은 그대로 두고 효과만 입힙니다. 한 워크플로에 물 채우기 / 낮→밤 / 사람 지우기 3종, 스위치 딸깍으로 전환. 세로·가로 영상 자동, 한 줄 한국어 요청을 AI가 영어 프롬프트로 써줍니다.
+
+**[워크플로 다운로드 (JSON)](https://raw.githubusercontent.com/nicekriss/2BZ-ComfyUI-Workflows/main/LTX2.5-ICLoRA/2BZ_LTX25_ICLoRA_3FX_Water_Night_CleanPlate.json)** · [사용 안내](LTX2.5-ICLoRA/README.md)
+
+- 필요: ComfyUI 0.37.0 이상 + `ComfyUI-LTXVideo` · `ComfyUI-VideoHelperSuite` · `rgthree-comfy`
+- 확인한 환경: RTX 3090 24GB, RTX 4070 Ti SUPER 16GB (FHD 121프레임 436초, 시스템 RAM 32GB 중 30.2GB 사용)
+- 모델: LTX-2.x Community License (연매출 1천만 달러 미만 상업 이용 무료)
+
 ## Qwen-Image 2.1
 
 Qwen-Image 2.1 리뷰에서 쓴 워크플로 3종입니다. 커스텀 노드 없이 ComfyUI 0.37.0 이상 코어만으로 돌아갑니다. 모델 다운로드 링크와 저장 경로가 워크플로 안 메모에 들어 있습니다.
