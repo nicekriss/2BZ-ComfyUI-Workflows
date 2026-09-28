@@ -1,0 +1,3302 @@
+{
+ "id": "ltx25-iclora-3fx-fhd",
+ "revision": 0,
+ "last_node_id": 55,
+ "last_link_id": 77,
+ "nodes": [
+  {
+   "id": 1,
+   "type": "VHS_LoadVideo",
+   "title": "① 원본 영상 (24fps·121프레임으로 자동 변환, 세로/가로 자동)",
+   "pos": [
+    0,
+    0
+   ],
+   "size": [
+    420,
+    620
+   ],
+   "flags": {},
+   "order": 1,
+   "mode": 0,
+   "inputs": [],
+   "outputs": [
+    {
+     "name": "IMAGE",
+     "type": "IMAGE",
+     "links": [
+      33
+     ]
+    },
+    {
+     "name": "frame_count",
+     "type": "INT",
+     "links": []
+    },
+    {
+     "name": "audio",
+     "type": "AUDIO",
+     "links": [
+      48
+     ]
+    },
+    {
+     "name": "video_info",
+     "type": "VHS_VIDEOINFO",
+     "links": [
+      26
+     ]
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "VHS_LoadVideo"
+   },
+   "widgets_values": {
+    "video": "your_video.mp4",
+    "force_rate": 24,
+    "custom_width": 0,
+    "custom_height": 0,
+    "frame_load_cap": 121,
+    "skip_first_frames": 0,
+    "select_every_nth": 1,
+    "format": "LTXV",
+    "choose video to upload": "image",
+    "videopreview": {
+     "hidden": false,
+     "paused": false,
+     "params": {
+      "filename": "your_video.mp4",
+      "type": "input",
+      "format": "video/mp4",
+      "force_rate": 24,
+      "custom_width": 0,
+      "custom_height": 0,
+      "frame_load_cap": 121,
+      "skip_first_frames": 0,
+      "select_every_nth": 1
+     }
+    }
+   },
+   "color": "#223",
+   "bgcolor": "#335"
+  },
+  {
+   "id": 2,
+   "type": "PrimitiveStringMultiline",
+   "title": "③ 한 줄 요청 — 한국어로 짧게 (예시는 왼쪽 설명)",
+   "pos": [
+    500,
+    220
+   ],
+   "size": [
+    560,
+    200
+   ],
+   "flags": {},
+   "order": 2,
+   "mode": 0,
+   "inputs": [],
+   "outputs": [
+    {
+     "name": "STRING",
+     "type": "STRING",
+     "links": [
+      17
+     ]
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "PrimitiveStringMultiline"
+   },
+   "widgets_values": [
+    "의자에 앉아있는 사람 가슴까지 맑은 물이 차 있다"
+   ],
+   "color": "#232",
+   "bgcolor": "#353"
+  },
+  {
+   "id": 3,
+   "type": "PrimitiveFloat",
+   "title": "④ 효과 강도 — 1.0 권장",
+   "pos": [
+    500,
+    490
+   ],
+   "size": [
+    560,
+    90
+   ],
+   "flags": {},
+   "order": 3,
+   "mode": 0,
+   "inputs": [],
+   "outputs": [
+    {
+     "name": "FLOAT",
+     "type": "FLOAT",
+     "links": [
+      5,
+      9,
+      13
+     ]
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "PrimitiveFloat"
+   },
+   "widgets_values": [
+    1.0
+   ],
+   "color": "#233",
+   "bgcolor": "#355"
+  },
+  {
+   "id": 4,
+   "type": "PrimitiveBoolean",
+   "title": "⑤ 소리 새로 생성? (OFF = 원본 소리 유지)",
+   "pos": [
+    500,
+    650
+   ],
+   "size": [
+    560,
+    90
+   ],
+   "flags": {},
+   "order": 4,
+   "mode": 0,
+   "inputs": [],
+   "outputs": [
+    {
+     "name": "BOOLEAN",
+     "type": "BOOLEAN",
+     "links": [
+      57
+     ]
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "PrimitiveBoolean"
+   },
+   "widgets_values": [
+    false
+   ],
+   "color": "#233",
+   "bgcolor": "#355"
+  },
+  {
+   "id": 5,
+   "type": "RandomNoise",
+   "title": "⑥ 시드 — 아쉬우면 숫자만 바꿔 다시",
+   "pos": [
+    500,
+    810
+   ],
+   "size": [
+    560,
+    110
+   ],
+   "flags": {},
+   "order": 5,
+   "mode": 0,
+   "inputs": [],
+   "outputs": [
+    {
+     "name": "NOISE",
+     "type": "NOISE",
+     "links": [
+      63
+     ]
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "RandomNoise"
+   },
+   "widgets_values": [
+    1212,
+    "fixed"
+   ],
+   "color": "#233",
+   "bgcolor": "#355"
+  },
+  {
+   "id": 6,
+   "type": "PreviewAny",
+   "title": "⑦ 완성된 프롬프트 (AI가 쓴 결과 확인용)",
+   "pos": [
+    1140,
+    0
+   ],
+   "size": [
+    560,
+    520
+   ],
+   "flags": {},
+   "order": 6,
+   "mode": 0,
+   "inputs": [
+    {
+     "name": "source",
+     "type": "STRING",
+     "link": 1
+    }
+   ],
+   "outputs": [
+    {
+     "name": "STRING",
+     "type": "STRING",
+     "links": []
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "PreviewAny"
+   },
+   "widgets_values": [],
+   "color": "#232",
+   "bgcolor": "#353"
+  },
+  {
+   "id": 7,
+   "type": "SaveVideo",
+   "title": "⑧ 결과 (output/ltx25_iclora)",
+   "pos": [
+    1780,
+    0
+   ],
+   "size": [
+    560,
+    620
+   ],
+   "flags": {},
+   "order": 7,
+   "mode": 0,
+   "inputs": [
+    {
+     "name": "video",
+     "type": "VIDEO",
+     "link": 2
+    }
+   ],
+   "outputs": [
+    {
+     "name": "video",
+     "type": "VIDEO",
+     "links": []
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "SaveVideo"
+   },
+   "widgets_values": [
+    "ltx25_iclora/fx",
+    "auto",
+    "auto"
+   ],
+   "color": "#16403a",
+   "bgcolor": "#1f5e55"
+  },
+  {
+   "id": 8,
+   "type": "UNETLoader",
+   "title": "모델 ① LTX 2.5 distilled",
+   "pos": [
+    0,
+    1230
+   ],
+   "size": [
+    520,
+    110
+   ],
+   "flags": {},
+   "order": 8,
+   "mode": 0,
+   "inputs": [],
+   "outputs": [
+    {
+     "name": "MODEL",
+     "type": "MODEL",
+     "links": [
+      3
+     ]
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "UNETLoader"
+   },
+   "widgets_values": [
+    "ltx-2.5-22b-distilled-transformer-comfy-int8-convrot.safetensors",
+    "default"
+   ],
+   "color": "#323",
+   "bgcolor": "#535"
+  },
+  {
+   "id": 9,
+   "type": "CLIPLoader",
+   "title": "모델 ② 텍스트 인코더 (Gemma4 12B)",
+   "pos": [
+    0,
+    1410
+   ],
+   "size": [
+    520,
+    130
+   ],
+   "flags": {},
+   "order": 9,
+   "mode": 0,
+   "inputs": [],
+   "outputs": [
+    {
+     "name": "CLIP",
+     "type": "CLIP",
+     "links": [
+      23,
+      25
+     ]
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "CLIPLoader"
+   },
+   "widgets_values": [
+    "gemma4-12b-with-proj-ltx-2.5-comfy-int8-convrot.safetensors",
+    "ltxv",
+    "default"
+   ],
+   "color": "#323",
+   "bgcolor": "#535"
+  },
+  {
+   "id": 10,
+   "type": "CLIPLoader",
+   "title": "모델 ③ 프롬프트 작성용 Gemma4 (소형)",
+   "pos": [
+    0,
+    1610
+   ],
+   "size": [
+    520,
+    130
+   ],
+   "flags": {},
+   "order": 10,
+   "mode": 0,
+   "inputs": [],
+   "outputs": [
+    {
+     "name": "CLIP",
+     "type": "CLIP",
+     "links": [
+      18
+     ]
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "CLIPLoader"
+   },
+   "widgets_values": [
+    "gemma4_e2b_it_bf16.safetensors",
+    "ltxv",
+    "default"
+   ],
+   "color": "#323",
+   "bgcolor": "#535"
+  },
+  {
+   "id": 11,
+   "type": "VAELoader",
+   "title": "모델 ④ 영상 VAE",
+   "pos": [
+    600,
+    1230
+   ],
+   "size": [
+    520,
+    90
+   ],
+   "flags": {},
+   "order": 11,
+   "mode": 0,
+   "inputs": [],
+   "outputs": [
+    {
+     "name": "VAE",
+     "type": "VAE",
+     "links": [
+      45,
+      73
+     ]
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "VAELoader"
+   },
+   "widgets_values": [
+    "ltx-2.5-video-vae-bf16.safetensors"
+   ],
+   "color": "#323",
+   "bgcolor": "#535"
+  },
+  {
+   "id": 12,
+   "type": "VAELoader",
+   "title": "모델 ⑤ 오디오 VAE",
+   "pos": [
+    600,
+    1390
+   ],
+   "size": [
+    520,
+    90
+   ],
+   "flags": {},
+   "order": 12,
+   "mode": 0,
+   "inputs": [],
+   "outputs": [
+    {
+     "name": "VAE",
+     "type": "VAE",
+     "links": [
+      49,
+      53,
+      75
+     ]
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "VAELoader"
+   },
+   "widgets_values": [
+    "ltx-2.5-audio-vae-bf16.safetensors"
+   ],
+   "color": "#323",
+   "bgcolor": "#535"
+  },
+  {
+   "id": 13,
+   "type": "ModelAttentionBackend",
+   "title": "속도 향상 — Comfy Kitchen 어텐션 (기본 내장)",
+   "pos": [
+    600,
+    1550
+   ],
+   "size": [
+    520,
+    90
+   ],
+   "flags": {},
+   "order": 13,
+   "mode": 0,
+   "inputs": [
+    {
+     "name": "model",
+     "type": "MODEL",
+     "link": 3
+    }
+   ],
+   "outputs": [
+    {
+     "name": "model",
+     "type": "MODEL",
+     "links": [
+      4
+     ]
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "ModelAttentionBackend"
+   },
+   "widgets_values": [
+    "comfy kitchen attention"
+   ],
+   "color": "#2a363b",
+   "bgcolor": "#3f5159"
+  },
+  {
+   "id": 14,
+   "type": "LTXICLoRALoaderModelOnly",
+   "title": "A — LoRA 파일",
+   "pos": [
+    1300,
+    1230
+   ],
+   "size": [
+    560,
+    130
+   ],
+   "flags": {},
+   "order": 14,
+   "mode": 0,
+   "inputs": [
+    {
+     "name": "model",
+     "type": "MODEL",
+     "link": 4
+    },
+    {
+     "name": "strength_model",
+     "type": "FLOAT",
+     "link": 5,
+     "widget": {
+      "name": "strength_model"
+     }
+    }
+   ],
+   "outputs": [
+    {
+     "name": "model",
+     "type": "MODEL",
+     "links": [
+      8
+     ]
+    },
+    {
+     "name": "latent_downscale_factor",
+     "type": "FLOAT",
+     "links": []
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "LTXICLoRALoaderModelOnly"
+   },
+   "widgets_values": [
+    "ltx-2.5-22b-ic-lora-water-simulation-0.9.safetensors",
+    1.0
+   ],
+   "color": "#323",
+   "bgcolor": "#535"
+  },
+  {
+   "id": 15,
+   "type": "StringReplace",
+   "title": "A — AI 지시문 ({req} = 한 줄 요청)",
+   "pos": [
+    1300,
+    1430
+   ],
+   "size": [
+    560,
+    430
+   ],
+   "flags": {},
+   "order": 15,
+   "mode": 0,
+   "inputs": [
+    {
+     "name": "string",
+     "type": "STRING",
+     "link": 6,
+     "widget": {
+      "name": "string"
+     }
+    }
+   ],
+   "outputs": [
+    {
+     "name": "STRING",
+     "type": "STRING",
+     "links": [
+      10
+     ]
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "StringReplace"
+   },
+   "widgets_values": [
+    "",
+    "@",
+    "You write prompts for a video model that adds water to a video. The attached image is the first frame of the source video; it contains NO water yet.\nUser request (may be in Korean): \"{req}\"\n\nWrite exactly ONE paragraph in English, in exactly this structure, and output nothing else. Never output Korean characters; translate everything into English:\nReference shows <one sentence describing what is visible in the image: the subject, clothing, action and setting>. Edited shows the same scene with water added. ADD WATER <two vivid sentences describing the water the user asked for: its type and clarity, how deep it is relative to the subject's body, how it moves, and how it interacts with the subject and nearby objects, including reflections>."
+   ],
+   "color": "#2b2f12",
+   "bgcolor": "#4a5220"
+  },
+  {
+   "id": 16,
+   "type": "StringReplace",
+   "title": "A — 최종 프롬프트 틀 ({llm} = AI가 쓴 문장)",
+   "pos": [
+    1300,
+    1930
+   ],
+   "size": [
+    560,
+    250
+   ],
+   "flags": {},
+   "order": 16,
+   "mode": 0,
+   "inputs": [
+    {
+     "name": "string",
+     "type": "STRING",
+     "link": 7,
+     "widget": {
+      "name": "string"
+     }
+    }
+   ],
+   "outputs": [
+    {
+     "name": "STRING",
+     "type": "STRING",
+     "links": [
+      11
+     ]
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "StringReplace"
+   },
+   "widgets_values": [
+    "",
+    "@",
+    "{llm} Subject identity, clothing, framing, and background geometry are identical to the reference; only water-related elements differ between reference and edited."
+   ],
+   "color": "#2b2f12",
+   "bgcolor": "#4a5220"
+  },
+  {
+   "id": 17,
+   "type": "LTXICLoRALoaderModelOnly",
+   "title": "B — LoRA 파일",
+   "pos": [
+    1940,
+    1230
+   ],
+   "size": [
+    560,
+    130
+   ],
+   "flags": {},
+   "order": 17,
+   "mode": 4,
+   "inputs": [
+    {
+     "name": "model",
+     "type": "MODEL",
+     "link": 8
+    },
+    {
+     "name": "strength_model",
+     "type": "FLOAT",
+     "link": 9,
+     "widget": {
+      "name": "strength_model"
+     }
+    }
+   ],
+   "outputs": [
+    {
+     "name": "model",
+     "type": "MODEL",
+     "links": [
+      12
+     ]
+    },
+    {
+     "name": "latent_downscale_factor",
+     "type": "FLOAT",
+     "links": []
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "LTXICLoRALoaderModelOnly"
+   },
+   "widgets_values": [
+    "ltx-2.5-22b-ic-lora-day-to-night-0.9.safetensors",
+    1.0
+   ],
+   "color": "#323",
+   "bgcolor": "#535"
+  },
+  {
+   "id": 18,
+   "type": "StringReplace",
+   "title": "B — AI 지시문 ({req} = 한 줄 요청)",
+   "pos": [
+    1940,
+    1430
+   ],
+   "size": [
+    560,
+    430
+   ],
+   "flags": {},
+   "order": 18,
+   "mode": 4,
+   "inputs": [
+    {
+     "name": "string",
+     "type": "STRING",
+     "link": 10,
+     "widget": {
+      "name": "string"
+     }
+    }
+   ],
+   "outputs": [
+    {
+     "name": "STRING",
+     "type": "STRING",
+     "links": [
+      14
+     ]
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "StringReplace"
+   },
+   "widgets_values": [
+    "",
+    "@",
+    "You write prompts for a video model that relights a daytime video as the same shot at night. The attached image is the first frame of the daytime source video.\nUser request for the night look (may be in Korean): \"{req}\"\n\nWrite exactly TWO sentences in English and output nothing else. Never output Korean characters; translate everything into English. Sentence 1: describe what is visible in the image (subject, action, setting) as it would look at night. Sentence 2: describe the night lighting the user asked for: include EVERY light source and detail the user mentioned (for example the moon, street lamps, headlights, neon), plus color temperature, brightness and shadows. Do not mention daytime, sunlight or a blue sky."
+   ],
+   "color": "#2b2f12",
+   "bgcolor": "#4a5220"
+  },
+  {
+   "id": 19,
+   "type": "StringReplace",
+   "title": "B — 최종 프롬프트 틀 ({llm} = AI가 쓴 문장)",
+   "pos": [
+    1940,
+    1930
+   ],
+   "size": [
+    560,
+    250
+   ],
+   "flags": {},
+   "order": 19,
+   "mode": 4,
+   "inputs": [
+    {
+     "name": "string",
+     "type": "STRING",
+     "link": 11,
+     "widget": {
+      "name": "string"
+     }
+    }
+   ],
+   "outputs": [
+    {
+     "name": "STRING",
+     "type": "STRING",
+     "links": [
+      15
+     ]
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "StringReplace"
+   },
+   "widgets_values": [
+    "",
+    "@",
+    "A realistic nighttime scene. {llm} Photorealistic night. Only the lighting changes from day to night; identical composition, framing, camera movement and motion."
+   ],
+   "color": "#2b2f12",
+   "bgcolor": "#4a5220"
+  },
+  {
+   "id": 20,
+   "type": "LTXICLoRALoaderModelOnly",
+   "title": "C — LoRA 파일",
+   "pos": [
+    2580,
+    1230
+   ],
+   "size": [
+    560,
+    130
+   ],
+   "flags": {},
+   "order": 20,
+   "mode": 4,
+   "inputs": [
+    {
+     "name": "model",
+     "type": "MODEL",
+     "link": 12
+    },
+    {
+     "name": "strength_model",
+     "type": "FLOAT",
+     "link": 13,
+     "widget": {
+      "name": "strength_model"
+     }
+    }
+   ],
+   "outputs": [
+    {
+     "name": "model",
+     "type": "MODEL",
+     "links": [
+      60
+     ]
+    },
+    {
+     "name": "latent_downscale_factor",
+     "type": "FLOAT",
+     "links": []
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "LTXICLoRALoaderModelOnly"
+   },
+   "widgets_values": [
+    "ltx-2.5-22b-ic-lora-clean-plate-1.0.safetensors",
+    1.0
+   ],
+   "color": "#323",
+   "bgcolor": "#535"
+  },
+  {
+   "id": 21,
+   "type": "StringReplace",
+   "title": "C — AI 지시문 ({req} = 한 줄 요청)",
+   "pos": [
+    2580,
+    1430
+   ],
+   "size": [
+    560,
+    430
+   ],
+   "flags": {},
+   "order": 21,
+   "mode": 4,
+   "inputs": [
+    {
+     "name": "string",
+     "type": "STRING",
+     "link": 14,
+     "widget": {
+      "name": "string"
+     }
+    }
+   ],
+   "outputs": [
+    {
+     "name": "STRING",
+     "type": "STRING",
+     "links": [
+      16
+     ]
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "StringReplace"
+   },
+   "widgets_values": [
+    "",
+    "@",
+    "You write prompts for a video model that removes people and moving objects from a video and reconstructs the empty background. The attached image is the first frame of the source video.\nUser request, what to remove (may be in Korean): \"{req}\"\n\nWrite exactly ONE sentence in English and output nothing else. Never output Korean characters; translate everything into English.\nThe sentence has two parts:\n1) the place and its static background only: structures, furniture, ground, walls, sky, lighting.\n2) the ending clause \", with no <each thing the user wants removed> anywhere in the frame.\"\nHard rules: the words man, woman, person, people, human, figure and the names of the removed objects may appear ONLY inside the ending \"with no ...\" clause. Never say that someone or something is \"in the foreground\", \"sitting\", \"standing\" or \"visible\". Never write a command such as \"Remove ...\" or \"Delete ...\".\nExample (user asked to remove the people and the cars): A quiet city street with brick buildings, a bus shelter, grey pavement and soft daylight, with no people and no cars anywhere in the frame."
+   ],
+   "color": "#2b2f12",
+   "bgcolor": "#4a5220"
+  },
+  {
+   "id": 22,
+   "type": "StringReplace",
+   "title": "C — 최종 프롬프트 틀 ({llm} = AI가 쓴 문장)",
+   "pos": [
+    2580,
+    1930
+   ],
+   "size": [
+    560,
+    250
+   ],
+   "flags": {},
+   "order": 22,
+   "mode": 4,
+   "inputs": [
+    {
+     "name": "string",
+     "type": "STRING",
+     "link": 15,
+     "widget": {
+      "name": "string"
+     }
+    }
+   ],
+   "outputs": [
+    {
+     "name": "STRING",
+     "type": "STRING",
+     "links": [
+      21
+     ]
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "StringReplace"
+   },
+   "widgets_values": [
+    "",
+    "@",
+    "An empty clean plate of the exact same location: {llm} Identical background, environment, structures and lighting as the source video. No people, no humans, no figures, and no body parts such as arms, hands or legs anywhere in the frame. Static photorealistic footage, natural light, high detail."
+   ],
+   "color": "#2b2f12",
+   "bgcolor": "#4a5220"
+  },
+  {
+   "id": 23,
+   "type": "PrimitiveString",
+   "title": "체인 시작값 (건드리지 마세요)",
+   "pos": [
+    0,
+    2400
+   ],
+   "size": [
+    460,
+    90
+   ],
+   "flags": {},
+   "order": 23,
+   "mode": 0,
+   "inputs": [],
+   "outputs": [
+    {
+     "name": "STRING",
+     "type": "STRING",
+     "links": [
+      6,
+      7
+     ]
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "PrimitiveString"
+   },
+   "widgets_values": [
+    "@"
+   ],
+   "color": "#2b2f12",
+   "bgcolor": "#4a5220"
+  },
+  {
+   "id": 24,
+   "type": "StringReplace",
+   "title": "지시문의 {req} 자리에 한 줄 요청 넣기",
+   "pos": [
+    0,
+    2560
+   ],
+   "size": [
+    460,
+    200
+   ],
+   "flags": {},
+   "order": 24,
+   "mode": 0,
+   "inputs": [
+    {
+     "name": "string",
+     "type": "STRING",
+     "link": 16,
+     "widget": {
+      "name": "string"
+     }
+    },
+    {
+     "name": "replace",
+     "type": "STRING",
+     "link": 17,
+     "widget": {
+      "name": "replace"
+     }
+    }
+   ],
+   "outputs": [
+    {
+     "name": "STRING",
+     "type": "STRING",
+     "links": [
+      20
+     ]
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "StringReplace"
+   },
+   "widgets_values": [
+    "",
+    "{req}",
+    ""
+   ],
+   "color": "#2b2f12",
+   "bgcolor": "#4a5220"
+  },
+  {
+   "id": 25,
+   "type": "TextGenerate",
+   "title": "Gemma4 가 첫 프레임을 보고 문장 작성",
+   "pos": [
+    0,
+    2830
+   ],
+   "size": [
+    460,
+    260
+   ],
+   "flags": {},
+   "order": 25,
+   "mode": 0,
+   "inputs": [
+    {
+     "name": "clip",
+     "type": "CLIP",
+     "link": 18
+    },
+    {
+     "name": "image",
+     "type": "IMAGE",
+     "link": 19
+    },
+    {
+     "name": "prompt",
+     "type": "STRING",
+     "link": 20,
+     "widget": {
+      "name": "prompt"
+     }
+    }
+   ],
+   "outputs": [
+    {
+     "name": "generated_text",
+     "type": "STRING",
+     "links": [
+      22
+     ]
+    },
+    {
+     "name": "thinking",
+     "type": "STRING",
+     "links": []
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "TextGenerate"
+   },
+   "widgets_values": [
+    "",
+    400,
+    "off",
+    false,
+    true
+   ],
+   "color": "#2b2f12",
+   "bgcolor": "#4a5220"
+  },
+  {
+   "id": 26,
+   "type": "StringReplace",
+   "title": "틀의 {llm} 자리에 AI 문장 끼워 넣기 → 최종 프롬프트",
+   "pos": [
+    540,
+    2400
+   ],
+   "size": [
+    460,
+    200
+   ],
+   "flags": {},
+   "order": 26,
+   "mode": 0,
+   "inputs": [
+    {
+     "name": "string",
+     "type": "STRING",
+     "link": 21,
+     "widget": {
+      "name": "string"
+     }
+    },
+    {
+     "name": "replace",
+     "type": "STRING",
+     "link": 22,
+     "widget": {
+      "name": "replace"
+     }
+    }
+   ],
+   "outputs": [
+    {
+     "name": "STRING",
+     "type": "STRING",
+     "links": [
+      1,
+      24
+     ]
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "StringReplace"
+   },
+   "widgets_values": [
+    "",
+    "{llm}",
+    ""
+   ],
+   "color": "#2b2f12",
+   "bgcolor": "#4a5220"
+  },
+  {
+   "id": 27,
+   "type": "CLIPTextEncode",
+   "title": "프롬프트 인코딩",
+   "pos": [
+    540,
+    2670
+   ],
+   "size": [
+    460,
+    110
+   ],
+   "flags": {},
+   "order": 27,
+   "mode": 0,
+   "inputs": [
+    {
+     "name": "clip",
+     "type": "CLIP",
+     "link": 23
+    },
+    {
+     "name": "text",
+     "type": "STRING",
+     "link": 24,
+     "widget": {
+      "name": "text"
+     }
+    }
+   ],
+   "outputs": [
+    {
+     "name": "CONDITIONING",
+     "type": "CONDITIONING",
+     "links": [
+      41
+     ]
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "CLIPTextEncode"
+   },
+   "widgets_values": [
+    ""
+   ],
+   "color": "#232",
+   "bgcolor": "#353"
+  },
+  {
+   "id": 28,
+   "type": "CLIPTextEncode",
+   "title": "네거티브 (CFG 1이라 영향 없음)",
+   "pos": [
+    540,
+    2850
+   ],
+   "size": [
+    460,
+    110
+   ],
+   "flags": {},
+   "order": 28,
+   "mode": 0,
+   "inputs": [
+    {
+     "name": "clip",
+     "type": "CLIP",
+     "link": 25
+    }
+   ],
+   "outputs": [
+    {
+     "name": "CONDITIONING",
+     "type": "CONDITIONING",
+     "links": [
+      42
+     ]
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "CLIPTextEncode"
+   },
+   "widgets_values": [
+    ""
+   ],
+   "color": "#322",
+   "bgcolor": "#533"
+  },
+  {
+   "id": 29,
+   "type": "PrimitiveInt",
+   "title": "해상도 — 긴 변 (1920 = FHD · 메모리 부족하면 1280)",
+   "pos": [
+    1080,
+    2400
+   ],
+   "size": [
+    460,
+    90
+   ],
+   "flags": {},
+   "order": 29,
+   "mode": 0,
+   "inputs": [],
+   "outputs": [
+    {
+     "name": "INT",
+     "type": "INT",
+     "links": [
+      29,
+      32
+     ]
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "PrimitiveInt"
+   },
+   "widgets_values": [
+    1920,
+    "fixed"
+   ],
+   "color": "#233",
+   "bgcolor": "#355"
+  },
+  {
+   "id": 30,
+   "type": "VHS_VideoInfoSource",
+   "title": "원본 가로·세로 읽기 (회전 반영)",
+   "pos": [
+    1080,
+    2560
+   ],
+   "size": [
+    460,
+    150
+   ],
+   "flags": {},
+   "order": 30,
+   "mode": 0,
+   "inputs": [
+    {
+     "name": "video_info",
+     "type": "VHS_VIDEOINFO",
+     "link": 26
+    }
+   ],
+   "outputs": [
+    {
+     "name": "fps🟨",
+     "type": "FLOAT",
+     "links": []
+    },
+    {
+     "name": "frame_count🟨",
+     "type": "INT",
+     "links": []
+    },
+    {
+     "name": "duration🟨",
+     "type": "FLOAT",
+     "links": []
+    },
+    {
+     "name": "width🟨",
+     "type": "INT",
+     "links": [
+      27,
+      30
+     ]
+    },
+    {
+     "name": "height🟨",
+     "type": "INT",
+     "links": [
+      28,
+      31
+     ]
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "VHS_VideoInfoSource"
+   },
+   "widgets_values": []
+  },
+  {
+   "id": 31,
+   "type": "ComfyMathExpression",
+   "title": "결과 가로 (긴 변 기준, 32 배수)",
+   "pos": [
+    1080,
+    2780
+   ],
+   "size": [
+    460,
+    150
+   ],
+   "flags": {},
+   "order": 31,
+   "mode": 0,
+   "inputs": [
+    {
+     "name": "values.a",
+     "type": "FLOAT,INT,BOOLEAN",
+     "link": 27
+    },
+    {
+     "name": "values.b",
+     "type": "FLOAT,INT,BOOLEAN",
+     "link": 28
+    },
+    {
+     "name": "values.c",
+     "type": "FLOAT,INT,BOOLEAN",
+     "link": 29
+    }
+   ],
+   "outputs": [
+    {
+     "name": "FLOAT",
+     "type": "FLOAT",
+     "links": []
+    },
+    {
+     "name": "INT",
+     "type": "INT",
+     "links": [
+      34
+     ]
+    },
+    {
+     "name": "BOOL",
+     "type": "BOOLEAN",
+     "links": []
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "ComfyMathExpression"
+   },
+   "widgets_values": [
+    "round(c*a/max(a,b)/32)*32"
+   ]
+  },
+  {
+   "id": 32,
+   "type": "ComfyMathExpression",
+   "title": "결과 세로 (긴 변 기준, 32 배수)",
+   "pos": [
+    1080,
+    3000
+   ],
+   "size": [
+    460,
+    150
+   ],
+   "flags": {},
+   "order": 32,
+   "mode": 0,
+   "inputs": [
+    {
+     "name": "values.a",
+     "type": "FLOAT,INT,BOOLEAN",
+     "link": 30
+    },
+    {
+     "name": "values.b",
+     "type": "FLOAT,INT,BOOLEAN",
+     "link": 31
+    },
+    {
+     "name": "values.c",
+     "type": "FLOAT,INT,BOOLEAN",
+     "link": 32
+    }
+   ],
+   "outputs": [
+    {
+     "name": "FLOAT",
+     "type": "FLOAT",
+     "links": []
+    },
+    {
+     "name": "INT",
+     "type": "INT",
+     "links": [
+      35
+     ]
+    },
+    {
+     "name": "BOOL",
+     "type": "BOOLEAN",
+     "links": []
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "ComfyMathExpression"
+   },
+   "widgets_values": [
+    "round(c*b/max(a,b)/32)*32"
+   ]
+  },
+  {
+   "id": 33,
+   "type": "ImageScale",
+   "title": "원본 비율로 펴기 — 세로는 세로, 가로는 가로",
+   "pos": [
+    1080,
+    3220
+   ],
+   "size": [
+    460,
+    170
+   ],
+   "flags": {},
+   "order": 33,
+   "mode": 0,
+   "inputs": [
+    {
+     "name": "image",
+     "type": "IMAGE",
+     "link": 33
+    },
+    {
+     "name": "width",
+     "type": "INT",
+     "link": 34,
+     "widget": {
+      "name": "width"
+     }
+    },
+    {
+     "name": "height",
+     "type": "INT",
+     "link": 35,
+     "widget": {
+      "name": "height"
+     }
+    }
+   ],
+   "outputs": [
+    {
+     "name": "IMAGE",
+     "type": "IMAGE",
+     "links": [
+      36,
+      37,
+      47
+     ]
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "ImageScale"
+   },
+   "widgets_values": [
+    "lanczos",
+    512,
+    512,
+    "disabled"
+   ]
+  },
+  {
+   "id": 34,
+   "type": "GetImageSize",
+   "title": "크기·프레임 수 읽기",
+   "pos": [
+    1080,
+    3460
+   ],
+   "size": [
+    460,
+    110
+   ],
+   "flags": {},
+   "order": 34,
+   "mode": 0,
+   "inputs": [
+    {
+     "name": "image",
+     "type": "IMAGE",
+     "link": 36
+    }
+   ],
+   "outputs": [
+    {
+     "name": "width",
+     "type": "INT",
+     "links": [
+      38
+     ]
+    },
+    {
+     "name": "height",
+     "type": "INT",
+     "links": [
+      39
+     ]
+    },
+    {
+     "name": "batch_size",
+     "type": "INT",
+     "links": [
+      40,
+      54
+     ]
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "GetImageSize"
+   },
+   "widgets_values": []
+  },
+  {
+   "id": 35,
+   "type": "ImageFromBatch",
+   "title": "첫 프레임 (프롬프트 작성용)",
+   "pos": [
+    1080,
+    3640
+   ],
+   "size": [
+    460,
+    110
+   ],
+   "flags": {},
+   "order": 35,
+   "mode": 0,
+   "inputs": [
+    {
+     "name": "image",
+     "type": "IMAGE",
+     "link": 37
+    }
+   ],
+   "outputs": [
+    {
+     "name": "IMAGE",
+     "type": "IMAGE",
+     "links": [
+      19
+     ]
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "ImageFromBatch"
+   },
+   "widgets_values": [
+    0,
+    1
+   ]
+  },
+  {
+   "id": 36,
+   "type": "EmptyLTXVLatentVideo",
+   "title": "빈 영상 latent",
+   "pos": [
+    1080,
+    3820
+   ],
+   "size": [
+    460,
+    170
+   ],
+   "flags": {},
+   "order": 36,
+   "mode": 0,
+   "inputs": [
+    {
+     "name": "width",
+     "type": "INT",
+     "link": 38,
+     "widget": {
+      "name": "width"
+     }
+    },
+    {
+     "name": "height",
+     "type": "INT",
+     "link": 39,
+     "widget": {
+      "name": "height"
+     }
+    },
+    {
+     "name": "length",
+     "type": "INT",
+     "link": 40,
+     "widget": {
+      "name": "length"
+     }
+    }
+   ],
+   "outputs": [
+    {
+     "name": "LATENT",
+     "type": "LATENT",
+     "links": [
+      46
+     ]
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "EmptyLTXVLatentVideo"
+   },
+   "widgets_values": [
+    768,
+    512,
+    97,
+    1
+   ]
+  },
+  {
+   "id": 37,
+   "type": "LTXVConditioning",
+   "title": "프레임레이트 조건",
+   "pos": [
+    1620,
+    2400
+   ],
+   "size": [
+    460,
+    110
+   ],
+   "flags": {},
+   "order": 37,
+   "mode": 0,
+   "inputs": [
+    {
+     "name": "positive",
+     "type": "CONDITIONING",
+     "link": 41
+    },
+    {
+     "name": "negative",
+     "type": "CONDITIONING",
+     "link": 42
+    }
+   ],
+   "outputs": [
+    {
+     "name": "positive",
+     "type": "CONDITIONING",
+     "links": [
+      43,
+      50
+     ]
+    },
+    {
+     "name": "negative",
+     "type": "CONDITIONING",
+     "links": [
+      44,
+      51
+     ]
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "LTXVConditioning"
+   },
+   "widgets_values": [
+    24
+   ]
+  },
+  {
+   "id": 38,
+   "type": "LTXAddVideoICLoRAGuide",
+   "title": "원본 영상을 레퍼런스로 연결",
+   "pos": [
+    1620,
+    2580
+   ],
+   "size": [
+    460,
+    330
+   ],
+   "flags": {},
+   "order": 38,
+   "mode": 0,
+   "inputs": [
+    {
+     "name": "positive",
+     "type": "CONDITIONING",
+     "link": 43
+    },
+    {
+     "name": "negative",
+     "type": "CONDITIONING",
+     "link": 44
+    },
+    {
+     "name": "vae",
+     "type": "VAE",
+     "link": 45
+    },
+    {
+     "name": "latent",
+     "type": "LATENT",
+     "link": 46
+    },
+    {
+     "name": "image",
+     "type": "IMAGE",
+     "link": 47
+    }
+   ],
+   "outputs": [
+    {
+     "name": "positive",
+     "type": "CONDITIONING",
+     "links": [
+      61,
+      69
+     ]
+    },
+    {
+     "name": "negative",
+     "type": "CONDITIONING",
+     "links": [
+      62,
+      70
+     ]
+    },
+    {
+     "name": "latent",
+     "type": "LATENT",
+     "links": [
+      58
+     ]
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "LTXAddVideoICLoRAGuide"
+   },
+   "widgets_values": [
+    0,
+    1.0,
+    1.0,
+    "disabled",
+    false,
+    256,
+    64
+   ]
+  },
+  {
+   "id": 39,
+   "type": "VAEEncodeAudio",
+   "title": "원본 오디오 인코드",
+   "pos": [
+    1620,
+    2980
+   ],
+   "size": [
+    460,
+    90
+   ],
+   "flags": {},
+   "order": 39,
+   "mode": 0,
+   "inputs": [
+    {
+     "name": "audio",
+     "type": "AUDIO",
+     "link": 48
+    },
+    {
+     "name": "vae",
+     "type": "VAE",
+     "link": 49
+    }
+   ],
+   "outputs": [
+    {
+     "name": "LATENT",
+     "type": "LATENT",
+     "links": [
+      52
+     ]
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "VAEEncodeAudio"
+   },
+   "widgets_values": [],
+   "color": "#332922",
+   "bgcolor": "#593930"
+  },
+  {
+   "id": 40,
+   "type": "LTXVSetAudioRefTokens",
+   "title": "원본 오디오 고정",
+   "pos": [
+    2160,
+    2400
+   ],
+   "size": [
+    460,
+    110
+   ],
+   "flags": {},
+   "order": 40,
+   "mode": 0,
+   "inputs": [
+    {
+     "name": "positive",
+     "type": "CONDITIONING",
+     "link": 50
+    },
+    {
+     "name": "negative",
+     "type": "CONDITIONING",
+     "link": 51
+    },
+    {
+     "name": "audio_latent",
+     "type": "LATENT",
+     "link": 52
+    }
+   ],
+   "outputs": [
+    {
+     "name": "positive",
+     "type": "CONDITIONING",
+     "links": []
+    },
+    {
+     "name": "negative",
+     "type": "CONDITIONING",
+     "links": []
+    },
+    {
+     "name": "frozen_audio",
+     "type": "LATENT",
+     "links": [
+      55
+     ]
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "LTXVSetAudioRefTokens"
+   },
+   "widgets_values": [],
+   "color": "#332922",
+   "bgcolor": "#593930"
+  },
+  {
+   "id": 41,
+   "type": "LTXVEmptyLatentAudio",
+   "title": "빈 오디오 latent",
+   "pos": [
+    2160,
+    2580
+   ],
+   "size": [
+    460,
+    150
+   ],
+   "flags": {},
+   "order": 41,
+   "mode": 0,
+   "inputs": [
+    {
+     "name": "audio_vae",
+     "type": "VAE",
+     "link": 53
+    },
+    {
+     "name": "frames_number",
+     "type": "INT",
+     "link": 54,
+     "widget": {
+      "name": "frames_number"
+     }
+    }
+   ],
+   "outputs": [
+    {
+     "name": "Latent",
+     "type": "LATENT",
+     "links": [
+      56
+     ]
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "LTXVEmptyLatentAudio"
+   },
+   "widgets_values": [
+    97,
+    24,
+    1
+   ],
+   "color": "#332922",
+   "bgcolor": "#593930"
+  },
+  {
+   "id": 42,
+   "type": "ComfySwitchNode",
+   "title": "오디오 선택 (⑤ 스위치)",
+   "pos": [
+    2160,
+    2800
+   ],
+   "size": [
+    460,
+    110
+   ],
+   "flags": {},
+   "order": 42,
+   "mode": 0,
+   "inputs": [
+    {
+     "name": "on_false",
+     "type": "LATENT",
+     "link": 55
+    },
+    {
+     "name": "on_true",
+     "type": "LATENT",
+     "link": 56
+    },
+    {
+     "name": "switch",
+     "type": "BOOLEAN",
+     "link": 57,
+     "widget": {
+      "name": "switch"
+     }
+    }
+   ],
+   "outputs": [
+    {
+     "name": "output",
+     "type": "LATENT",
+     "links": [
+      59
+     ]
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "ComfySwitchNode"
+   },
+   "widgets_values": [
+    false
+   ],
+   "color": "#332922",
+   "bgcolor": "#593930"
+  },
+  {
+   "id": 43,
+   "type": "LTXVConcatAVLatent",
+   "title": "영상+오디오 latent",
+   "pos": [
+    2160,
+    2980
+   ],
+   "size": [
+    460,
+    90
+   ],
+   "flags": {},
+   "order": 43,
+   "mode": 0,
+   "inputs": [
+    {
+     "name": "video_latent",
+     "type": "LATENT",
+     "link": 58
+    },
+    {
+     "name": "audio_latent",
+     "type": "LATENT",
+     "link": 59
+    }
+   ],
+   "outputs": [
+    {
+     "name": "latent",
+     "type": "LATENT",
+     "links": [
+      67
+     ]
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "LTXVConcatAVLatent"
+   },
+   "widgets_values": [],
+   "color": "#332922",
+   "bgcolor": "#593930"
+  },
+  {
+   "id": 44,
+   "type": "CFGGuider",
+   "title": "CFG 1.0",
+   "pos": [
+    2700,
+    2400
+   ],
+   "size": [
+    460,
+    130
+   ],
+   "flags": {},
+   "order": 44,
+   "mode": 0,
+   "inputs": [
+    {
+     "name": "model",
+     "type": "MODEL",
+     "link": 60
+    },
+    {
+     "name": "positive",
+     "type": "CONDITIONING",
+     "link": 61
+    },
+    {
+     "name": "negative",
+     "type": "CONDITIONING",
+     "link": 62
+    }
+   ],
+   "outputs": [
+    {
+     "name": "GUIDER",
+     "type": "GUIDER",
+     "links": [
+      64
+     ]
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "CFGGuider"
+   },
+   "widgets_values": [
+    1.0
+   ],
+   "color": "#222",
+   "bgcolor": "#000"
+  },
+  {
+   "id": 45,
+   "type": "KSamplerSelect",
+   "title": "샘플러",
+   "pos": [
+    2700,
+    2600
+   ],
+   "size": [
+    460,
+    90
+   ],
+   "flags": {},
+   "order": 45,
+   "mode": 0,
+   "inputs": [],
+   "outputs": [
+    {
+     "name": "SAMPLER",
+     "type": "SAMPLER",
+     "links": [
+      65
+     ]
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "KSamplerSelect"
+   },
+   "widgets_values": [
+    "euler_ancestral"
+   ],
+   "color": "#222",
+   "bgcolor": "#000"
+  },
+  {
+   "id": 46,
+   "type": "ManualSigmas",
+   "title": "distilled 8스텝 시그마",
+   "pos": [
+    2700,
+    2760
+   ],
+   "size": [
+    460,
+    90
+   ],
+   "flags": {},
+   "order": 46,
+   "mode": 0,
+   "inputs": [],
+   "outputs": [
+    {
+     "name": "SIGMAS",
+     "type": "SIGMAS",
+     "links": [
+      66
+     ]
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "ManualSigmas"
+   },
+   "widgets_values": [
+    "1.0, 0.99375, 0.9875, 0.98125, 0.975, 0.909375, 0.725, 0.421875, 0.0"
+   ],
+   "color": "#222",
+   "bgcolor": "#000"
+  },
+  {
+   "id": 47,
+   "type": "SamplerCustomAdvanced",
+   "title": "샘플링 — 시간 대부분이 여기",
+   "pos": [
+    2700,
+    2920
+   ],
+   "size": [
+    460,
+    150
+   ],
+   "flags": {},
+   "order": 47,
+   "mode": 0,
+   "inputs": [
+    {
+     "name": "noise",
+     "type": "NOISE",
+     "link": 63
+    },
+    {
+     "name": "guider",
+     "type": "GUIDER",
+     "link": 64
+    },
+    {
+     "name": "sampler",
+     "type": "SAMPLER",
+     "link": 65
+    },
+    {
+     "name": "sigmas",
+     "type": "SIGMAS",
+     "link": 66
+    },
+    {
+     "name": "latent_image",
+     "type": "LATENT",
+     "link": 67
+    }
+   ],
+   "outputs": [
+    {
+     "name": "output",
+     "type": "LATENT",
+     "links": [
+      68
+     ]
+    },
+    {
+     "name": "denoised_output",
+     "type": "LATENT",
+     "links": []
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "SamplerCustomAdvanced"
+   },
+   "widgets_values": [],
+   "color": "#222",
+   "bgcolor": "#000"
+  },
+  {
+   "id": 48,
+   "type": "LTXVSeparateAVLatent",
+   "title": "영상/오디오 분리",
+   "pos": [
+    3240,
+    2400
+   ],
+   "size": [
+    460,
+    90
+   ],
+   "flags": {},
+   "order": 48,
+   "mode": 0,
+   "inputs": [
+    {
+     "name": "av_latent",
+     "type": "LATENT",
+     "link": 68
+    }
+   ],
+   "outputs": [
+    {
+     "name": "video_latent",
+     "type": "LATENT",
+     "links": [
+      71
+     ]
+    },
+    {
+     "name": "audio_latent",
+     "type": "LATENT",
+     "links": [
+      74
+     ]
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "LTXVSeparateAVLatent"
+   },
+   "widgets_values": []
+  },
+  {
+   "id": 49,
+   "type": "LTXVCropGuides",
+   "title": "레퍼런스 구간 잘라내기",
+   "pos": [
+    3240,
+    2560
+   ],
+   "size": [
+    460,
+    110
+   ],
+   "flags": {},
+   "order": 49,
+   "mode": 0,
+   "inputs": [
+    {
+     "name": "positive",
+     "type": "CONDITIONING",
+     "link": 69
+    },
+    {
+     "name": "negative",
+     "type": "CONDITIONING",
+     "link": 70
+    },
+    {
+     "name": "latent",
+     "type": "LATENT",
+     "link": 71
+    }
+   ],
+   "outputs": [
+    {
+     "name": "positive",
+     "type": "CONDITIONING",
+     "links": []
+    },
+    {
+     "name": "negative",
+     "type": "CONDITIONING",
+     "links": []
+    },
+    {
+     "name": "latent",
+     "type": "LATENT",
+     "links": [
+      72
+     ]
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "LTXVCropGuides"
+   },
+   "widgets_values": []
+  },
+  {
+   "id": 50,
+   "type": "VAEDecodeTiled",
+   "title": "타일 디코드",
+   "pos": [
+    3240,
+    2740
+   ],
+   "size": [
+    460,
+    190
+   ],
+   "flags": {},
+   "order": 50,
+   "mode": 0,
+   "inputs": [
+    {
+     "name": "samples",
+     "type": "LATENT",
+     "link": 72
+    },
+    {
+     "name": "vae",
+     "type": "VAE",
+     "link": 73
+    }
+   ],
+   "outputs": [
+    {
+     "name": "IMAGE",
+     "type": "IMAGE",
+     "links": [
+      76
+     ]
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "VAEDecodeTiled"
+   },
+   "widgets_values": [
+    512,
+    64,
+    128,
+    32
+   ],
+   "color": "#16403a",
+   "bgcolor": "#1f5e55"
+  },
+  {
+   "id": 51,
+   "type": "LTXVAudioVAEDecode",
+   "title": "오디오 디코드",
+   "pos": [
+    3240,
+    3000
+   ],
+   "size": [
+    460,
+    90
+   ],
+   "flags": {},
+   "order": 51,
+   "mode": 0,
+   "inputs": [
+    {
+     "name": "samples",
+     "type": "LATENT",
+     "link": 74
+    },
+    {
+     "name": "audio_vae",
+     "type": "VAE",
+     "link": 75
+    }
+   ],
+   "outputs": [
+    {
+     "name": "Audio",
+     "type": "AUDIO",
+     "links": [
+      77
+     ]
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "LTXVAudioVAEDecode"
+   },
+   "widgets_values": [],
+   "color": "#332922",
+   "bgcolor": "#593930"
+  },
+  {
+   "id": 52,
+   "type": "CreateVideo",
+   "title": "영상 합치기 (24fps)",
+   "pos": [
+    3240,
+    3160
+   ],
+   "size": [
+    460,
+    130
+   ],
+   "flags": {},
+   "order": 52,
+   "mode": 0,
+   "inputs": [
+    {
+     "name": "images",
+     "type": "IMAGE",
+     "link": 76
+    },
+    {
+     "name": "audio",
+     "type": "AUDIO",
+     "link": 77
+    }
+   ],
+   "outputs": [
+    {
+     "name": "VIDEO",
+     "type": "VIDEO",
+     "links": [
+      2
+     ]
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "CreateVideo"
+   },
+   "widgets_values": [
+    24
+   ],
+   "color": "#16403a",
+   "bgcolor": "#1f5e55"
+  },
+  {
+   "id": 53,
+   "type": "MarkdownNote",
+   "title": "사용 설명 — 여기부터 읽으세요",
+   "pos": [
+    -820,
+    -80
+   ],
+   "size": [
+    760,
+    1260
+   ],
+   "flags": {},
+   "order": 53,
+   "mode": 0,
+   "inputs": [],
+   "outputs": [],
+   "properties": {},
+   "widgets_values": [
+    "# LTX 2.5 IC-LoRA — 내 영상에 효과만 입히기 (FHD)\n\n사람·카메라·배경은 그대로 두고 **효과만** 바꿉니다. 효과는 **② 딸깍 스위치**에서 고릅니다.\n\n| ② 효과 | ③ 한 줄 요청 예시 |\n|---|---|\n| **A 물 채우기** | `서 있는 사람 발목까지 물이 차 있다` |\n| **B 낮 → 밤** | `보름달이 뜬 밤, 가로등 불빛` |\n| **C 사람·물체 지우기** | `사람을 지운다` / `사람과 자전거를 지운다` |\n\n> 처음이라면 아래 **「모델 받는 방법」** 노트부터 ↓\n\n## 쓰는 법 — 오른쪽 파란 영역만\n| | 할 일 |\n|---|---|\n| **①** | 원본 영상 업로드 (24fps·5초로 자동 변환) |\n| **②** | 효과 고르기 — **이름 옆 토글을 딸깍.** 하나를 켜면 나머지는 자동으로 꺼집니다 |\n| **③** | 원하는 걸 **한국어로 짧게** — 영어로 써도 됩니다 |\n| **④** | 강도 — 처음엔 1.0 그대로 |\n| **⑤** | 소리 — 말하는 영상은 OFF, 효과음도 만들려면 ON |\n| **⑥** | 결과가 아쉬우면 시드 숫자만 바꿔 다시 |\n| **⑦** | AI가 실제로 쓴 프롬프트 (확인용) |\n| **⑧** | 결과 영상 |\n\n꺼진 효과 묶음은 아래에서 보라색으로 흐리게 보입니다(바이패스 상태 — 정상입니다).\n\n프롬프트는 직접 안 써도 됩니다. 소형 Gemma4 가 **영상 첫 장면을 보고** 고른 효과의 형식에 맞는\n영어 프롬프트를 써주고, 필수 트리거·마무리 문장은 자동으로 붙습니다.\n\n**같은 영상으로 세 효과를 다 뽑으려면** ② 와 ③ 만 바꿔가며 세 번 실행하세요.\n\n## ③ 요청 잘 쓰는 요령\n- **물**: 누가 / 어디까지 / 어떤 물 — `앉아있는 사람 허리까지 흙탕물`, `바닥에 얕은 물이 흐른다`\n- **밤**: 어떤 빛 — `보름달`, `네온사인`, `따뜻한 스탠드 조명 하나`\n- **지우기**: 무엇을 — `사람`, `사람과 가방`, `지나가는 차`\n  ※ 지울 대상이 **화면 한가운데를 크게 차지하면 잘 안 됩니다.**\n\n## ④ 강도 가이드\n| 강도 | 결과 |\n|---|---|\n| 0.9 | 효과가 약함 |\n| **1.0 ~ 1.05** | **권장** — 자연스럽고 얼굴 유지 |\n| 1.1 ~ 1.5 | (물) 바닥 전체를 강·바다로 바꿀 때 |\n| 1.5 이상 | 얼굴·디테일이 뭉개질 수 있음 |\n\n## 자주 막히는 곳\n- **오디오 에러** → 원본에 소리 트랙이 없는 영상. **⑤ 를 ON**.\n- **메모리 부족** → ① 의 `frame_load_cap` 97, 그래도 안 되면 「해상도 — 긴 변」을 1280 으로.\n- **세로 / 가로** → 자동입니다. 긴 변을 1920 에 맞추고 방향은 원본 그대로 (세로 1088×1920, 가로 1920×1088).\n- **4K 원본** → 원본 해상도로 읽어서 RAM 을 15GB 넘게 씁니다. RAM 이 32GB 이하면 FHD 로 줄여서 넣으세요.\n  (① 에 가로·세로를 둘 다 넣으면 VHS 가 가운데를 잘라버려서 원본 그대로 읽습니다)\n- **밤이 뒤로 갈수록 이상해짐** → 밤 LoRA는 4초(97프레임) 학습. `frame_load_cap` 97.\n- **프롬프트가 엉뚱함(⑦)** → ③ 을 조금 더 구체적으로.\n- **결과 색이 바램** → 폰으로 찍은 **HDR 영상**입니다. 코어 노드 `Convert Image Color Space`(source HDR → destination sRGB)를 「타일 디코드」와 「영상 합치기」 사이에 끼우세요. 일반(SDR) 영상에는 쓰지 마세요.\n\n## 다른 IC-LoRA 를 쓰고 싶다면\n효과 묶음 하나에서 LoRA 파일을 바꾸고, 그 아래 **AI 지시문**과 **최종 프롬프트 틀** 두 글상자를\n그 LoRA 모델카드의 프롬프트 규칙대로 고치면 됩니다. (레퍼런스 영상 하나만 받는 IC-LoRA 한정)\n\n## 노드 색깔\n🟦 넣는 영상 · 🟩 요청/프롬프트 · 청록 = 내가 조절하는 값 · 🟪 모델 파일 · 올리브 = AI 프롬프트 작성\n짙은 청록 = 결과 · 갈색 = 소리 · 검정 = 샘플링 · 회색 = 자동 (건드릴 필요 없음)\n\n## ⚠ 2단계 업스케일을 붙이지 마세요\nIC-LoRA 는 **한 번에 원본 해상도로** 돌리는 게 공식 권장입니다. latent 업스케일을 붙이면 효과가 지워지거나 얼굴이 바뀝니다.\n"
+   ],
+   "color": "#432",
+   "bgcolor": "#653"
+  },
+  {
+   "id": 54,
+   "type": "MarkdownNote",
+   "title": "모델 받는 방법 (클릭 = 다운로드)",
+   "pos": [
+    -820,
+    1230
+   ],
+   "size": [
+    760,
+    1240
+   ],
+   "flags": {},
+   "order": 54,
+   "mode": 0,
+   "inputs": [],
+   "outputs": [],
+   "properties": {},
+   "widgets_values": [
+    "# 모델 받는 방법 — 파일명을 클릭하면 바로 다운로드\n\n## 0) 먼저 (한 번만, 무료)\nHugging Face **로그인** 후 아래 페이지들에서 **`Agree and Access`** 를 누르세요. 안 누르면 링크가 403 으로 막힙니다.\n- [LTX-2.5 본체](https://huggingface.co/Lightricks/LTX-2.5) · [Water](https://huggingface.co/Lightricks/LTX-2.5-22b-IC-LoRA-Water-Simulation) · [Day-To-Night](https://huggingface.co/Lightricks/LTX-2.5-22b-IC-LoRA-Day-To-Night) · [Clean-Plate](https://huggingface.co/Lightricks/LTX-2.5-22b-IC-LoRA-Clean-Plate)\n\n## 1) 본체 5개 — 클릭 = 다운로드\n| 파일 (클릭) | 용량 | 넣을 폴더 |\n|---|---|---|\n| [ltx-2.5-22b-distilled-transformer-comfy-int8-convrot.safetensors](https://huggingface.co/Lightricks/LTX-2.5/resolve/main/diffusion_models/ltx-2.5-22b-distilled-transformer-comfy-int8-convrot.safetensors?download=true) | 21.5GB | `models/diffusion_models` |\n| [gemma4-12b-with-proj-ltx-2.5-comfy-int8-convrot.safetensors](https://huggingface.co/Lightricks/LTX-2.5/resolve/main/text_encoders/gemma4-12b-with-proj-ltx-2.5-comfy-int8-convrot.safetensors?download=true) | 15.4GB | `models/text_encoders` |\n| [gemma4_e2b_it_bf16.safetensors](https://huggingface.co/Comfy-Org/gemma-4/resolve/main/text_encoders/gemma4_e2b_it_bf16.safetensors?download=true) (프롬프트 작성용 · 로그인 불필요) | 10.3GB | `models/text_encoders` |\n| [ltx-2.5-video-vae-bf16.safetensors](https://huggingface.co/Lightricks/LTX-2.5/resolve/main/vae/ltx-2.5-video-vae-bf16.safetensors?download=true) | 1.5GB | `models/vae` |\n| [ltx-2.5-audio-vae-bf16.safetensors](https://huggingface.co/Lightricks/LTX-2.5/resolve/main/vae/ltx-2.5-audio-vae-bf16.safetensors?download=true) | 0.4GB | `models/vae` |\n\n## 2) 효과 LoRA 3개 (`models/loras`)\n| 효과 | 파일 (클릭) | 용량 |\n|---|---|---|\n| A 물 | [ltx-2.5-22b-ic-lora-water-simulation-0.9.safetensors](https://huggingface.co/Lightricks/LTX-2.5-22b-IC-LoRA-Water-Simulation/resolve/main/ltx-2.5-22b-ic-lora-water-simulation-0.9.safetensors?download=true) | 0.9GB |\n| B 밤 | [ltx-2.5-22b-ic-lora-day-to-night-0.9.safetensors](https://huggingface.co/Lightricks/LTX-2.5-22b-IC-LoRA-Day-To-Night/resolve/main/ltx-2.5-22b-ic-lora-day-to-night-0.9.safetensors?download=true) | 0.3GB |\n| C 지우기 | [ltx-2.5-22b-ic-lora-clean-plate-1.0.safetensors](https://huggingface.co/Lightricks/LTX-2.5-22b-IC-LoRA-Clean-Plate/resolve/main/ltx-2.5-22b-ic-lora-clean-plate-1.0.safetensors?download=true) | 0.3GB |\n\n※ **쓸 효과의 LoRA만** 받아도 됩니다. 꺼진(바이패스) 묶음은 파일이 없어도 실행에 지장 없어요(빨간 경고만 뜸).\n\n## 3) 받은 뒤\n1. ComfyUI 에서 **R 키**(새로고침) — 안 누르면 파일이 있어도 빨간 경고가 뜹니다.\n2. **「처음 한 번만」** 그룹의 로더 5개와 **A / B / C 묶음**의 LoRA 로더에서 받은 파일을 선택.\n\n## 4) 커스텀 노드 (Manager → Install Missing Custom Nodes)\n- **ComfyUI-LTXVideo** · **ComfyUI-VideoHelperSuite** · **rgthree-comfy** (ComfyUI 본체 **0.37.0 이상** — 코어 노드 TextGenerate·ComfyMathExpression 사용)\n\n## 속도 향상은 기본 내장\n`Comfy Kitchen 어텐션` 은 ComfyUI 기본 노드라 설치할 게 없습니다. 지원 안 되는 환경이면 자동으로 일반 어텐션으로 돌아갑니다.\n\n## 참고 사양 (RTX 3090 24GB 실측)\n| 설정 | 시간 |\n|---|---|\n| 1280 × 704 · 121프레임 | 약 3 ~ 5분 |\n| 1920 × 1088 (세로 1088 × 1920) · 121프레임 | 약 11 ~ 13분 |\n\n프롬프트 자동 작성에 약 30초가 더 듭니다.\n\n라이선스: LTX-2.x Community License (연매출 $10M 미만 무료)\n"
+   ],
+   "color": "#432",
+   "bgcolor": "#653"
+  },
+  {
+   "id": 55,
+   "order": 55,
+   "flags": {},
+   "mode": 0,
+   "inputs": [],
+   "outputs": [
+    {
+     "name": "OPT_CONNECTION",
+     "type": "*",
+     "links": null
+    }
+   ],
+   "type": "Fast Groups Bypasser (rgthree)",
+   "title": "② 효과 고르기 — 딸깍 (하나만 켜집니다)",
+   "pos": [
+    500,
+    0
+   ],
+   "size": [
+    560,
+    150
+   ],
+   "color": "#233",
+   "bgcolor": "#355",
+   "properties": {
+    "matchColors": "",
+    "matchTitle": "^[ABC]\\.",
+    "showNav": true,
+    "showAllGraphs": true,
+    "sort": "position",
+    "customSortAlphabet": "",
+    "toggleRestriction": "always one"
+   }
+  }
+ ],
+ "links": [
+  [
+   1,
+   26,
+   0,
+   6,
+   0,
+   "STRING"
+  ],
+  [
+   2,
+   52,
+   0,
+   7,
+   0,
+   "VIDEO"
+  ],
+  [
+   3,
+   8,
+   0,
+   13,
+   0,
+   "MODEL"
+  ],
+  [
+   4,
+   13,
+   0,
+   14,
+   0,
+   "MODEL"
+  ],
+  [
+   5,
+   3,
+   0,
+   14,
+   1,
+   "FLOAT"
+  ],
+  [
+   6,
+   23,
+   0,
+   15,
+   0,
+   "STRING"
+  ],
+  [
+   7,
+   23,
+   0,
+   16,
+   0,
+   "STRING"
+  ],
+  [
+   8,
+   14,
+   0,
+   17,
+   0,
+   "MODEL"
+  ],
+  [
+   9,
+   3,
+   0,
+   17,
+   1,
+   "FLOAT"
+  ],
+  [
+   10,
+   15,
+   0,
+   18,
+   0,
+   "STRING"
+  ],
+  [
+   11,
+   16,
+   0,
+   19,
+   0,
+   "STRING"
+  ],
+  [
+   12,
+   17,
+   0,
+   20,
+   0,
+   "MODEL"
+  ],
+  [
+   13,
+   3,
+   0,
+   20,
+   1,
+   "FLOAT"
+  ],
+  [
+   14,
+   18,
+   0,
+   21,
+   0,
+   "STRING"
+  ],
+  [
+   15,
+   19,
+   0,
+   22,
+   0,
+   "STRING"
+  ],
+  [
+   16,
+   21,
+   0,
+   24,
+   0,
+   "STRING"
+  ],
+  [
+   17,
+   2,
+   0,
+   24,
+   1,
+   "STRING"
+  ],
+  [
+   18,
+   10,
+   0,
+   25,
+   0,
+   "CLIP"
+  ],
+  [
+   19,
+   35,
+   0,
+   25,
+   1,
+   "IMAGE"
+  ],
+  [
+   20,
+   24,
+   0,
+   25,
+   2,
+   "STRING"
+  ],
+  [
+   21,
+   22,
+   0,
+   26,
+   0,
+   "STRING"
+  ],
+  [
+   22,
+   25,
+   0,
+   26,
+   1,
+   "STRING"
+  ],
+  [
+   23,
+   9,
+   0,
+   27,
+   0,
+   "CLIP"
+  ],
+  [
+   24,
+   26,
+   0,
+   27,
+   1,
+   "STRING"
+  ],
+  [
+   25,
+   9,
+   0,
+   28,
+   0,
+   "CLIP"
+  ],
+  [
+   26,
+   1,
+   3,
+   30,
+   0,
+   "VHS_VIDEOINFO"
+  ],
+  [
+   27,
+   30,
+   3,
+   31,
+   0,
+   "INT"
+  ],
+  [
+   28,
+   30,
+   4,
+   31,
+   1,
+   "INT"
+  ],
+  [
+   29,
+   29,
+   0,
+   31,
+   2,
+   "INT"
+  ],
+  [
+   30,
+   30,
+   3,
+   32,
+   0,
+   "INT"
+  ],
+  [
+   31,
+   30,
+   4,
+   32,
+   1,
+   "INT"
+  ],
+  [
+   32,
+   29,
+   0,
+   32,
+   2,
+   "INT"
+  ],
+  [
+   33,
+   1,
+   0,
+   33,
+   0,
+   "IMAGE"
+  ],
+  [
+   34,
+   31,
+   1,
+   33,
+   1,
+   "INT"
+  ],
+  [
+   35,
+   32,
+   1,
+   33,
+   2,
+   "INT"
+  ],
+  [
+   36,
+   33,
+   0,
+   34,
+   0,
+   "IMAGE"
+  ],
+  [
+   37,
+   33,
+   0,
+   35,
+   0,
+   "IMAGE"
+  ],
+  [
+   38,
+   34,
+   0,
+   36,
+   0,
+   "INT"
+  ],
+  [
+   39,
+   34,
+   1,
+   36,
+   1,
+   "INT"
+  ],
+  [
+   40,
+   34,
+   2,
+   36,
+   2,
+   "INT"
+  ],
+  [
+   41,
+   27,
+   0,
+   37,
+   0,
+   "CONDITIONING"
+  ],
+  [
+   42,
+   28,
+   0,
+   37,
+   1,
+   "CONDITIONING"
+  ],
+  [
+   43,
+   37,
+   0,
+   38,
+   0,
+   "CONDITIONING"
+  ],
+  [
+   44,
+   37,
+   1,
+   38,
+   1,
+   "CONDITIONING"
+  ],
+  [
+   45,
+   11,
+   0,
+   38,
+   2,
+   "VAE"
+  ],
+  [
+   46,
+   36,
+   0,
+   38,
+   3,
+   "LATENT"
+  ],
+  [
+   47,
+   33,
+   0,
+   38,
+   4,
+   "IMAGE"
+  ],
+  [
+   48,
+   1,
+   2,
+   39,
+   0,
+   "AUDIO"
+  ],
+  [
+   49,
+   12,
+   0,
+   39,
+   1,
+   "VAE"
+  ],
+  [
+   50,
+   37,
+   0,
+   40,
+   0,
+   "CONDITIONING"
+  ],
+  [
+   51,
+   37,
+   1,
+   40,
+   1,
+   "CONDITIONING"
+  ],
+  [
+   52,
+   39,
+   0,
+   40,
+   2,
+   "LATENT"
+  ],
+  [
+   53,
+   12,
+   0,
+   41,
+   0,
+   "VAE"
+  ],
+  [
+   54,
+   34,
+   2,
+   41,
+   1,
+   "INT"
+  ],
+  [
+   55,
+   40,
+   2,
+   42,
+   0,
+   "LATENT"
+  ],
+  [
+   56,
+   41,
+   0,
+   42,
+   1,
+   "LATENT"
+  ],
+  [
+   57,
+   4,
+   0,
+   42,
+   2,
+   "BOOLEAN"
+  ],
+  [
+   58,
+   38,
+   2,
+   43,
+   0,
+   "LATENT"
+  ],
+  [
+   59,
+   42,
+   0,
+   43,
+   1,
+   "LATENT"
+  ],
+  [
+   60,
+   20,
+   0,
+   44,
+   0,
+   "MODEL"
+  ],
+  [
+   61,
+   38,
+   0,
+   44,
+   1,
+   "CONDITIONING"
+  ],
+  [
+   62,
+   38,
+   1,
+   44,
+   2,
+   "CONDITIONING"
+  ],
+  [
+   63,
+   5,
+   0,
+   47,
+   0,
+   "NOISE"
+  ],
+  [
+   64,
+   44,
+   0,
+   47,
+   1,
+   "GUIDER"
+  ],
+  [
+   65,
+   45,
+   0,
+   47,
+   2,
+   "SAMPLER"
+  ],
+  [
+   66,
+   46,
+   0,
+   47,
+   3,
+   "SIGMAS"
+  ],
+  [
+   67,
+   43,
+   0,
+   47,
+   4,
+   "LATENT"
+  ],
+  [
+   68,
+   47,
+   0,
+   48,
+   0,
+   "LATENT"
+  ],
+  [
+   69,
+   38,
+   0,
+   49,
+   0,
+   "CONDITIONING"
+  ],
+  [
+   70,
+   38,
+   1,
+   49,
+   1,
+   "CONDITIONING"
+  ],
+  [
+   71,
+   48,
+   0,
+   49,
+   2,
+   "LATENT"
+  ],
+  [
+   72,
+   49,
+   2,
+   50,
+   0,
+   "LATENT"
+  ],
+  [
+   73,
+   11,
+   0,
+   50,
+   1,
+   "VAE"
+  ],
+  [
+   74,
+   48,
+   1,
+   51,
+   0,
+   "LATENT"
+  ],
+  [
+   75,
+   12,
+   0,
+   51,
+   1,
+   "VAE"
+  ],
+  [
+   76,
+   50,
+   0,
+   52,
+   0,
+   "IMAGE"
+  ],
+  [
+   77,
+   51,
+   0,
+   52,
+   1,
+   "AUDIO"
+  ]
+ ],
+ "groups": [
+  {
+   "id": 1,
+   "title": "▶ 여기만 만지세요 — ① 부터 ⑧ 까지 순서대로",
+   "color": "#3f789e",
+   "font_size": 28,
+   "flags": {},
+   "bounding": [
+    -30,
+    -110,
+    2400,
+    1070
+   ]
+  },
+  {
+   "id": 2,
+   "title": "처음 한 번만 — 받은 모델 파일 5개 선택",
+   "color": "#8A8",
+   "font_size": 28,
+   "flags": {},
+   "bounding": [
+    -30,
+    1120,
+    1180,
+    660
+   ]
+  },
+  {
+   "id": 3,
+   "title": "A. 물 채우기",
+   "color": "#6b6b2a",
+   "font_size": 28,
+   "flags": {},
+   "bounding": [
+    1270,
+    1120,
+    620,
+    1100
+   ]
+  },
+  {
+   "id": 4,
+   "title": "B. 낮 → 밤",
+   "color": "#6b6b2a",
+   "font_size": 28,
+   "flags": {},
+   "bounding": [
+    1910,
+    1120,
+    620,
+    1100
+   ]
+  },
+  {
+   "id": 5,
+   "title": "C. 사람·물체 지우기",
+   "color": "#6b6b2a",
+   "font_size": 28,
+   "flags": {},
+   "bounding": [
+    2550,
+    1120,
+    620,
+    1100
+   ]
+  },
+  {
+   "id": 6,
+   "title": "자동 · AI 프롬프트 작성",
+   "color": "#444",
+   "font_size": 28,
+   "flags": {},
+   "bounding": [
+    -30,
+    2290,
+    1060,
+    840
+   ]
+  },
+  {
+   "id": 7,
+   "title": "자동 · 영상 준비",
+   "color": "#444",
+   "font_size": 28,
+   "flags": {},
+   "bounding": [
+    1050,
+    2290,
+    520,
+    1740
+   ]
+  },
+  {
+   "id": 8,
+   "title": "자동 · 레퍼런스 연결 / 소리",
+   "color": "#444",
+   "font_size": 28,
+   "flags": {},
+   "bounding": [
+    1590,
+    2290,
+    1060,
+    820
+   ]
+  },
+  {
+   "id": 9,
+   "title": "자동 · 샘플링 (stage-1 단일 패스)",
+   "color": "#444",
+   "font_size": 28,
+   "flags": {},
+   "bounding": [
+    2670,
+    2290,
+    520,
+    820
+   ]
+  },
+  {
+   "id": 10,
+   "title": "자동 · 디코드",
+   "color": "#444",
+   "font_size": 28,
+   "flags": {},
+   "bounding": [
+    3210,
+    2290,
+    520,
+    1040
+   ]
+  }
+ ],
+ "config": {},
+ "extra": {
+  "ds": {
+   "scale": 0.28,
+   "offset": [
+    900,
+    160
+   ]
+  }
+ },
+ "version": 0.4
+}
