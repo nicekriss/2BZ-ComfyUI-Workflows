@@ -8,7 +8,8 @@ const manifest = require("./manifest.json");
 const updater = require("./updater.js");
 const {executionGraph} = require("./workflow-export.js");
 let availableUpdate = null;
-const {connection, applyPaths} = require("./connection.js");
+const {connection, applyPaths, resolvePaths, missingMessage, MODEL_FIELDS} = require("./connection.js");
+let bridgeInfo = null;
 try { const saved = localStorage.getItem("toobusy.connection"); if (saved) { const value = connection(JSON.parse(saved)); config.token = value.token; applyPaths(template,value); } } catch (_) { /* An invalid saved connection must be imported again. */ }
 const {base64, inputPreviewPath} = require("./preview.js");
 const {createModelControls} = require("./model-controls.js");
@@ -199,12 +200,26 @@ async function checkConnection() {
   try { info = await (await request(address(), "/toobusy/ps/v1/info")).json(); }
   catch (error) { $("connectionStatus").textContent = "연결 실패: " + error.message; $("connectionToggle").textContent = "연결 설정"; $("connectionPanel").classList.remove("hidden"); $("connectionToggle").setAttribute("aria-expanded", "true"); throw error; }
   if (info.protocol !== 1) throw new Error("플러그인과 커스텀노드 버전이 다릅니다.");
-  connected = true;
+  connected = true; bridgeInfo = info;
   $("connectionStatus").textContent = "연결됨 · Bridge " + info.version;
   $("connectionToggle").textContent = "● 연결됨";
   $("connectionToggle").classList.add("connected");
   await modelControls.refresh();
+  // Checkpoint and LoRA come from the model library; report the fixed loaders early.
+  const check = await resolveModels(address(), JSON.parse(JSON.stringify(template)), Object.keys(MODEL_FIELDS).filter((id) => id !== "1" && id !== "17"));
+  if (check) { status("연결됨 · " + check, true); return; }
   status(inputState.main ? "연결 완료 · 생성할 준비가 됐어요." : "입력을 싱크하면 생성할 수 있어요.");
+}
+
+// Aligns loader values with what this ComfyUI actually lists (Windows lists use
+// backslashes; a shared-folder Desktop setup may not list a file at all).
+// Returns a Korean explanation when something is missing, otherwise null.
+async function resolveModels(base, graph, ids = Object.keys(MODEL_FIELDS)) {
+  const classes = Array.from(new Set(ids.filter((id) => graph[id]).map((id) => graph[id].class_type)));
+  const info = {};
+  for (const data of await Promise.all(classes.map((name) => request(base, "/object_info/" + encodeURIComponent(name)).then((r) => r.json())))) Object.assign(info, data);
+  const result = resolvePaths(graph, info, ids);
+  return (result.missing.length || result.missingNodes.length) ? missingMessage(result, bridgeInfo && bridgeInfo.model_folders) : null;
 }
 
 async function generate() {
@@ -216,6 +231,11 @@ async function generate() {
     s.modelRecipe = modelControls.validate();
   }
   const graph = makePrompt(template, s, inputState);
+  if (s.workflow === "pro") {
+    status("ComfyUI의 모델 목록을 확인합니다…");
+    const problem = await resolveModels(base, graph);
+    if (problem) throw new Error(problem);
+  }
   localStorage.setItem("toobusy.lastPrompt", JSON.stringify(executionGraph(graph)));
   const clientId = "toobusy-" + Date.now() + "-" + Math.random().toString(16).slice(2);
   status("ComfyUI에 작업을 제출합니다…");

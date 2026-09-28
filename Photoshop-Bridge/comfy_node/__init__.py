@@ -20,6 +20,37 @@ from .pixels import MAX_BYTES, contained, decode_file, decode_raw, result_pixels
 
 TOKEN = json.loads((Path(__file__).parent / "pairing.json").read_text("utf-8"))["token"]
 PREFIX = "TooBusyPS"
+VERSION = "0.2.5"
+# Model kinds the Pro template loads. Core kinds always include <models>/<kind>;
+# "ipadapter" is defined by a custom node that keeps only the paths it finds
+# already registered (Comfy Desktop registers its shared folder first), so the
+# installer's <models>/ipadapter would otherwise stay invisible.
+MODEL_KINDS = ("checkpoints", "loras", "controlnet", "geometry_estimation", "ipadapter", "clip_vision")
+
+
+def register_model_folders(kinds=("ipadapter",)):
+    """Make <models>/<kind> visible for kinds that are not ComfyUI core folders."""
+    added = []
+    for kind in kinds:
+        folder = Path(folder_paths.models_dir) / kind
+        if not folder.is_dir():
+            continue
+        current = folder_paths.folder_names_and_paths.get(kind)
+        known = {Path(p).resolve() for p in (current[0] if current else [])}
+        if folder.resolve() in known:
+            continue
+        folder_paths.add_model_folder_path(kind, str(folder))
+        added.append(str(folder))
+    return added
+
+
+def model_folders():
+    return {kind: list(folder_paths.get_folder_paths(kind)) if kind in folder_paths.folder_names_and_paths else []
+            for kind in MODEL_KINDS}
+
+
+for _folder in register_model_folders():
+    print(f"[TooBusy Photoshop Bridge] registered model folder: {_folder}")
 
 
 def input_path(name):
@@ -108,7 +139,8 @@ routes = PromptServer.instance.routes
 @routes.get("/toobusy/ps/v1/info")
 async def info(request):
     authorize(request)
-    return web.json_response({"protocol": 1, "version": "0.1.0", "max_pixels": MAX_BYTES // 4})
+    return web.json_response({"protocol": 1, "version": VERSION, "max_pixels": MAX_BYTES // 4,
+                              "model_folders": model_folders()})
 
 
 @routes.post("/toobusy/ps/v1/input")

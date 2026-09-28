@@ -55,7 +55,7 @@ def cli():
     return True
 
 def gui():
-    window=tk.Tk();window.title('TooBusy AI 설치 도우미 0.2.1');window.geometry('800x810');window.minsize(760,760)
+    window=tk.Tk();window.title('TooBusy AI 설치 도우미 0.2.5');window.geometry('800x810');window.minsize(760,760)
     window.configure(bg='#17212c');style=ttk.Style();style.theme_use('clam')
     style.configure('.',font=('맑은 고딕',10));style.configure('TFrame',background='#17212c');style.configure('TLabel',background='#17212c',foreground='#e5edf7')
     style.configure('TButton',padding=(12,8),background='#31465b',foreground='#e5edf7');style.map('TButton',background=[('active','#44617d')])

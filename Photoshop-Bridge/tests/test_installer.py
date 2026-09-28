@@ -41,9 +41,15 @@ class InstallerTests(unittest.TestCase):
         other=self.root/'custom_nodes/other';other.mkdir();(other/'work.txt').write_text('preserve')
         token=self.e.bridge(self.root);self.assertEqual(len(token),64);self.assertEqual(token,self.e.bridge(self.root))
         self.assertEqual((other/'work.txt').read_text(),'preserve')
-        installed=self.root/'custom_nodes/toobusy_photoshop_bridge/__init__.py';installed.write_text('user edit')
+        # An older Bridge is refreshed in place; the pairing key and other nodes stay.
+        node=self.root/'custom_nodes/toobusy_photoshop_bridge';installed=node/'__init__.py';installed.write_text('old version')
+        (node/'__pycache__').mkdir();(node/'__pycache__/x.pyc').write_bytes(b'')
+        self.assertEqual(self.e.bridge(self.root),token)
+        self.assertEqual(installed.read_text(),'# fixture');self.assertEqual((node/'pixels.py').read_text(),'# fixture')
+        self.assertFalse((node/'__pycache__').exists());self.assertEqual((other/'work.txt').read_text(),'preserve')
+        self.assertEqual(read_json(node/'pairing.json')['token'],token)
+        (node/'pairing.json').write_text('{"token":"short"}')
         with self.assertRaises(SetupError):self.e.bridge(self.root)
-        self.assertEqual(installed.read_text(),'user edit')
     def test_reuse_and_ambiguous_external_models(self):
         a=self.base/'shared/a';b=self.base/'shared/b';a.mkdir(parents=True);b.mkdir()
         (a/'model.safetensors').write_bytes(b'a');model={'path':'checkpoints/model.safetensors'}
