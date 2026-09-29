@@ -120,9 +120,12 @@ class InstallerTests(unittest.TestCase):
                 archive.writestr("YuE-pinned/src/yue2/__init__.py", "# model source")
             with zipfile.ZipFile(state / "toobusy-abc-studio.zip", "w") as archive:
                 archive.writestr("studio/abc_studio_node/abc_studio.py", "# ABC node")
+            def prepare_runtime(*args):
+                site.mkdir(parents=True, exist_ok=True)
+                return state / "runtime/Scripts/python.exe", site
             with patch("sys.argv", ["install", "--root", str(root)]), \
                     patch.object(installer, "environment", return_value="shared"), \
-                    patch.object(installer, "prepare_runtime", return_value=(state / "runtime/Scripts/python.exe", site)), \
+                    patch.object(installer, "prepare_runtime", side_effect=prepare_runtime), \
                     patch.object(installer, "download_file"), patch.object(installer, "smoke_runtime"), \
                     patch.object(installer, "_setup_sheetsage"), patch.object(installer, "_install_abc"), \
                     patch.object(installer, "_install_model_weights"):

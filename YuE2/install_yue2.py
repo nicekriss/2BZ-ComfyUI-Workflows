@@ -30,7 +30,7 @@ SOURCE_COMMIT = "92a73cc7652fcc1f937855e4b765e0a0edd7ff2e"
 SOURCE_ZIP_URL = f"https://codeload.github.com/multimodal-art-projection/YuE/zip/{SOURCE_COMMIT}"
 ABC_STUDIO_REF = "v0.4.4"
 ABC_STUDIO_ZIP_URL = f"https://codeload.github.com/nicekriss/toobusy-abc-studio/zip/refs/tags/{ABC_STUDIO_REF}"
-VERSION = "0.1.0-rc12"
+VERSION = "0.1.0-rc13"
 PROTECTED = {"torch", "torchvision", "torchaudio", "xformers", "triton", "triton-windows"}
 AUDITED = sorted(PROTECTED | {"transformers", "numpy"})
 # Reuse compatible shared packages. Conflicts are overlaid ONLY in the subprocess.
@@ -54,6 +54,90 @@ ADDITIONAL = {
     "certifi>=2017.4.17": "certifi==2026.1.4", "colorama": "colorama==0.4.6",
 }
 OPTIONAL = ("vllm", "triton", "hf-xet", "pynvml")  # Never installed automatically.
+
+
+class InstallTransaction:
+    """Keep completed changes reversible until the final environment audit passes."""
+
+    def __init__(self, root, audit):
+        self.root = root.resolve()
+        self.audit = audit
+        self.entries = []
+        self.journal = audit / "rollback.json"
+
+    def check_path(self, path):
+        path = Path(os.path.abspath(path))
+        if path == self.root or not path.is_relative_to(self.root):
+            raise RuntimeError(f"Refusing installation path outside ComfyUI: {path}")
+        for parent in (path, *path.parents):
+            if parent == self.root:
+                break
+            if parent.is_symlink() or (parent.exists() and getattr(parent.lstat(), "st_file_attributes", 0) & 0x400):
+                raise RuntimeError(f"Refusing linked installation path: {parent}")
+        return path
+
+    def save(self, status):
+        temporary = self.journal.with_suffix(".tmp")
+        temporary.write_text(json.dumps({"status": status, "entries": self.entries}, indent=2), encoding="utf-8")
+        temporary.replace(self.journal)
+
+    def remember(self, path, backup=None, discard_backup=False):
+        path = self.check_path(path)
+        if backup is not None:
+            backup = self.check_path(backup)
+        self.entries.append({"path": str(path), "backup": str(backup) if backup else None,
+                             "discard_backup": discard_backup})
+        self.save("pending")
+
+    def replace(self, path):
+        path = self.check_path(path)
+        backup = None
+        if path.exists():
+            backup = self.audit / "recovery" / str(len(self.entries))
+            self.check_path(backup)
+            backup.parent.mkdir(parents=True, exist_ok=True)
+            path.rename(backup)
+        self.remember(path, backup, discard_backup=True)
+
+    def remove(self, path):
+        path = self.check_path(path)
+        if path.is_dir():
+            shutil.rmtree(path)
+        elif path.exists():
+            path.unlink()
+
+    def rollback(self):
+        failures = []
+        for entry in reversed(self.entries):
+            path = Path(entry["path"])
+            backup = Path(entry["backup"]) if entry["backup"] else None
+            try:
+                if backup is not None and not backup.exists():
+                    raise RuntimeError(f"Recovery backup is missing: {backup}")
+                self.remove(path)
+                if backup is not None:
+                    self.check_path(backup).rename(path)
+                entry["restored"] = True
+            except OSError as exc:
+                failures.append(f"{path}: {exc}")
+            except RuntimeError as exc:
+                failures.append(str(exc))
+        self.save("recovery-required" if failures else "rolled-back")
+        if failures:
+            raise RuntimeError("자동 복구를 완료하지 못했습니다. ComfyUI와 관련 창을 닫고 복구 기록을 확인하세요: "
+                               + str(self.journal) + "\n" + "\n".join(failures))
+        print("설치 실패: 이번 실행의 노드·런타임 변경을 되돌렸습니다. 모델 다운로드와 진단 기록은 유지합니다.", flush=True)
+
+    def commit(self):
+        self.save("committed")
+
+    def cleanup_backups(self):
+        for entry in self.entries:
+            if entry["discard_backup"] and entry["backup"]:
+                try:
+                    self.remove(Path(entry["backup"]))
+                except (OSError, RuntimeError) as exc:
+                    print(f"설치는 완료됐지만 이전 런타임 백업을 지우지 못했습니다: {entry['backup']} ({exc})", flush=True)
 
 
 def package_state():
@@ -105,7 +189,7 @@ def install_wheels(target, packages, state):
         env = {k: v for k, v in os.environ.items() if not k.startswith("PIP_")}
         env.update(PIP_CONFIG_FILE=os.devnull, PYTHONNOUSERSITE="1")
         run([sys.executable, "-m", "pip", "--isolated", "install", "--no-deps", "--only-binary=:all:",
-             "--disable-pip-version-check", "--target", target, *packages], env=env)
+             "--disable-pip-version-check", "--cache-dir", state / "pip-cache", "--target", target, *packages], env=env)
 
 
 def prepare_runtime(state, shared_site):
@@ -194,7 +278,8 @@ def download(url, target, sha256, size=None):
                     mark = received // (100 * 1024 * 1024)
                     print(f"{target.name}: {received / 1e9:.2f} GB" + (f" / {size / 1e9:.2f} GB" if size else ""), flush=True)
     if (size is not None and part.stat().st_size != size) or digest(part) != sha256:
-        raise RuntimeError(f"Download checksum failed; delete this partial file and retry: {part}")
+        part.unlink()
+        raise RuntimeError(f"Download checksum failed; damaged partial file removed. Retry: {target}")
     part.replace(target)
 
 
@@ -259,16 +344,15 @@ def _copy_node_package(source_root, destination, setup_payload=None):
     if destination.exists():
         print(f"SKIP: existing package kept: {destination}")
         return
-    staging = destination.parent / f".{destination.name}.installing"
-    if staging.exists():
-        raise RuntimeError(f"Previous incomplete staging folder retained; move it aside: {staging}")
-    shutil.copytree(source_root, staging)
-    if setup_payload is not None:
-        (staging / "setup.json").write_text(json.dumps(setup_payload, indent=2), encoding="utf-8")
-    staging.rename(destination)
+    with tempfile.TemporaryDirectory(prefix=f".{destination.name}.installing-", dir=destination.parent) as temp:
+        staging = Path(temp) / destination.name
+        shutil.copytree(source_root, staging)
+        if setup_payload is not None:
+            (staging / "setup.json").write_text(json.dumps(setup_payload, indent=2), encoding="utf-8")
+        staging.rename(destination)
 
 
-def _update_bridge(destination, state):
+def _update_bridge(destination, state, transaction=None):
     """Upgrade only a recognized installer bridge; preserve custom code and setup."""
     source = HERE / "custom_nodes" / "ComfyUI-YuE2"
     current = {p.name: _code_digest(p) for p in source.glob("*.py")}
@@ -295,10 +379,13 @@ def _update_bridge(destination, state):
             destination.rename(backup)
         except PermissionError as exc:
             raise _folder_in_use(destination, exc) from exc
+        if transaction is not None:
+            transaction.remember(destination, backup)
         try:
             staged.rename(destination)
         except BaseException:
-            backup.rename(destination)
+            if transaction is None:
+                backup.rename(destination)
             raise
     print(f"UPDATED: YuE2 bridge {VERSION}. Previous files: {backup}", flush=True)
     return True
@@ -398,7 +485,7 @@ def _abc_status(destination):
     return "upgrade"
 
 
-def _install_abc(destination, state, manifest):
+def _install_abc(destination, state, manifest, transaction=None):
     status = _abc_status(destination)
     if status == "current":
         print(f"ABC Studio {ABC_STUDIO_REF} is already current.", flush=True)
@@ -424,10 +511,12 @@ def _install_abc(destination, state, manifest):
                 destination.rename(backup)
             except PermissionError as exc:
                 raise _folder_in_use(destination, exc) from exc
+        if transaction is not None:
+            transaction.remember(destination, backup)
         try:
             staged.rename(destination)
         except BaseException:
-            if backup is not None:
+            if backup is not None and transaction is None:
                 backup.rename(destination)
             raise
     print(f"ABC Studio {ABC_STUDIO_REF} installed. Previous version: {backup or 'none'}", flush=True)
@@ -483,12 +572,33 @@ def _smoke_abc_audio():
     run([sys.executable, "-I", "-X", "utf8", HERE / "smoke_abc.py"])
 
 
-def _setup_sheetsage(abc, root, models, check_only=False):
+def _setup_sheetsage(abc, root, models, check_only=False, transaction=None):
     command = [sys.executable, "-I", "-X", "utf8", abc / "install_sheetsage2.py",
                "--comfyui", root, "--models", models]
     if check_only:
         command.append("--check-only")
-    run(command)
+    elif transaction is not None:
+        state = root / "user" / "abc-studio"
+        for path in (state / "runtime", state / "setup.json", state / "setup.tmp", state / "python311"):
+            transaction.check_path(path)
+        if (state / "setup.json").is_file():
+            try:
+                run([*command, "--check-only"])
+            except subprocess.CalledProcessError:
+                print("SheetSage2 환경을 다시 준비합니다. 실패하면 기존 런타임을 복원합니다.", flush=True)
+            else:
+                config = json.loads((state / "setup.json").read_text(encoding="utf-8"))
+                if Path(config["model"]).parent.resolve() == (models / "abc_studio").resolve():
+                    print("SheetSage2 설치 검사를 통과해 기존 환경을 재사용합니다.", flush=True)
+                    return
+        transaction.replace(state / "runtime")
+        transaction.replace(state / "setup.json")
+        transaction.replace(state / "setup.tmp")
+        if not (state / "python311").exists():
+            transaction.remember(state / "python311")
+    env = {key: value for key, value in os.environ.items() if not key.startswith("PIP_")}
+    env.update(PIP_CONFIG_FILE=os.devnull, PYTHONNOUSERSITE="1", PIP_CACHE_DIR=str(root / "user/2bz-yue2/pip-cache"))
+    run(command, env=env)
 
 
 def main():
@@ -534,9 +644,14 @@ def main():
             + "\n".join(f"실행 중: PID {pid} {exe}" for pid, exe in running))
     shared_site = environment()
     state = root / "user" / "2bz-yue2"
-    state.mkdir(parents=True, exist_ok=True)
-
     audit = state / "audits" / datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S.%fZ")
+    transaction = InstallTransaction(root, audit)
+    for path in (state, audit, state / "backups", yue2_destination, abc_destination,
+                 root / "user" / "abc-studio", root / "user" / "default" / "workflows"):
+        transaction.check_path(path)
+    for journal in (state / "audits").glob("*/rollback.json"):
+        if json.loads(journal.read_text(encoding="utf-8"))["status"] in {"pending", "recovery-required"}:
+            raise RuntimeError(f"이전 설치의 복구가 완료되지 않았습니다. 백업을 보존했으니 복구 기록을 확인하세요: {journal}")
     audit.mkdir(parents=True)
     print("설치 전 패키지 목록을 기록하는 중입니다.", flush=True)
     before = package_state()
@@ -544,11 +659,13 @@ def main():
     allowed_additions = set()
     try:
         # Swap ABC Studio first: a folder held open fails in seconds, not after hashing 7.8GB of weights.
-        _install_abc(abc_destination, state, manifest)
+        _install_abc(abc_destination, state, manifest, transaction=transaction)
         if yue2_destination.exists():
             config = json.loads((yue2_destination / "setup.json").read_text(encoding="utf-8"))
-            _update_bridge(yue2_destination, state)
+            _update_bridge(yue2_destination, state, transaction=transaction)
         else:
+            transaction.replace(state / "runtime")
+            transaction.replace(state / "bootstrap")
             python, site = prepare_runtime(state, shared_site)
             source_archive = state / "yue2-source.zip"
             download_file(SOURCE_ZIP_URL, source_archive, manifest["source_sha256"])
@@ -565,21 +682,35 @@ def main():
                     "model": str(models / "audio_encoders" / "YuE2-3B"),
                     "vae": str(models / "vae" / "YuE2-Vae"),
                 }
+                transaction.remember(yue2_destination)
                 _copy_node_package(source_node_root, yue2_destination, config)
 
         _install_model_weights(config, manifest)
         smoke_runtime(config["runtime"], shared_site, config)
 
-        _setup_sheetsage(abc_destination, root, models)
+        _setup_sheetsage(abc_destination, root, models, transaction=transaction)
 
         workflows = root / "user" / "default" / "workflows"
         workflows.mkdir(parents=True, exist_ok=True)
         workflow = workflows / "2BZ_YuE2_Music.json"
         if not workflow.exists():
+            transaction.remember(workflow)
             shutil.copy2(HERE / "YuE2_Music.json", workflow)
-        print(f"INSTALLED\nWorkflow: {workflow}\nRestart ComfyUI, then open the workflow.", flush=True)
-    finally:
+    except BaseException:
+        try:
+            report_preservation(before, audit, allowed_additions)
+        except Exception as exc:
+            print(f"설치 후 패키지 검사도 실패했습니다: {exc}", flush=True)
+        transaction.rollback()
+        raise
+    try:
         report_preservation(before, audit, allowed_additions)
+        transaction.commit()
+    except BaseException:
+        transaction.rollback()
+        raise
+    transaction.cleanup_backups()
+    print(f"INSTALLED\nWorkflow: {workflow}\nRestart ComfyUI, then open the workflow.", flush=True)
 
 
 if __name__ == "__main__":
