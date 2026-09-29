@@ -1,6 +1,6 @@
 # Validation · yue2-v0.1.0-rc13
 
-## rc13 installation rollback (2026-09-29, local build)
+## rc13 installation rollback (2026-09-29)
 
 - 63 tests passed under the existing ComfyUI Python 3.13 environment on Windows; no skipped tests. Package operations, GPU work and model downloads were replaced with small fixtures. The production ComfyUI installations were not modified or restarted.
 - New failure cases cover later SheetSage2 failure after node upgrades, partial runtime creation, failed node promotion, Ctrl+C, final audit failure, commit-record failure, and a second installation after rollback. Existing nodes, runtime contents, settings and user scores were checked after restoration.

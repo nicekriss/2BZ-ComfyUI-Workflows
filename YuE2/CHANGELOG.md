@@ -1,6 +1,6 @@
 # Changes
 
-## yue2-v0.1.0-rc13 (local validation build)
+## yue2-v0.1.0-rc13
 
 - Roll back completed node changes and new runtimes, settings and workflow files if a later install step or final environment audit fails. Preserve existing SheetSage2 runtimes by moving them aside before rebuilding; reuse installations that pass their check.
 - Clean failed first-install staging directories. Keep verified models, resumable downloads and caches for retry; remove corrupt YuE2 partial downloads. Keep pip caches under `user/2bz-yue2/pip-cache` and ignore inherited pip target/prefix settings for SheetSage2.

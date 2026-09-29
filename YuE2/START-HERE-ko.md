@@ -45,6 +45,7 @@ Python은 `.venv`, `venv`, 포터블 `python_embeded`/`python_embedded`에서 �
 
 ## 설치 실패 시 복구
 
+- 이 복구 기능은 rc13으로 실행한 설치에 적용됩니다. 이전 버전의 실패로 이미 남아 있던 파일까지 찾아서 전부 제거하는 기능은 아닙니다.
 - 일반 오류나 Ctrl+C로 중단되면 이번 실행에서 추가한 노드·런타임·설정·워크플로를 제거하고, 교체했던 기존 노드와 런타임을 복원합니다. 기존 악보·생성 결과·사용자 워크플로는 유지합니다.
 - 정상인 SheetSage2 설치는 검사 후 재사용합니다. 검사를 통과하지 못하면 기존 런타임을 보관한 뒤 새로 설치하므로 복구 중에는 이전·새 런타임을 함께 보관할 여유 공간이 필요합니다.
 - 모델, 이어받을 수 있는 `.part`, 소스 ZIP·Python 다운로드 압축 파일, `user/2bz-yue2/pip-cache`, 진단 기록은 재시도에 사용하므로 남깁니다. YuE2 모델의 해시가 틀린 `.part`는 제거합니다. SheetSage2의 부분 다운로드는 다음 실행 때 다시 받습니다.
@@ -111,7 +112,25 @@ rc4 사용자는 생성이 끝난 뒤 ComfyUI를 종료하고, 새 ZIP의 `Insta
 - 생성 실패: 해당 곡의 `generation.log` 마지막 오류를 확인합니다. 지원 환경에서도 다른 작업이 GPU 메모리를 점유하면 실패할 수 있습니다.
 - ComfyUI/Python/모델 폴더 이동: `custom_nodes/ComfyUI-YuE2/setup.json`의 경로와 `user/2bz-yue2/runtime/Lib/site-packages/comfy_cuda.pth` 참조가 달라집니다. 새 위치에서 재설치하세요.
 
-제거하려면 ComfyUI 종료 후 `custom_nodes/ComfyUI-YuE2`와 `user/2bz-yue2`를 삭제합니다. 모델과 생성 결과, 저장한 워크플로는 별도로 유지됩니다. 설치기는 기존 노드 제거·코어 패치·모델 업로드를 수행하지 않습니다.
+## 설치된 항목 확인과 제거
+
+자동 제거 프로그램은 제공하지 않습니다. 먼저 ComfyUI를 종료하고, 아래에서 사용하지 않을 항목만 별도로 백업한 뒤 제거하세요. 경로의 기준은 설치할 때 선택한 실제 ComfyUI 폴더입니다.
+
+| 항목 | 위치 |
+| --- | --- |
+| YuE2 생성 노드 | `custom_nodes/ComfyUI-YuE2` |
+| ABC 악보 스튜디오 노드 | `custom_nodes/toobusy-abc-studio` |
+| YuE2 전용 환경·캐시·설치 기록·백업 | `user/2bz-yue2` |
+| 채보 전용 환경 | `user/abc-studio/runtime` |
+| 설치기가 별도로 받은 Python 3.11(있는 경우) | `user/abc-studio/python311`, `user/abc-studio/python311.tar.gz`와 해당 `.part` |
+| 채보 환경 설정 | `user/abc-studio/setup.json` |
+| 복사된 기본 워크플로 | `user/default/workflows/2BZ_YuE2_Music.json` |
+| 모델 | 선택한 모델 폴더의 `audio_encoders/YuE2-3B`, `vae/YuE2-Vae`, `abc_studio/SheetSage2`, `abc_studio/MERT-v2-FullSong` |
+
+- 기존에 사용하던 ABC Studio나 다른 워크플로에서 공유하는 모델은 지우지 마세요. 업데이트 전 상태로 돌아가려면 설치 백업을 확인해야 합니다.
+- **`user/abc-studio` 전체를 삭제하지 마세요.** 사용자가 만든 악보·작업 데이터가 함께 들어 있을 수 있습니다. 생성 음악과 직접 수정한 워크플로도 먼저 보관하세요.
+- 복구 실패 안내가 있으면 `user/2bz-yue2`를 지우기 전에 `audits/<시각>/rollback.json`과 백업으로 원래 설치를 복원해야 합니다.
+- rc12 이하에서 실패한 경우 남은 범위가 다를 수 있습니다. 오류창 마지막 부분과 설치기 버전을 확인해 필요한 항목만 정리하세요. ComfyUI 본체의 Python·Torch를 제거할 필요는 없습니다.
 
 ## 영상 설명란 문구
 
