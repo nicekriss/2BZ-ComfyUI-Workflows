@@ -20,7 +20,7 @@ class RollbackTests(unittest.TestCase):
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory()
         self.addCleanup(self.temp.cleanup)
-        self.root = Path(self.temp.name) / 'ComfyUI'
+        self.root = (Path(self.temp.name) / 'ComfyUI').resolve()
         self.root.mkdir()
         (self.root / 'main.py').touch()
         (self.root / 'custom_nodes').mkdir()

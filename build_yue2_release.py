@@ -92,9 +92,7 @@ def build(output):
     digest = hashlib.sha256(data).hexdigest()
     print(f"{output.name}  {len(data):,} bytes  {count} files")
     print("sha256", digest)
-    # Every release must also carry STABLE_NAME. The download link handed to
-    # viewers is /releases/latest/download/<STABLE_NAME>, and it resolves only
-    # while an asset of exactly that name sits on the newest release.
+    # The release workflow copies this asset to the dedicated yue2-latest release.
     for name in sorted({output.name, STABLE_NAME}):
         copy = output.parent / name
         copy.write_bytes(data)
