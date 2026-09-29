@@ -1,4 +1,13 @@
-# Validation · yue2-v0.1.0-rc12
+# Validation · yue2-v0.1.0-rc13
+
+## rc13 installation rollback (2026-09-29)
+
+- 63 tests passed under the existing ComfyUI Python 3.13 environment on Windows; no skipped tests. Package operations, GPU work and model downloads were replaced with small fixtures. The production ComfyUI installations were not modified or restarted.
+- New failure cases cover later SheetSage2 failure after node upgrades, partial runtime creation, failed node promotion, Ctrl+C, final audit failure, commit-record failure, and a second installation after rollback. Existing nodes, runtime contents, settings and user scores were checked after restoration.
+- A real failing child Python process created partial runtime files; rollback removed them and restored the earlier runtime. An actual open Windows file prevented cleanup; the original backup and recovery journal survived and a subsequent installation was refused.
+- Checks also cover runtime reuse, honoring a changed model directory, pip target/prefix isolation, retained network partials, removal of invalid YuE2 partials, staging cleanup, and paths outside ComfyUI.
+- Not verified: a fresh multi-gigabyte install on a clean PC, GPU music generation, concurrent installer runs, and automatic recovery after process termination or power loss. A rebuild temporarily needs space for both old and new runtimes. Downloaded models, caches, archive files and audit records intentionally remain.
+
 
 ## rc11 silent stretches and non-Korean consoles (2026-09-16)
 

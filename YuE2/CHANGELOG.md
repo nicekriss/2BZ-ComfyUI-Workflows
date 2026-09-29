@@ -1,5 +1,12 @@
 # Changes
 
+## yue2-v0.1.0-rc13
+
+- Roll back completed node changes and new runtimes, settings and workflow files if a later install step or final environment audit fails. Preserve existing SheetSage2 runtimes by moving them aside before rebuilding; reuse installations that pass their check.
+- Clean failed first-install staging directories. Keep verified models, resumable downloads and caches for retry; remove corrupt YuE2 partial downloads. Keep pip caches under `user/2bz-yue2/pip-cache` and ignore inherited pip target/prefix settings for SheetSage2.
+- Keep a recovery journal and backups if file locks prevent rollback. Refuse another install while recovery is pending. Force-kill and power-loss recovery is manual, not guaranteed automatic.
+- Print overall `INSTALLED` only after the final audit and commit. Keep the original install error visible if the package audit also fails.
+
 ## yue2-v0.1.0-rc12
 
 - A folder held open by another program stops the ABC Studio or bridge swap with a Korean message: close ComfyUI and any Explorer, terminal or editor window in that folder, then rerun. Before this, Windows surfaced a raw `PermissionError: [WinError 5]`. The existing folder was intact then and still is.
