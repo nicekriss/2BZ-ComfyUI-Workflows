@@ -1,4 +1,11 @@
-# Validation · yue2-v0.1.0-rc13
+# Validation · yue2-v0.1.0-rc14
+
+## rc14 generation token limit (2026-09-30)
+
+- 65 installer and generation tests passed on Windows. Checks cover old calls without a limit, explicit 5000/100 limits, ABC forwarding, and worker sampling overrides. ABC Studio v0.4.5 passed Python, frontend and Windows CI.
+- Ran the real ABC generator class against the packaged bridge in a separate Python process using the existing ComfyUI environment and YuE2 runtime, without starting another server. RTX 3090, memory budget 16 GiB, planning off, max_tokens 256: exactly 256 semantic tokens, 10.239 seconds of 48 kHz stereo audio, 65.44 seconds pipeline time, 6.85 GiB peak allocated VRAM. The result records semantic truncation and returns AUDIO shape (1, 2, 491456).
+- Upgraded the actual rc13 ZIP's bridge in a temporary installation using `_update_bridge`; the setup file survived and a backup was created.
+- The active Desktop server was on port 8189 and was not restarted or modified. Node UI reload on that server, RTX 3060 12GB, and a 5000-token GPU run were not tested. Lowering the limit is not a verified fix for the commenter's unspecified generation error.
 
 ## rc13 installation rollback (2026-09-29)
 

@@ -191,6 +191,15 @@
             "name": "abc"
           },
           "link": 8
+        },
+        {
+          "localized_name": "max_tokens",
+          "name": "max_tokens",
+          "type": "INT",
+          "widget": {
+            "name": "max_tokens"
+          },
+          "link": null
         }
       ],
       "outputs": [
@@ -211,7 +220,8 @@
         831005,
         "fixed",
         "full",
-        ""
+        "",
+        9000
       ],
       "color": "#323",
       "bgcolor": "#535"

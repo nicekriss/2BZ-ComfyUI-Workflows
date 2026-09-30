@@ -84,20 +84,22 @@ class YuE2LocalGenerate:
             "lyrics": ("STRING", {"forceInput": True}),
             "seed": ("INT", {"default": 831001, "min": 0, "max": 2**63 - 1, "control_after_generate": True}),
             "planning": (["full", "melody", "off"], {"default": "full"}),
+        }, "optional": {
+            "max_tokens": ("INT", {"default": 9000, "min": 1, "max": 24576, "step": 1, "tooltip": "음악 생성 토큰 상한. 5000처럼 낮추면 생성 길이와 메모리 사용을 줄일 수 있지만 곡이 중간에 끝날 수 있습니다. ABC 악보 생성 상한과는 별개입니다."}),
         }}
 
     RETURN_TYPES = ("AUDIO",)
     FUNCTION = "generate"
     CATEGORY = "YuE2"
 
-    def generate(self, model, style, lyrics, seed, planning, abc=""):
+    def generate(self, model, style, lyrics, seed, planning, abc="", max_tokens=9000):
         if abc.strip() and planning == "off":
             raise ValueError("ABC 악보를 사용할 때 planning을 full 또는 melody로 선택하세요.")
         mm.unload_all_models()
         mm.soft_empty_cache()
         output = Path(folder_paths.get_output_directory()).resolve() / "YuE2" / f"{time.strftime('%Y%m%d_%H%M%S')}_{seed}_{uuid.uuid4().hex[:6]}"
         output.mkdir(parents=True)
-        request = {"model": model, "song": {"style": style, "lyrics": lyrics, "seed": seed, "cot": planning}, "output": str(output)}
+        request = {"model": model, "song": {"style": style, "lyrics": lyrics, "seed": seed, "cot": planning}, "max_tokens": max_tokens, "output": str(output)}
         if abc.strip():
             request["song"]["abc"] = abc.strip()
         request_path = output / "job.json"
