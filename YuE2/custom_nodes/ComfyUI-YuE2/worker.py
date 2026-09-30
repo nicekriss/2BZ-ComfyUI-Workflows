@@ -11,7 +11,8 @@ def main():
     job = json.loads(Path(sys.argv[1]).read_text(encoding="utf-8"))
     model = job["model"]
     pipeline = YuE2Pipeline.from_pretrained(model["model"], vae=model["vae"], device="cuda", backend="torch-eager", memory_budget_gib=model["memory_gib"], local_files_only=True)
-    song = pipeline(**job["song"])
+    max_tokens = job.get("max_tokens", 9000)
+    song = pipeline(**job["song"], semantic_sampling={"max_tokens": max_tokens, "min_tokens": min(pipeline.generation_config.semantic.min_tokens, max_tokens)})
     print("[YuE2] Starting Saving audio: writing audio and metadata", flush=True)
     song.save_artifacts(job["output"])
     np.save(Path(job["output"]) / "audio.npy", song.audio.astype(np.float32))

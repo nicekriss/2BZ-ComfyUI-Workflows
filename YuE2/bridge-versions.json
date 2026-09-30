@@ -3,5 +3,11 @@
     "__init__.py": "cebf06c8c0fd096d61ec31ae4a498671ff5f98d1cabdfd06d5d7df5d30f6a72c",
     "nodes.py": "37f1ef4eb2a779af7f13720b3c7969bc2ed0a4c2415971e693750e051297f47a",
     "worker.py": "a8fb3e831c6e5208c38287916143726c7f0db87294e35f8af3e6172aef5779cf"
+  },
+  "0.1.0-rc13": {
+    "__init__.py": "cebf06c8c0fd096d61ec31ae4a498671ff5f98d1cabdfd06d5d7df5d30f6a72c",
+    "nodes.py": "d9badd68c1f3060359185496c0d3d33233808d70f42e003e06faf0c09e690b5d",
+    "worker.py": "25e59fb6425f342706f0481a57bc4cd1c9bbdd3a3d7b3284711de8f39f46fa5a",
+    "live_progress.py": "488d21e6ebed30182f9a8dd49c84b8f5b85e57e5674795aa19522bcc7be50a22"
   }
 }

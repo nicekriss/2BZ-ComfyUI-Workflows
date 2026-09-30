@@ -1,5 +1,11 @@
 # Changes
 
+## yue2-v0.1.0-rc14
+
+- Expose `max_tokens` on both song generation nodes, defaulting to the existing 9000. Pass the limit to semantic sampling; low limits may truncate a song and do not guarantee that an out-of-memory error is resolved.
+- Pin ABC Studio v0.4.5 so its generator preserves optional upstream inputs and inherits execution. Keep old widget order and old prompts without the new input.
+- Recognize the rc13 bridge when upgrading, so existing users receive the new control without replacing their setup.
+
 ## yue2-v0.1.0-rc13
 
 - Roll back completed node changes and new runtimes, settings and workflow files if a later install step or final environment audit fails. Preserve existing SheetSage2 runtimes by moving them aside before rebuilding; reuse installations that pass their check.
