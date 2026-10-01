@@ -4,6 +4,12 @@
 
 English users: open **2BZ_FastH3_USDU_EN.json** from the ZIP, then use its clickable model-download note. [English setup guide](FastH3-USDU/START-HERE-en.md).
 
+## 2BZ 오디오 커터 — 음악 자르기 / 뮤비 장면 준비
+
+**[Windows ZIP 다운로드 · v0.5](https://github.com/nicekriss/2BZ-ComfyUI-Workflows/releases/download/audio-cutter-v0.5.0/2BZ-Audio-Cutter-v0.5.0-Windows-x64.zip)** · [사용 안내](Audio-Cutter/README.md)
+
+노래를 몇 초씩 나누거나 원하는 구간만 MP3로 저장합니다. 처음에는 음악 자르기만 표시하고, **뮤비 프로젝트**를 선택하면 구간별 이미지·키프레임·프롬프트·결과 영상을 함께 관리합니다. Windows 단독 프로그램이며 ComfyUI가 필요하지 않습니다.
+
 ## LTX 2.5 IC-LoRA — 물 · 밤 · 사람 지우기
 
 찍어둔 영상에 사람·카메라·배경은 그대로 두고 효과만 입힙니다. 한 워크플로에 물 채우기 / 낮→밤 / 사람 지우기 3종, 스위치 딸깍으로 전환. 세로·가로 영상 자동, 한 줄 한국어 요청을 AI가 영어 프롬프트로 써줍니다.
@@ -67,7 +73,7 @@ Windows용 기존 ComfyUI에 필요한 노드·모델·플러그인을 추가하
 
 ## 주의
 
-이 저장소는 워크플로우, 설치 도우미와 자체 제작 Photoshop Bridge 플러그인을 제공합니다. 모델, ComfyUI, 타사 커스텀 노드와 CUDA 커널은 포함하거나 재배포하지 않습니다. 각 파일은 안내된 원본 배포처에서 직접 받습니다.
+이 저장소는 워크플로우, 설치 도우미, 자체 제작 Photoshop Bridge와 오디오 커터를 제공합니다. 오디오 커터 Windows ZIP에는 Python·FFmpeg 등 실행 구성요소가 포함되며 [별도 고지](Audio-Cutter/THIRD_PARTY_NOTICES.md)를 따릅니다. 모델, ComfyUI, 타사 커스텀 노드와 CUDA 커널은 포함하거나 재배포하지 않습니다. 각 파일은 안내된 원본 배포처에서 직접 받습니다.
 
 ## 제작
 

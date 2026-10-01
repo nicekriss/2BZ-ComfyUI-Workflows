@@ -1,5 +1,11 @@
 # Changelog
 
+## Audio Cutter v0.5 — 2026-10-02
+
+- Add standalone Windows music splitting and MP3 export.
+- Keep music cutting as the default; open scene references, prompts and result videos through the optional MV workspace.
+- Include autosave/recovery and portable project files.
+
 ## Qwen-Image 2.1 license note — 2026-09-24
 
 - Added a license warning to the Qwen-Image 2.1 README and the root README: the model is under the Qwen Research License (research/evaluation only). Unlike FLUX.1 [dev], it has no clause allowing commercial use of outputs, so commercial work should use the Apache 2.0 Qwen-Image 2512 / Edit 2511 until Qwen clarifies.
