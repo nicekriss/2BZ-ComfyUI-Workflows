@@ -55,9 +55,9 @@ def main():
     worker.start()
     bridge = DesktopBridge()
     window = webview.create_window(
-        '2BZ 오디오 커터 v0.5 · 뮤비 작업실',
+        '2BZ 오디오 커터 v0.6 · Night Session',
         f'http://127.0.0.1:{server.server_port}', js_api=bridge,
-        width=1380, height=960, min_size=(820, 650), background_color='#10131a',
+        width=1380, height=960, min_size=(820, 650), background_color='#191b1f',
     )
     bridge._window = window
     window.events.closing += bridge.on_closing

@@ -6,7 +6,7 @@ let selection = {start: 0, end: 10}, fixedLength = 10, clips = [], zoom = 1, off
 let workflow = 'audio';
 let mode = 'split', points = [], names = [], active = 0, history = [], freeSelection = {start: 0, end: 10};
 let playing = false, playStarted = 0, playOffset = 0, selectionPlayback = true, busy = true, playVersion = 0;
-const palette = ['#3ee6ff', '#a3e635', '#fb923c', '#c4a0ff'];
+const waveColors = {background: '#191b1f', accent: '#d5b366', muted: '#989da6', boundary: '#41454d', fill: '#b4b8bf', selection: '#302c23', waveform: '#757b85', playhead: '#e0e1df'};
 const format = t => {
   const ms = Math.max(0, Math.round(t * 1000));
   return String(Math.floor(ms / 60000)).padStart(2, '0') + ':' + String(Math.floor(ms / 1000) % 60).padStart(2, '0') + '.' + String(ms % 1000).padStart(3, '0');
@@ -134,21 +134,21 @@ function draw() {
   const rect = canvas.getBoundingClientRect(), ratio = window.devicePixelRatio || 1;
   canvas.width = Math.round(rect.width * ratio); canvas.height = Math.round(rect.height * ratio); ctx.scale(ratio, ratio);
   const w = rect.width, h = rect.height;
-  ctx.fillStyle = '#10151f'; ctx.fillRect(0, 0, w, h); if (!buffer || !w) return;
+  ctx.fillStyle = waveColors.background; ctx.fillRect(0, 0, w, h); if (!buffer || !w) return;
   const span = viewSpan(), x = t => (t - offset) / span * w, a = x(selection.start), b = x(selection.end);
   if (mode === 'split') {
     for (let i = 0; i < points.length - 1; i++) {
       const left = x(points[i]), right = x(points[i + 1]);
       if (right < 0 || left > w) continue;
-      ctx.globalAlpha = i === active ? .24 : .09; ctx.fillStyle = i === active ? '#ffe14d' : palette[i % palette.length]; ctx.fillRect(left, 24, right - left, h - 24); ctx.globalAlpha = 1;
-      ctx.fillStyle = i === active ? '#ffe14d' : palette[i % palette.length]; ctx.font = 'bold 11px Segoe UI';
+      ctx.globalAlpha = i === active ? .12 : (i % 2 ? .025 : 0); ctx.fillStyle = i === active ? waveColors.accent : waveColors.fill; ctx.fillRect(left, 24, right - left, h - 24); ctx.globalAlpha = 1;
+      ctx.fillStyle = i === active ? waveColors.accent : waveColors.muted; ctx.font = '12px Segoe UI';
       if (right - Math.max(left, 0) > 22) ctx.fillText(String(i + 1).padStart(2, '0'), Math.max(left + 5, 5), 40);
-      ctx.fillRect(left, 25, 1, h - 25);
+      ctx.fillStyle = waveColors.boundary; ctx.fillRect(left, 25, 1, h - 25);
     }
-  } else { ctx.fillStyle = '#163d4b'; ctx.fillRect(a, 0, b - a, h); }
-  ctx.strokeStyle = '#2c3648'; ctx.lineWidth = 1;
+  } else { ctx.fillStyle = waveColors.selection; ctx.fillRect(a, 0, b - a, h); }
+  ctx.strokeStyle = waveColors.boundary; ctx.lineWidth = 1;
   for (let i = 0; i <= 4; i++) {
-    const px = i * w / 4; ctx.fillStyle = '#a8b3c4'; ctx.font = '10px Segoe UI';
+    const px = i * w / 4; ctx.fillStyle = waveColors.muted; ctx.font = '11px Segoe UI';
     ctx.fillText(format(offset + i * span / 4).slice(0, zoom > 8 ? 9 : 5), Math.min(px + 4, w - 58), 16);
   }
   const samples = buffer.getChannelData(0), rate = buffer.sampleRate, middle = h * .59, amp = h * .30;
@@ -156,11 +156,11 @@ function draw() {
     const start = Math.floor((offset + px / w * span) * rate), end = Math.min(samples.length, Math.ceil((offset + (px + 1) / w * span) * rate));
     let min = 0, max = 0; const step = Math.max(1, Math.floor((end - start) / 100));
     for (let i = start; i < end; i += step) { min = Math.min(min, samples[i]); max = Math.max(max, samples[i]); }
-    ctx.strokeStyle = px >= a && px <= b ? '#3ee6ff' : '#6e829f'; ctx.beginPath(); ctx.moveTo(px, middle + min * amp); ctx.lineTo(px, middle + max * amp); ctx.stroke();
+    ctx.strokeStyle = px >= a && px <= b ? waveColors.accent : waveColors.waveform; ctx.beginPath(); ctx.moveTo(px, middle + min * amp); ctx.lineTo(px, middle + max * amp); ctx.stroke();
   }
-  ctx.fillStyle = '#ffe14d';
+  ctx.fillStyle = waveColors.accent;
   for (const px of [a, b]) if (px >= 0 && px <= w) { ctx.fillRect(px - 1, 25, 2, h - 25); ctx.fillRect(px - 4, h * .5, 8, 30); }
-  if (playing) { ctx.fillStyle = '#fff'; ctx.fillRect(x(currentPosition()), 23, 2, h - 23); }
+  if (playing) { ctx.fillStyle = waveColors.playhead; ctx.fillRect(x(currentPosition()), 23, 2, h - 23); }
 }
 function currentPosition() {
   if (!playing) return selection.start;

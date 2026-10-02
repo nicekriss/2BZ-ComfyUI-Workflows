@@ -1,4 +1,4 @@
-# Third-party notices — 2BZ Audio Cutter v0.5
+# Third-party notices — 2BZ Audio Cutter v0.6
 
 The application invokes FFmpeg/ffprobe as separate local processes. It also bundles the Python runtime and packages listed below using PyInstaller. No user songs, reference images, generated videos, saved projects, credentials, or recovery data are included in this release.
 

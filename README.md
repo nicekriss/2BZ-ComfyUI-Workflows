@@ -6,7 +6,7 @@ English users: open **2BZ_FastH3_USDU_EN.json** from the ZIP, then use its click
 
 ## 2BZ 오디오 커터 — 음악 자르기 / 뮤비 장면 준비
 
-**[Windows ZIP 다운로드 · v0.5](https://github.com/nicekriss/2BZ-ComfyUI-Workflows/releases/download/audio-cutter-v0.5.0/2BZ-Audio-Cutter-v0.5.0-Windows-x64.zip)** · [사용 안내](Audio-Cutter/README.md)
+**[Windows ZIP 다운로드 · v0.6](https://github.com/nicekriss/2BZ-ComfyUI-Workflows/releases/download/audio-cutter-v0.6.0/2BZ-Audio-Cutter-v0.6.0-Windows-x64.zip)** · [사용 안내](Audio-Cutter/README.md)
 
 노래를 몇 초씩 나누거나 원하는 구간만 MP3로 저장합니다. 처음에는 음악 자르기만 표시하고, **뮤비 프로젝트**를 선택하면 구간별 이미지·키프레임·프롬프트·결과 영상을 함께 관리합니다. Windows 단독 프로그램이며 ComfyUI가 필요하지 않습니다.
 

@@ -1,5 +1,11 @@
 # Changelog
 
+## Audio Cutter v0.6 — 2026-10-02
+
+- Apply the Night Session charcoal and amber interface.
+- Widen the music segment list and improve compact window layouts.
+- Verify boundary editing, undo, recovery and workspace switching.
+
 ## Audio Cutter v0.5 — 2026-10-02
 
 - Add standalone Windows music splitting and MP3 export.

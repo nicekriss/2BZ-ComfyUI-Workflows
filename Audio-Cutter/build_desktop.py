@@ -10,7 +10,7 @@ ROOT = Path(__file__).resolve().parent
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--work-dir', required=True)
-    parser.add_argument('--dist-dir', default=str(ROOT / 'desktop-v0.5'))
+    parser.add_argument('--dist-dir', default=str(ROOT / 'desktop-v0.6'))
     args = parser.parse_args()
     work = Path(args.work_dir).resolve()
     work.mkdir(parents=True, exist_ok=True)

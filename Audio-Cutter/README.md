@@ -1,8 +1,12 @@
-# 2BZ 오디오 커터 v0.5
+# 2BZ 오디오 커터 v0.6 · Night Session
 
 노래를 원하는 길이로 나누고, 필요한 구간을 MP3로 저장하는 Windows 프로그램입니다. ComfyUI 없이 단독으로 실행합니다.
 
-**[Windows ZIP 다운로드](https://github.com/nicekriss/2BZ-ComfyUI-Workflows/releases/download/audio-cutter-v0.5.0/2BZ-Audio-Cutter-v0.5.0-Windows-x64.zip)** · [릴리스 안내](https://github.com/nicekriss/2BZ-ComfyUI-Workflows/releases/tag/audio-cutter-v0.5.0)
+**[Windows ZIP 다운로드](https://github.com/nicekriss/2BZ-ComfyUI-Workflows/releases/download/audio-cutter-v0.6.0/2BZ-Audio-Cutter-v0.6.0-Windows-x64.zip)** · [릴리스 안내](https://github.com/nicekriss/2BZ-ComfyUI-Workflows/releases/tag/audio-cutter-v0.6.0)
+
+## v0.6 디자인 업데이트
+
+차콜 배경과 부드러운 글자색, 앰버 강조로 화면을 정리했습니다. 음악 화면의 구간 목록은 가로로 넓히고 작은 창의 배치를 개선했습니다. 경계 조정·되돌리기·프로젝트 복구와 음악/뮤비 화면 전환을 확인했습니다.
 
 ## 시작하기
 
