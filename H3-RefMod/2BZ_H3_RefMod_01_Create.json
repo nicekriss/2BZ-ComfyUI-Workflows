@@ -1,0 +1,536 @@
+{
+  "revision": 0,
+  "last_node_id": 5,
+  "last_link_id": 3,
+  "nodes": [
+    {
+      "id": 2,
+      "type": "VAELoader",
+      "pos": [
+        40,
+        650
+      ],
+      "size": [
+        360,
+        130
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "vae_name",
+          "name": "vae_name",
+          "type": "COMBO",
+          "widget": {
+            "name": "vae_name"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "VAE",
+          "name": "VAE",
+          "type": "VAE",
+          "slot_index": 0,
+          "links": [
+            2
+          ]
+        }
+      ],
+      "title": "2. H3 영상 VAE",
+      "properties": {
+        "Node name for S&R": "VAELoader"
+      },
+      "widgets_values": [
+        "minimax_h3_video_vae_fp16.safetensors"
+      ],
+      "widgets_values_named": {
+        "vae_name": "minimax_h3_video_vae_fp16.safetensors"
+      }
+    },
+    {
+      "id": 4,
+      "type": "PreviewAny",
+      "pos": [
+        980,
+        40
+      ],
+      "size": [
+        430,
+        250
+      ],
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "source",
+          "name": "source",
+          "type": "*",
+          "link": 3
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "STRING",
+          "name": "STRING",
+          "type": "STRING",
+          "slot_index": 0,
+          "links": []
+        }
+      ],
+      "title": "저장 경로 · 크기 · 토큰 확인",
+      "properties": {
+        "Node name for S&R": "PreviewAny"
+      },
+      "widgets_values": [],
+      "widgets_values_named": {}
+    },
+    {
+      "id": 5,
+      "type": "MarkdownNote",
+      "pos": [
+        29.710312862108925,
+        -24.588644264194684
+      ],
+      "size": [
+        410,
+        290
+      ],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [],
+      "properties": {},
+      "widgets_values": [
+        "# 캐릭터 RefMod 만들기\n1. ComfyUI의 `input/RefMod_images/my_character` 폴더에 같은 캐릭터의 사진을 넣으세요. 얼굴 방향과 표정이 다른 사진을 사용하세요.\n2. 저장 이름 `my_character`를 원하는 이름으로 바꾸고 실행하세요. 같은 이름이면 기존 파일을 덮어씁니다.\n3. `models/refmods/characters/이름.safetensors`로 저장됩니다.\n4. 영상 생성 워크플로우의 RefMod 목록을 새로고침하고 파일을 선택하세요. 참조 번호는 타입별 미리보기로 확인합니다.\n\n필요 노드: **MiniMax H3 RefMod** (제작자 luisacaotica).\n[노드 설치 안내](https://github.com/Luisacaotica/ComfyUI-MiniMaxH3Mod)\n\n[H3 비디오 VAE 다운로드](https://huggingface.co/Comfy-Org/MiniMax-H3/resolve/main/vae/minimax_h3_video_vae_fp16.safetensors?download=true) → `ComfyUI/models/vae/`\n\n기본값은 Full Reference입니다. 해상도·프레임·토큰 제한에 따라 담기는 정보량이 달라집니다. RefMod는 미리 인코딩한 H3 참조이며 학습된 LoRA가 아닙니다.\n"
+      ],
+      "widgets_values_named": {
+        "text": "# 캐릭터 RefMod 만들기\n1. ComfyUI의 `input/RefMod_images/my_character` 폴더에 같은 캐릭터의 사진을 넣으세요. 얼굴 방향과 표정이 다른 사진을 사용하세요.\n2. 저장 이름 `my_character`를 원하는 이름으로 바꾸고 실행하세요. 같은 이름이면 기존 파일을 덮어씁니다.\n3. `models/refmods/characters/이름.safetensors`로 저장됩니다.\n4. 영상 생성 워크플로우의 RefMod 목록을 새로고침하고 파일을 선택하세요. 참조 번호는 타입별 미리보기로 확인합니다.\n\n필요 노드: **MiniMax H3 RefMod** (제작자 luisacaotica).\n[노드 설치 안내](https://github.com/Luisacaotica/ComfyUI-MiniMaxH3Mod)\n\n[H3 비디오 VAE 다운로드](https://huggingface.co/Comfy-Org/MiniMax-H3/resolve/main/vae/minimax_h3_video_vae_fp16.safetensors?download=true) → `ComfyUI/models/vae/`\n\n기본값은 Full Reference입니다. 해상도·프레임·토큰 제한에 따라 담기는 정보량이 달라집니다. RefMod는 미리 인코딩한 H3 참조이며 학습된 LoRA가 아닙니다.\n"
+      },
+      "color": "#432",
+      "bgcolor": "#653"
+    },
+    {
+      "id": 1,
+      "type": "MiniMaxH3RefModFolderLoader",
+      "pos": [
+        40,
+        330
+      ],
+      "size": [
+        360,
+        184
+      ],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "folder",
+          "name": "folder",
+          "type": "STRING",
+          "widget": {
+            "name": "folder"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "max_items",
+          "name": "max_items",
+          "type": "INT",
+          "widget": {
+            "name": "max_items"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "max_frames",
+          "name": "max_frames",
+          "type": "INT",
+          "widget": {
+            "name": "max_frames"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "max_edge",
+          "name": "max_edge",
+          "type": "INT",
+          "widget": {
+            "name": "max_edge"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "refs",
+          "name": "refs",
+          "type": "H3_REF_LIST",
+          "slot_index": 0,
+          "links": [
+            1
+          ]
+        },
+        {
+          "localized_name": "count",
+          "name": "count",
+          "type": "INT",
+          "slot_index": 1,
+          "links": []
+        }
+      ],
+      "title": "1. 같은 캐릭터의 사진 폴더",
+      "properties": {
+        "Node name for S&R": "MiniMaxH3RefModFolderLoader"
+      },
+      "widgets_values": [
+        "RefMod_images/my_character",
+        32,
+        240,
+        1024
+      ],
+      "widgets_values_named": {
+        "folder": "RefMod_images/my_character",
+        "max_items": 32,
+        "max_frames": 240,
+        "max_edge": 1024
+      }
+    },
+    {
+      "id": 3,
+      "type": "MiniMaxH3RefModExtract",
+      "pos": [
+        490,
+        40
+      ],
+      "size": [
+        410,
+        1040
+      ],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "ref_image_0",
+          "name": "refs_image.ref_image_0",
+          "shape": 7,
+          "type": "IMAGE",
+          "link": null
+        },
+        {
+          "localized_name": "ref_video_0",
+          "name": "refs_video.ref_video_0",
+          "shape": 7,
+          "type": "IMAGE",
+          "link": null
+        },
+        {
+          "localized_name": "refs_bundle",
+          "name": "refs_bundle",
+          "shape": 7,
+          "type": "H3_REF_LIST",
+          "link": 1
+        },
+        {
+          "localized_name": "mask",
+          "name": "mask",
+          "shape": 7,
+          "type": "MASK",
+          "link": null
+        },
+        {
+          "localized_name": "av_encoder",
+          "name": "av_encoder",
+          "shape": 7,
+          "type": "MINIMAX_H3_AV_ENCODER",
+          "link": null
+        },
+        {
+          "localized_name": "vae",
+          "name": "vae",
+          "shape": 7,
+          "type": "VAE",
+          "link": 2
+        },
+        {
+          "localized_name": "mask_list",
+          "name": "mask_list",
+          "shape": 7,
+          "type": "H3_MASK_LIST",
+          "link": null
+        },
+        {
+          "localized_name": "name",
+          "name": "name",
+          "type": "STRING",
+          "widget": {
+            "name": "name"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "mode",
+          "name": "mode",
+          "type": "COMBO",
+          "widget": {
+            "name": "mode"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "concept_type",
+          "name": "concept_type",
+          "type": "COMBO",
+          "widget": {
+            "name": "concept_type"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "background_retention",
+          "name": "background_retention",
+          "type": "FLOAT",
+          "widget": {
+            "name": "background_retention"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "ref_resolution",
+          "name": "ref_resolution",
+          "type": "INT",
+          "widget": {
+            "name": "ref_resolution"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "pool_h",
+          "name": "pool_h",
+          "type": "INT",
+          "widget": {
+            "name": "pool_h"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "pool_w",
+          "name": "pool_w",
+          "type": "INT",
+          "widget": {
+            "name": "pool_w"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "latent_frames",
+          "name": "latent_frames",
+          "type": "INT",
+          "widget": {
+            "name": "latent_frames"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Refinement Steps",
+          "name": "identity",
+          "type": "INT",
+          "widget": {
+            "name": "identity"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "merge",
+          "name": "merge",
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "merge"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "motion_only",
+          "name": "motion_only",
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "motion_only"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "multiplier",
+          "name": "multiplier",
+          "type": "INT",
+          "widget": {
+            "name": "multiplier"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "max_tokens",
+          "name": "max_tokens",
+          "type": "INT",
+          "widget": {
+            "name": "max_tokens"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "description",
+          "name": "description",
+          "type": "STRING",
+          "widget": {
+            "name": "description"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "save",
+          "name": "save",
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "save"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "extraction_preset",
+          "name": "extraction_preset",
+          "shape": 7,
+          "type": "COMBO",
+          "widget": {
+            "name": "extraction_preset"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "subfolder",
+          "name": "subfolder",
+          "shape": 7,
+          "type": "STRING",
+          "widget": {
+            "name": "subfolder"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "budget_policy",
+          "name": "budget_policy",
+          "shape": 7,
+          "type": "COMBO",
+          "widget": {
+            "name": "budget_policy"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "mods",
+          "name": "mods",
+          "type": "H3_REF_MODS",
+          "slot_index": 0,
+          "links": []
+        },
+        {
+          "localized_name": "details",
+          "name": "details",
+          "type": "STRING",
+          "slot_index": 1,
+          "links": [
+            3
+          ]
+        }
+      ],
+      "title": "3. 캐릭터 RefMod 저장",
+      "properties": {
+        "Node name for S&R": "MiniMaxH3RefModExtract"
+      },
+      "widgets_values": [
+        "my_character",
+        "Full Reference",
+        "identity",
+        0,
+        1024,
+        16,
+        16,
+        16,
+        0,
+        false,
+        false,
+        1,
+        5120,
+        "",
+        true,
+        "manual",
+        "characters",
+        "truncate"
+      ],
+      "widgets_values_named": {
+        "name": "my_character",
+        "mode": "Full Reference",
+        "concept_type": "identity",
+        "background_retention": 0,
+        "ref_resolution": 1024,
+        "pool_h": 16,
+        "pool_w": 16,
+        "latent_frames": 16,
+        "identity": 0,
+        "merge": false,
+        "motion_only": false,
+        "multiplier": 1,
+        "max_tokens": 5120,
+        "description": "",
+        "save": true,
+        "extraction_preset": "manual",
+        "subfolder": "characters",
+        "budget_policy": "truncate"
+      }
+    }
+  ],
+  "links": [
+    [
+      1,
+      1,
+      0,
+      3,
+      2,
+      "H3_REF_LIST"
+    ],
+    [
+      2,
+      2,
+      0,
+      3,
+      5,
+      "VAE"
+    ],
+    [
+      3,
+      3,
+      1,
+      4,
+      0,
+      "STRING"
+    ]
+  ],
+  "groups": [],
+  "config": {},
+  "extra": {
+    "ds": {
+      "scale": 0.7642247782258069,
+      "offset": [
+        214.20745692253038,
+        115.36344349211332
+      ]
+    }
+  },
+  "version": 0.4
+}

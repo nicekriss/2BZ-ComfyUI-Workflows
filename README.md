@@ -4,6 +4,12 @@
 
 English users: open **2BZ_FastH3_USDU_EN.json** from the ZIP, then use its clickable model-download note. [English setup guide](FastH3-USDU/START-HERE-en.md).
 
+## MiniMax H3 RefMod — 참조 만들기 · 영상 생성
+
+사진을 재사용할 RefMod로 저장하고, 한국어 프롬프트를 Gemma 4로 번역해 H3 영상을 생성합니다. 모델 다운로드 링크와 VRAM 조절 안내를 워크플로우에 포함했습니다.
+
+**[RefMod 제작 JSON](H3-RefMod/2BZ_H3_RefMod_01_Create.json)** · **[영상 생성 JSON](H3-RefMod/2BZ_H3_RefMod_02_Video_Gemma4.json)** · [설치·사용 안내](H3-RefMod/README.md)
+
 ## 2BZ 오디오 커터 — 음악 자르기 / 뮤비 장면 준비
 
 **[Windows ZIP 다운로드 · v0.6](https://github.com/nicekriss/2BZ-ComfyUI-Workflows/releases/download/audio-cutter-v0.6.0/2BZ-Audio-Cutter-v0.6.0-Windows-x64.zip)** · [사용 안내](Audio-Cutter/README.md)
