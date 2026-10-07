@@ -6,7 +6,7 @@ English users: open **2BZ_FastH3_USDU_EN.json** from the ZIP, then use its click
 
 ## MiniMax H3 RefMod — 참조 만들기 · 영상 생성
 
-사진을 재사용할 RefMod로 저장하고, 한국어 프롬프트를 Gemma 4로 번역해 H3 영상을 생성합니다. 모델 다운로드 링크와 VRAM 조절 안내를 워크플로우에 포함했습니다.
+사진·영상과 목소리를 각각 재사용할 RefMod로 저장하고, 한국어 프롬프트를 Gemma 4로 번역해 H3 영상을 생성합니다. 제작 JSON에 오디오 생성 그룹과 사용법을 추가했습니다(2026-10-07). 모델 다운로드 링크와 VRAM 조절 안내를 워크플로우에 포함했습니다.
 
 **[RefMod 제작 JSON](H3-RefMod/2BZ_H3_RefMod_01_Create.json)** · **[영상 생성 JSON](H3-RefMod/2BZ_H3_RefMod_02_Video_Gemma4.json)** · [설치·사용 안내](H3-RefMod/README.md)
 

@@ -1,7 +1,7 @@
 {
   "revision": 0,
-  "last_node_id": 5,
-  "last_link_id": 3,
+  "last_node_id": 11,
+  "last_link_id": 7,
   "nodes": [
     {
       "id": 2,
@@ -45,10 +45,7 @@
       },
       "widgets_values": [
         "minimax_h3_video_vae_fp16.safetensors"
-      ],
-      "widgets_values_named": {
-        "vae_name": "minimax_h3_video_vae_fp16.safetensors"
-      }
+      ]
     },
     {
       "id": 4,
@@ -62,7 +59,7 @@
         250
       ],
       "flags": {},
-      "order": 4,
+      "order": 8,
       "mode": 0,
       "inputs": [
         {
@@ -85,34 +82,31 @@
       "properties": {
         "Node name for S&R": "PreviewAny"
       },
-      "widgets_values": [],
-      "widgets_values_named": {}
+      "widgets_values": []
     },
     {
       "id": 5,
       "type": "MarkdownNote",
       "pos": [
-        29.710312862108925,
-        -24.588644264194684
+        1450,
+        40
       ],
       "size": [
-        410,
-        290
+        560,
+        700
       ],
       "flags": {},
       "order": 1,
       "mode": 0,
       "inputs": [],
       "outputs": [],
+      "title": "처음 읽기 · 사진 / 음성 실행 선택",
       "properties": {},
       "widgets_values": [
-        "# 캐릭터 RefMod 만들기\n1. ComfyUI의 `input/RefMod_images/my_character` 폴더에 같은 캐릭터의 사진을 넣으세요. 얼굴 방향과 표정이 다른 사진을 사용하세요.\n2. 저장 이름 `my_character`를 원하는 이름으로 바꾸고 실행하세요. 같은 이름이면 기존 파일을 덮어씁니다.\n3. `models/refmods/characters/이름.safetensors`로 저장됩니다.\n4. 영상 생성 워크플로우의 RefMod 목록을 새로고침하고 파일을 선택하세요. 참조 번호는 타입별 미리보기로 확인합니다.\n\n필요 노드: **MiniMax H3 RefMod** (제작자 luisacaotica).\n[노드 설치 안내](https://github.com/Luisacaotica/ComfyUI-MiniMaxH3Mod)\n\n[H3 비디오 VAE 다운로드](https://huggingface.co/Comfy-Org/MiniMax-H3/resolve/main/vae/minimax_h3_video_vae_fp16.safetensors?download=true) → `ComfyUI/models/vae/`\n\n기본값은 Full Reference입니다. 해상도·프레임·토큰 제한에 따라 담기는 정보량이 달라집니다. RefMod는 미리 인코딩한 H3 참조이며 학습된 LoRA가 아닙니다.\n"
+        "# 배포 기본: 사진 ON / 음성 OFF\n음성 제작 시 사진 노드 3·4 → Never, 오디오 결과 노드 10 → Always로 바꾸세요.\n\n# 사진 / 영상 RefMod\n이 그룹의 폴더 로더는 **사진·영상 전용**입니다.\n음성은 아래 B 그룹의 **Load Audio**에 넣으세요.\n\n사진 제작: 노드 3·4를 Always, 오디오 5(노드 10)를 Never로 설정합니다.\n음성 제작: 노드 3·4를 Never, 노드 10을 Always로 설정합니다.\n(노드 우클릭 → Mode. Bypass가 아닌 Never를 사용)\n\n사진은 같은 캐릭터 폴더를 선택하고 저장 이름을 바꿉니다. concept_type은 분류이며 voice로 바꿔도 음성 입력으로 전환되지 않습니다.\n\n[비디오 VAE 받기](https://huggingface.co/Comfy-Org/MiniMax-H3/resolve/main/vae/minimax_h3_video_vae_fp16.safetensors?download=true) → models/vae/\n[RefMod 노드 설치·업데이트](https://github.com/Luisacaotica/ComfyUI-MiniMaxH3Mod)"
       ],
-      "widgets_values_named": {
-        "text": "# 캐릭터 RefMod 만들기\n1. ComfyUI의 `input/RefMod_images/my_character` 폴더에 같은 캐릭터의 사진을 넣으세요. 얼굴 방향과 표정이 다른 사진을 사용하세요.\n2. 저장 이름 `my_character`를 원하는 이름으로 바꾸고 실행하세요. 같은 이름이면 기존 파일을 덮어씁니다.\n3. `models/refmods/characters/이름.safetensors`로 저장됩니다.\n4. 영상 생성 워크플로우의 RefMod 목록을 새로고침하고 파일을 선택하세요. 참조 번호는 타입별 미리보기로 확인합니다.\n\n필요 노드: **MiniMax H3 RefMod** (제작자 luisacaotica).\n[노드 설치 안내](https://github.com/Luisacaotica/ComfyUI-MiniMaxH3Mod)\n\n[H3 비디오 VAE 다운로드](https://huggingface.co/Comfy-Org/MiniMax-H3/resolve/main/vae/minimax_h3_video_vae_fp16.safetensors?download=true) → `ComfyUI/models/vae/`\n\n기본값은 Full Reference입니다. 해상도·프레임·토큰 제한에 따라 담기는 정보량이 달라집니다. RefMod는 미리 인코딩한 H3 참조이며 학습된 LoRA가 아닙니다.\n"
-      },
-      "color": "#432",
-      "bgcolor": "#653"
+      "color": "#233",
+      "bgcolor": "#355"
     },
     {
       "id": 1,
@@ -193,13 +187,7 @@
         32,
         240,
         1024
-      ],
-      "widgets_values_named": {
-        "folder": "RefMod_images/my_character",
-        "max_items": 32,
-        "max_frames": 240,
-        "max_edge": 1024
-      }
+      ]
     },
     {
       "id": 3,
@@ -213,7 +201,7 @@
         1040
       ],
       "flags": {},
-      "order": 3,
+      "order": 6,
       "mode": 0,
       "inputs": [
         {
@@ -472,27 +460,412 @@
         "manual",
         "characters",
         "truncate"
+      ]
+    },
+    {
+      "id": 6,
+      "type": "MiniMaxH3RefModAudioExtract",
+      "pos": [
+        490,
+        1260
       ],
-      "widgets_values_named": {
-        "name": "my_character",
-        "mode": "Full Reference",
-        "concept_type": "identity",
-        "background_retention": 0,
-        "ref_resolution": 1024,
-        "pool_h": 16,
-        "pool_w": 16,
-        "latent_frames": 16,
-        "identity": 0,
-        "merge": false,
-        "motion_only": false,
-        "multiplier": 1,
-        "max_tokens": 5120,
-        "description": "",
-        "save": true,
-        "extraction_preset": "manual",
-        "subfolder": "characters",
-        "budget_policy": "truncate"
-      }
+      "size": [
+        410,
+        440
+      ],
+      "flags": {},
+      "order": 7,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "audio",
+          "name": "audio",
+          "type": "AUDIO",
+          "link": 4
+        },
+        {
+          "localized_name": "audio_vae",
+          "name": "audio_vae",
+          "type": "VAE",
+          "link": 5
+        },
+        {
+          "localized_name": "name",
+          "name": "name",
+          "type": "STRING",
+          "widget": {
+            "name": "name"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "max_seconds",
+          "name": "max_seconds",
+          "type": "FLOAT",
+          "widget": {
+            "name": "max_seconds"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "max_tokens",
+          "name": "max_tokens",
+          "type": "INT",
+          "widget": {
+            "name": "max_tokens"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "budget_policy",
+          "name": "budget_policy",
+          "type": "COMBO",
+          "widget": {
+            "name": "budget_policy"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "concept_type",
+          "name": "concept_type",
+          "type": "COMBO",
+          "widget": {
+            "name": "concept_type"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "description",
+          "name": "description",
+          "type": "STRING",
+          "widget": {
+            "name": "description"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "subfolder",
+          "name": "subfolder",
+          "type": "STRING",
+          "widget": {
+            "name": "subfolder"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "save",
+          "name": "save",
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "save"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "H3_REF_MODS",
+          "name": "H3_REF_MODS",
+          "type": "H3_REF_MODS",
+          "links": [
+            6
+          ]
+        }
+      ],
+      "title": "오디오 3 · 목소리 RefMod 저장",
+      "properties": {
+        "Node name for S&R": "MiniMaxH3RefModAudioExtract"
+      },
+      "widgets_values": [
+        "my_voice",
+        30.0,
+        5120,
+        "truncate",
+        "voice",
+        "",
+        "voices",
+        true
+      ],
+      "color": "#232",
+      "bgcolor": "#353"
+    },
+    {
+      "id": 7,
+      "type": "LoadAudio",
+      "pos": [
+        40,
+        1260
+      ],
+      "size": [
+        360,
+        280
+      ],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "audio",
+          "name": "audio",
+          "type": "COMBO",
+          "widget": {
+            "name": "audio"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "audioUI",
+          "name": "audioUI",
+          "type": "AUDIO_UI",
+          "widget": {
+            "name": "audioUI"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "choose file to upload",
+          "name": "upload",
+          "type": "AUDIOUPLOAD",
+          "widget": {
+            "name": "upload"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "AUDIO",
+          "name": "AUDIO",
+          "type": "AUDIO",
+          "links": [
+            4
+          ]
+        }
+      ],
+      "title": "오디오 1 · 음성 파일 업로드",
+      "properties": {
+        "Node name for S&R": "LoadAudio"
+      },
+      "widgets_values": [
+        "",
+        ""
+      ],
+      "color": "#322",
+      "bgcolor": "#533"
+    },
+    {
+      "id": 8,
+      "type": "VAELoader",
+      "pos": [
+        40,
+        1630
+      ],
+      "size": [
+        360,
+        110
+      ],
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "vae_name",
+          "name": "vae_name",
+          "type": "COMBO",
+          "widget": {
+            "name": "vae_name"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "VAE",
+          "name": "VAE",
+          "type": "VAE",
+          "links": [
+            5
+          ]
+        }
+      ],
+      "title": "오디오 2 · H3 오디오 VAE",
+      "properties": {
+        "Node name for S&R": "VAELoader"
+      },
+      "widgets_values": [
+        "minimax_h3_audio_vae_fp32.safetensors"
+      ],
+      "color": "#222",
+      "bgcolor": "#000"
+    },
+    {
+      "id": 9,
+      "type": "MiniMaxH3RefModInspect",
+      "pos": [
+        960,
+        1260
+      ],
+      "size": [
+        410,
+        200
+      ],
+      "flags": {},
+      "order": 9,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "mods",
+          "name": "mods",
+          "type": "H3_REF_MODS",
+          "link": 6
+        },
+        {
+          "localized_name": "vae",
+          "name": "vae",
+          "shape": 7,
+          "type": "VAE",
+          "link": null
+        },
+        {
+          "localized_name": "index",
+          "name": "index",
+          "type": "INT",
+          "widget": {
+            "name": "index"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "preview",
+          "name": "preview",
+          "type": "COMBO",
+          "widget": {
+            "name": "preview"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "strength",
+          "name": "strength",
+          "type": "FLOAT",
+          "widget": {
+            "name": "strength"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "visual_preview",
+          "name": "visual_preview",
+          "shape": 7,
+          "type": "COMBO",
+          "widget": {
+            "name": "visual_preview"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "details",
+          "name": "details",
+          "type": "STRING",
+          "links": [
+            7
+          ]
+        },
+        {
+          "localized_name": "image_preview",
+          "name": "image_preview",
+          "type": "IMAGE",
+          "links": null
+        },
+        {
+          "localized_name": "audio_preview",
+          "name": "audio_preview",
+          "type": "AUDIO",
+          "links": null
+        },
+        {
+          "localized_name": "reference_map",
+          "name": "reference_map",
+          "type": "STRING",
+          "links": null
+        }
+      ],
+      "title": "오디오 4 · 저장 정보 확인",
+      "properties": {
+        "Node name for S&R": "MiniMaxH3RefModInspect"
+      },
+      "widgets_values": [
+        0,
+        "off",
+        0.5,
+        "first_frame"
+      ],
+      "color": "#222",
+      "bgcolor": "#000"
+    },
+    {
+      "id": 10,
+      "type": "PreviewAny",
+      "pos": [
+        960,
+        1510
+      ],
+      "size": [
+        410,
+        260
+      ],
+      "flags": {},
+      "order": 10,
+      "mode": 2,
+      "inputs": [
+        {
+          "localized_name": "source",
+          "name": "source",
+          "type": "*",
+          "link": 7
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "STRING",
+          "name": "STRING",
+          "type": "STRING",
+          "links": null
+        }
+      ],
+      "title": "오디오 5 · 저장 경로 / 토큰",
+      "properties": {
+        "Node name for S&R": "PreviewAny"
+      },
+      "widgets_values": [],
+      "color": "#232",
+      "bgcolor": "#353"
+    },
+    {
+      "id": 11,
+      "type": "MarkdownNote",
+      "pos": [
+        1410,
+        1260
+      ],
+      "size": [
+        600,
+        850
+      ],
+      "flags": {},
+      "order": 5,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [],
+      "title": "음성 RefMod · 사용법과 모델 다운로드",
+      "properties": {},
+      "widgets_values": [
+        "# 음성 RefMod 만들기\n**사진 폴더 로더는 오디오를 읽지 않습니다.** WAV / MP3 / M4A를 그 폴더에 넣거나, 사진용 concept_type만 voice로 바꿔도 음성 변환은 되지 않습니다.\n\n1. **오디오 1 · Load Audio**에서 내 음성 파일을 업로드합니다. 한 사람의 깨끗한 말소리 10~30초부터 시작하세요. 파일이 안 읽히면 PCM WAV로 변환합니다.\n2. **오디오 2**에서 `minimax_h3_audio_vae_fp32.safetensors`를 선택합니다. 비디오 VAE와 다릅니다.\n3. **오디오 3**: name은 저장 이름, concept_type=`voice`, subfolder=`voices`, save=켜기. max_seconds는 앞에서 사용할 최대 길이입니다. truncate는 토큰 예산 초과분을 잘라 저장합니다.\n4. 위 사진용 저장 노드 **3과 결과 노드 4는 Never(음소거)**, 아래 오디오 노드는 Always(활성)로 두고 Run을 누르세요. 노드 우클릭 → Mode에서 변경할 수 있습니다. 단축키는 필요 없습니다.\n5. **오디오 5**에 `kind: audio` 등 결과가 나오면 저장 완료. 활성 모델 경로의 `refmods/voices/이름.safetensors`에 저장됩니다. 같은 이름은 덮어쓰므로 새 이름을 사용하세요.\n\n## 모델 다운로드\n[H3 오디오 VAE 바로 받기](https://huggingface.co/Comfy-Org/MiniMax-H3/resolve/main/vae/minimax_h3_audio_vae_fp32.safetensors?download=true)\n저장: `ComfyUI/models/vae/`\n\n## 만든 목소리를 영상에 쓰기\nRefMod 로더에서 voices 파일을 선택하고 Audio 역할로 사용하세요. 실제 reference_map의 Audio 번호를 확인한 뒤, 예: `<Video 1> 인물은 <Audio 1> 목소리로 말한다`라고 지정합니다. 영상 슬롯 번호와 음성 번호는 서로 별개입니다.\n\n## 노드가 없으면\n[MiniMax H3 RefMod](https://github.com/Luisacaotica/ComfyUI-MiniMaxH3Mod)를 업데이트하고 ComfyUI를 재시작하세요.\n검색명: **Create H3 Audio RefMod** / **MiniMaxH3RefModAudioExtract**.\n얼굴과 목소리는 여기서 각각 별도 파일로 만듭니다.\n\n**배포 기본값:** 음성 결과 노드 10은 Never로 꺼져 있습니다. 내 음성을 업로드한 뒤 노드 10을 Always로 켜고, 사진 노드 3·4는 Never로 끄세요."
+      ],
+      "color": "#233",
+      "bgcolor": "#355"
     }
   ],
   "links": [
@@ -519,16 +892,73 @@
       4,
       0,
       "STRING"
+    ],
+    [
+      4,
+      7,
+      0,
+      6,
+      0,
+      "AUDIO"
+    ],
+    [
+      5,
+      8,
+      0,
+      6,
+      1,
+      "VAE"
+    ],
+    [
+      6,
+      6,
+      0,
+      9,
+      0,
+      "H3_REF_MODS"
+    ],
+    [
+      7,
+      9,
+      0,
+      10,
+      0,
+      "STRING"
     ]
   ],
-  "groups": [],
+  "groups": [
+    {
+      "id": 1,
+      "title": "A · 사진 / 영상 RefMod — 오디오 파일은 이 그룹에 넣지 마세요",
+      "bounding": [
+        0,
+        -50,
+        2040,
+        1160
+      ],
+      "color": "#8a5a2b",
+      "flags": {}
+    },
+    {
+      "id": 2,
+      "title": "B · 오디오 레퍼런스 / 목소리 RefMod",
+      "bounding": [
+        10,
+        1175,
+        2030,
+        965
+      ],
+      "color": "#3f8a59",
+      "flags": {}
+    }
+  ],
   "config": {},
   "extra": {
     "ds": {
-      "scale": 0.7642247782258069,
+      "scale": 0.35,
       "offset": [
-        214.20745692253038,
-        115.36344349211332
+        60,
+        140
       ]
     }
   },
