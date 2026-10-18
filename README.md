@@ -4,6 +4,15 @@
 
 English users: open **2BZ_FastH3_USDU_EN.json** from the ZIP, then use its clickable model-download note. [English setup guide](FastH3-USDU/START-HERE-en.md).
 
+## LTX2 시작 → 끝 프레임 (코어 노드판)
+
+1월 영상 「Frame to Last Frame (PainterLTXv2)」의 PainterLTXv2 노드가 ComfyUI 2026-04 업데이트 이후 VAE 에러를 내서, 같은 2단계 흐름(시작·끝 프레임 → 768×512 → 잠재 2배 업스케일 → 소리 포함 mp4)을 **커스텀 노드 없이 코어 노드만**으로 다시 짰습니다.
+
+**[워크플로 다운로드 (JSON)](https://raw.githubusercontent.com/nicekriss/2BZ-ComfyUI-Workflows/main/LTX2-F2LF/2BZ_LTX2_F2LF_core.json)** · [사용 안내](LTX2-F2LF/README.md)
+
+- 필요: ComfyUI 0.41.0 이상, 커스텀 노드 없음. 모델 링크·폴더는 워크플로 안 메모에
+- 확인한 환경: RTX 3090 24GB (121프레임 228초, VRAM 최고 22.8GB)
+- 모델: LTX-2 Community License (연매출 1천만 달러 미만 상업 이용 무료)
 ## MiniMax H3 RefMod — 참조 만들기 · 영상 생성
 
 사진·영상과 목소리를 각각 재사용할 RefMod로 저장하고, 한국어 프롬프트를 Gemma 4로 번역해 H3 영상을 생성합니다. 제작 JSON에 오디오 생성 그룹과 사용법을 추가했습니다(2026-10-07). 모델 다운로드 링크와 VRAM 조절 안내를 워크플로우에 포함했습니다.
