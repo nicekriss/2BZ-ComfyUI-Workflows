@@ -15,3 +15,8 @@ All trademarks, model weights, source code, and other third-party materials rema
 ## TooBusy AI Photoshop Bridge installer
 
 The installer executable bundles Python, Tcl/Tk, requests, urllib3, certifi, charset-normalizer, idna, psutil and PyYAML using PyInstaller. The release ZIP includes their license notices in `licenses/`; the executable also embeds the collected notices. Model weights and third-party ComfyUI node packages are downloaded from upstream, not bundled. See `Photoshop-Bridge/installer/dependencies.json` for pinned sources and hashes. Photoshop, Creative Cloud and ComfyUI are separately installed products. This independently developed Bridge does not bundle SD-PPP.
+
+
+## 2BZ Audio Cutter
+
+The standalone Windows audio cutter bundles Python, FFmpeg/ffprobe, pywebview and their runtime dependencies. See [component notices and sources](Audio-Cutter/THIRD_PARTY_NOTICES.md); license texts are included in its release ZIP.

@@ -13,6 +13,17 @@ English users: open **2BZ_FastH3_USDU_EN.json** from the ZIP, then use its click
 - 필요: ComfyUI 0.41.0 이상, 커스텀 노드 없음. 모델 링크·폴더는 워크플로 안 메모에
 - 확인한 환경: RTX 3090 24GB (121프레임 228초, VRAM 최고 22.8GB)
 - 모델: LTX-2 Community License (연매출 1천만 달러 미만 상업 이용 무료)
+## MiniMax H3 RefMod — 참조 만들기 · 영상 생성
+
+사진·영상과 목소리를 각각 재사용할 RefMod로 저장하고, 한국어 프롬프트를 Gemma 4로 번역해 H3 영상을 생성합니다. 제작 JSON에 오디오 생성 그룹과 사용법을 추가했습니다(2026-10-07). 모델 다운로드 링크와 VRAM 조절 안내를 워크플로우에 포함했습니다.
+
+**[RefMod 제작 JSON](H3-RefMod/2BZ_H3_RefMod_01_Create.json)** · **[영상 생성 JSON](H3-RefMod/2BZ_H3_RefMod_02_Video_Gemma4.json)** · [설치·사용 안내](H3-RefMod/README.md)
+
+## 2BZ 오디오 커터 — 음악 자르기 / 뮤비 장면 준비
+
+**[Windows ZIP 다운로드 · v0.6](https://github.com/nicekriss/2BZ-ComfyUI-Workflows/releases/download/audio-cutter-v0.6.0/2BZ-Audio-Cutter-v0.6.0-Windows-x64.zip)** · [사용 안내](Audio-Cutter/README.md)
+
+노래를 몇 초씩 나누거나 원하는 구간만 MP3로 저장합니다. 처음에는 음악 자르기만 표시하고, **뮤비 프로젝트**를 선택하면 구간별 이미지·키프레임·프롬프트·결과 영상을 함께 관리합니다. Windows 단독 프로그램이며 ComfyUI가 필요하지 않습니다.
 
 ## LTX 2.5 IC-LoRA — 물 · 밤 · 사람 지우기
 
@@ -38,9 +49,9 @@ Qwen-Image 2.1 리뷰에서 쓴 워크플로 3종입니다. 커스텀 노드 없
 
 ## YuE2 Music
 
-가사와 스타일로 보컬·반주가 있는 곡을 생성합니다. **[설치 ZIP 다운로드](https://github.com/nicekriss/2BZ-ComfyUI-Workflows/releases/latest/download/2BZ-YuE2-installer.zip)**는 기존 ComfyUI Torch를 보존하며, Torch 2.12.1+cu130에서 설치·43.48초 생성 검증을 완료했습니다. 모델 약 7.8GB 자동 다운로드, 별도 subprocess 실행 환경과 한국어 예제 워크플로를 포함합니다.
+가사와 스타일로 보컬·반주가 있는 곡을 생성합니다. **[설치 ZIP 다운로드](https://github.com/nicekriss/2BZ-ComfyUI-Workflows/releases/download/yue2-latest/2BZ-YuE2-installer.zip)**는 기존 ComfyUI Torch를 보존하며, Torch 2.12.1+cu130에서 설치·43.48초 생성 검증을 완료했습니다. 모델 약 7.8GB 자동 다운로드, 별도 subprocess 실행 환경과 한국어 예제 워크플로를 포함합니다.
 
-ZIP 압축을 풀고 ComfyUI를 종료한 뒤 `YuE2/Install-YuE2.bat`을 실행하세요. YuE2와 ABC Studio v0.4.4을 함께 설치합니다. [릴리스 안내](https://github.com/nicekriss/2BZ-ComfyUI-Workflows/releases/latest). [설치·사용 가이드](YuE2/START-HERE-ko.md) · [검증 범위와 남은 한계](YuE2/VALIDATION.md). Windows·NVIDIA 대상 시험 배포이며 모델 가중치는 CC BY-NC 4.0입니다.
+ZIP 압축을 풀고 ComfyUI를 종료한 뒤 `YuE2/Install-YuE2.bat`을 실행하세요. YuE2와 ABC Studio v0.4.5을 함께 설치합니다. [릴리스 안내](https://github.com/nicekriss/2BZ-ComfyUI-Workflows/releases/latest). [설치·사용 가이드](YuE2/START-HERE-ko.md) · [검증 범위와 남은 한계](YuE2/VALIDATION.md). Windows·NVIDIA 대상 시험 배포이며 모델 가중치는 CC BY-NC 4.0입니다.
 
 ## FastH3 + USDU Video Restore
 
@@ -77,7 +88,7 @@ Windows용 기존 ComfyUI에 필요한 노드·모델·플러그인을 추가하
 
 ## 주의
 
-이 저장소는 워크플로우, 설치 도우미와 자체 제작 Photoshop Bridge 플러그인을 제공합니다. 모델, ComfyUI, 타사 커스텀 노드와 CUDA 커널은 포함하거나 재배포하지 않습니다. 각 파일은 안내된 원본 배포처에서 직접 받습니다.
+이 저장소는 워크플로우, 설치 도우미, 자체 제작 Photoshop Bridge와 오디오 커터를 제공합니다. 오디오 커터 Windows ZIP에는 Python·FFmpeg 등 실행 구성요소가 포함되며 [별도 고지](Audio-Cutter/THIRD_PARTY_NOTICES.md)를 따릅니다. 모델, ComfyUI, 타사 커스텀 노드와 CUDA 커널은 포함하거나 재배포하지 않습니다. 각 파일은 안내된 원본 배포처에서 직접 받습니다.
 
 ## 제작
 
