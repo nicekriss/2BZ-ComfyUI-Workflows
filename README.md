@@ -4,6 +4,16 @@
 
 English users: open **2BZ_FastH3_USDU_EN.json** from the ZIP, then use its clickable model-download note. [English setup guide](FastH3-USDU/START-HERE-en.md).
 
+## LTX2 시작 → 끝 프레임 (코어 노드판)
+
+1월 영상 「Frame to Last Frame (PainterLTXv2)」의 PainterLTXv2 노드가 ComfyUI 2026-04 업데이트 이후 VAE 에러를 내서, 같은 2단계 흐름(시작·끝 프레임 → 768×512 → 잠재 2배 업스케일 → 소리 포함 mp4)을 **커스텀 노드 없이 코어 노드만**으로 다시 짰습니다.
+
+**[워크플로 다운로드 (JSON)](https://raw.githubusercontent.com/nicekriss/2BZ-ComfyUI-Workflows/main/LTX2-F2LF/2BZ_LTX2_F2LF_core.json)** · [사용 안내](LTX2-F2LF/README.md)
+
+- 필요: ComfyUI 0.41.0 이상, 커스텀 노드 없음. 모델 링크·폴더는 워크플로 안 메모에
+- 확인한 환경: RTX 3090 24GB (121프레임 228초, VRAM 최고 22.8GB)
+- 모델: LTX-2 Community License (연매출 1천만 달러 미만 상업 이용 무료)
+
 ## LTX 2.5 IC-LoRA — 물 · 밤 · 사람 지우기
 
 찍어둔 영상에 사람·카메라·배경은 그대로 두고 효과만 입힙니다. 한 워크플로에 물 채우기 / 낮→밤 / 사람 지우기 3종, 스위치 딸깍으로 전환. 세로·가로 영상 자동, 한 줄 한국어 요청을 AI가 영어 프롬프트로 써줍니다.
