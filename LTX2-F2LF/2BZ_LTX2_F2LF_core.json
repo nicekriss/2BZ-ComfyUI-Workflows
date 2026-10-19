@@ -933,9 +933,9 @@
    },
    "widgets_values": [
     -1,
-    1.0
+    0.7
    ],
-   "title": "마지막 프레임 심기 (frame_idx -1)",
+   "title": "마지막 프레임 심기 (frame_idx -1, 0.7)",
    "color": "#432",
    "bgcolor": "#653"
   },
@@ -1706,9 +1706,9 @@
    },
    "widgets_values": [
     -1,
-    1.0
+    0.7
    ],
-   "title": "마지막 프레임 다시 심기",
+   "title": "마지막 프레임 다시 심기 (0.7)",
    "color": "#322",
    "bgcolor": "#533"
   },
@@ -2262,7 +2262,7 @@
     "Node name for S&R": "MarkdownNote"
    },
    "widgets_values": [
-    "# ⓪ 먼저 읽기 — LTX2 시작→끝 프레임 (코어 노드판)\n\n**왜 이 판인가**: 1월 영상의 PainterLTXv2 노드는 ComfyUI 2026-04-21 업데이트 이후\n`'VAE' object has no attribute 'latent_frequency_bins'` 에러가 납니다(노드가 1월 이후 업데이트 안 됨).\n이 워크플로는 **커스텀 노드 없이 ComfyUI 기본 노드만**으로 영상에서 시연한 것과 같은 흐름을 만듭니다.\n시작·끝 프레임 → 1단계 768x512 8스텝 → 잠재 2배 업스케일 → 2단계 디테일러 LoRA 3스텝 → 영상+소리 저장.\n\n**쓰는 법 (3단계)**\n1. ② 시작 프레임·마지막 프레임 넣기 (같은 장면이 좋습니다)\n2. ② 프롬프트에 장면·동작·소리 적기 (영어 권장). 가로·세로는 64배수, 프레임 수는 8n+1 (121 = 4.8초)\n3. 실행 → `output/video/` 에 mp4 저장\n\n**모델 (파일명 그대로, 저장 위치)** — 링크는 클릭하면 바로 다운로드\n- `models/checkpoints/ltx-2-19b-distilled-fp8.safetensors` (27GB) — https://huggingface.co/Lightricks/LTX-2/resolve/main/ltx-2-19b-distilled-fp8.safetensors\n- `models/text_encoders/gemma_3_12B_it_fp4_mixed.safetensors` — https://huggingface.co/Kijai/LTXV2_comfy/resolve/main/gemma_3_12B_it_fp4_mixed.safetensors\n- `models/latent_upscale_models/ltx-2-spatial-upscaler-x2-1.0.safetensors` — https://huggingface.co/Lightricks/LTX-2/resolve/main/ltx-2-spatial-upscaler-x2-1.0.safetensors\n- `models/loras/LTX2/ltx-2-19b-ic-lora-detailer.safetensors` (선택, 없으면 ① LoRA 노드 Ctrl+B) — https://huggingface.co/Lightricks/LTX-2-19b-IC-LoRA-Detailer/resolve/main/ltx-2-19b-ic-lora-detailer.safetensors\n- 영상 설명란의 Kijai 모델을 이미 받았다면 위 체크포인트(영상 VAE·오디오 VAE 포함)만 추가하면 됩니다.\n\n**메모**\n- 1단계 시드는 매번 바뀌고(randomize), 2단계 시드는 0 고정 — 마음에 드는 1단계 결과를 2단계가 그대로 다듬습니다.\n- 끝 프레임이 너무 세게 고정되면 ③·④ \"마지막 프레임 심기\"의 strength 를 0.7 정도로 내려 보세요.\n- 2단계가 VRAM 부족이면 ⑤ 디코드 tile_size 를 512 로, 또는 ②에서 가로·세로를 줄이세요. (3090 24GB 기준 테스트)\n- 1단계만 빠르게 보려면 ④ 2단계 노드들을 Ctrl+B 로 끄고 ③ \"심은 프레임 잘라내기\" 잠재를 ⑤ 디코드에 직접 연결하세요.\n"
+    "# ⓪ 먼저 읽기 — LTX2 시작→끝 프레임 (코어 노드판)\n\n**왜 이 판인가**: 1월 영상의 PainterLTXv2 노드는 ComfyUI 2026-04-21 업데이트 이후\n`'VAE' object has no attribute 'latent_frequency_bins'` 에러가 납니다(노드가 1월 이후 업데이트 안 됨).\n이 워크플로는 **커스텀 노드 없이 ComfyUI 기본 노드만**으로 영상에서 시연한 것과 같은 흐름을 만듭니다.\n시작·끝 프레임 → 1단계 768x512 8스텝 → 잠재 2배 업스케일 → 2단계 디테일러 LoRA 3스텝 → 영상+소리 저장.\n\n**쓰는 법 (3단계)**\n1. ② 시작 프레임·마지막 프레임 넣기 (같은 장면이 좋습니다)\n2. ② 프롬프트에 장면·동작·소리 적기 (영어 권장). 가로·세로는 64배수, 프레임 수는 8n+1 (121 = 4.8초)\n3. 실행 → `output/video/` 에 mp4 저장\n\n**모델 (파일명 그대로, 저장 위치)** — 링크는 클릭하면 바로 다운로드\n- `models/checkpoints/ltx-2-19b-distilled-fp8.safetensors` (27GB) — https://huggingface.co/Lightricks/LTX-2/resolve/main/ltx-2-19b-distilled-fp8.safetensors\n- `models/text_encoders/gemma_3_12B_it_fp4_mixed.safetensors` — https://huggingface.co/Kijai/LTXV2_comfy/resolve/main/gemma_3_12B_it_fp4_mixed.safetensors\n- `models/latent_upscale_models/ltx-2-spatial-upscaler-x2-1.0.safetensors` — https://huggingface.co/Lightricks/LTX-2/resolve/main/ltx-2-spatial-upscaler-x2-1.0.safetensors\n- `models/loras/LTX2/ltx-2-19b-ic-lora-detailer.safetensors` (선택, 없으면 ① LoRA 노드 Ctrl+B) — https://huggingface.co/Lightricks/LTX-2-19b-IC-LoRA-Detailer/resolve/main/ltx-2-19b-ic-lora-detailer.safetensors\n- 영상 설명란의 Kijai 모델을 이미 받았다면 위 체크포인트(영상 VAE·오디오 VAE 포함)만 추가하면 됩니다.\n\n**메모**\n- 1단계 시드는 매번 바뀌고(randomize), 2단계 시드는 0 고정 — 마음에 드는 1단계 결과를 2단계가 그대로 다듬습니다.\n- \"마지막 프레임 심기\" strength 는 0.7 이 기본입니다. 1.0 으로 올리면 끝 프레임은 더 정확해지지만 중간이 멈췄다가 점프하거나 자세가 무너집니다(실측). 끝이 덜 맞으면 0.85 까지만 올려 보세요.\n- 2단계가 VRAM 부족이면 ⑤ 디코드 tile_size 를 512 로, 또는 ②에서 가로·세로를 줄이세요. (3090 24GB 기준 테스트)\n- 1단계만 빠르게 보려면 ④ 2단계 노드들을 Ctrl+B 로 끄고 ③ \"심은 프레임 잘라내기\" 잠재를 ⑤ 디코드에 직접 연결하세요.\n"
    ],
    "title": "⓪ 먼저 읽기"
   }

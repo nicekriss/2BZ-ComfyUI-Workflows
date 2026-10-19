@@ -10,8 +10,8 @@ English users: open **2BZ_FastH3_USDU_EN.json** from the ZIP, then use its click
 
 **[워크플로 다운로드 (JSON)](https://raw.githubusercontent.com/nicekriss/2BZ-ComfyUI-Workflows/main/LTX2-F2LF/2BZ_LTX2_F2LF_core.json)** · [사용 안내](LTX2-F2LF/README.md)
 
-- 필요: ComfyUI 0.41.0 이상, 커스텀 노드 없음. 모델 링크·폴더는 워크플로 안 메모에
-- 확인한 환경: RTX 3090 24GB (121프레임 228초, VRAM 최고 22.8GB)
+- 필요: ComfyUI 0.41.0 이상(0.42.1 확인), 커스텀 노드 없음. 모델 링크·폴더는 워크플로 안 메모에
+- 확인한 환경: RTX 3090 24GB (121프레임 154초, VRAM 최고 22.8GB)
 - 모델: LTX-2 Community License (연매출 1천만 달러 미만 상업 이용 무료)
 ## MiniMax H3 RefMod — 참조 만들기 · 영상 생성
 
