@@ -4,6 +4,16 @@
 
 English users: open **2BZ_FastH3_USDU_EN.json** from the ZIP, then use its clickable model-download note. [English setup guide](FastH3-USDU/START-HERE-en.md).
 
+## MOSS-Image 텍스트 → 이미지 + 박스 레이아웃 (코어 노드판)
+
+푸단대 OpenMOSS 팀의 5B 이미지 모델. 프롬프트만으로, 또는 캔버스에 박스를 그려 글자·물체 자리를 지정해 생성합니다. 한글 메뉴판·간판처럼 글자가 들어간 이미지가 강점입니다. 한글 프롬프트·박스 설명은 자동 번역, 하이레즈 픽스·8스텝 가속 스위치 포함.
+
+**[워크플로 다운로드 (JSON)](https://raw.githubusercontent.com/nicekriss/2BZ-ComfyUI-Workflows/main/MOSS-Image/2BZ_MOSS_01_T2I_Layout.json)** · [사용 안내](MOSS-Image/README.md)
+
+- 필요: ComfyUI 0.42.0 이상, 커스텀 노드 없음. 모델 4개(약 14GB) 링크는 워크플로 안 메모에
+- 확인한 환경: RTX 3090 24GB (1MP 약 20초, 8스텝 가속 8~11초)
+- 모델: Apache-2.0
+
 ## LTX2 시작 → 끝 프레임 (코어 노드판)
 
 1월 영상 「Frame to Last Frame (PainterLTXv2)」의 PainterLTXv2 노드가 ComfyUI 2026-04 업데이트 이후 VAE 에러를 내서, 같은 2단계 흐름(시작·끝 프레임 → 768×512 → 잠재 2배 업스케일 → 소리 포함 mp4)을 **커스텀 노드 없이 코어 노드만**으로 다시 짰습니다.
