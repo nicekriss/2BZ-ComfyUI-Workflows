@@ -1,5 +1,11 @@
 # Changelog
 
+## H3 2K Refiner (Deno 8+2) — 2026-11-02
+
+- Added `H3-2K-Refiner/` with the MiniMax H3 R2V workflow used in the "H3 local 2K" video: Acc-8Step draft → latent upscale ×2 → last 2 of 8 steps with DMD + Kijai rank16 Open-H3 2K refiner LoRA, after Deno's 8+2 recipe (credited and linked).
+- Adds Korean prompt translation (Gemma 4 E4B), resolution selector, length in seconds, and refine-stage memory savers.
+- RTX 3090 results: 2K 5 s OK, 2K 10 s fails, FHD 15 s OK only with the memory-saving nodes. Re-ran the released JSON as-is before publishing (FHD 5 s, 6 min 21 s, 22.2 GB peak).
+
 ## Audio Cutter v0.6 — 2026-10-02
 
 - Apply the Night Session charcoal and amber interface.

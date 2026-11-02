@@ -4,6 +4,15 @@
 
 English users: open **2BZ_FastH3_USDU_EN.json** from the ZIP, then use its clickable model-download note. [English setup guide](FastH3-USDU/START-HERE-en.md).
 
+## MiniMax H3 로컬 2K 리파이너 (Deno 8+2)
+
+H3 레퍼런스→영상에 NVIDIA Open-H3 2K 리파이너(Kijai 경량 LoRA)를 붙인 로컬 생성. Deno님이 공개한 8+2 방식(초안 8스텝 → 잠재 ×2 → 마지막 2스텝 리파인)에 한국어 프롬프트 번역·해상도 선택·초 단위 길이·메모리 절약 노드를 더했습니다.
+
+**[워크플로 다운로드 (JSON)](https://raw.githubusercontent.com/nicekriss/2BZ-ComfyUI-Workflows/main/H3-2K-Refiner/2BZ_H3_2K_Refiner_Deno8plus2.json)** · [사용 안내](H3-2K-Refiner/README.md)
+
+- **요구사양: 2K는 24GB 이상.** RTX 3090에서 2K 5초 성공(8분 40초)·2K 10초 실패, FHD는 메모리 절약 노드로 15초까지(16분 42초)
+- 필요: ComfyUI 0.42.0 이상, 커스텀 노드 5개, 모델 9개(약 66GB) — 링크·폴더는 워크플로 안 메모에
+
 ## MOSS-Image 텍스트 → 이미지 + 박스 레이아웃 (코어 노드판)
 
 푸단대 OpenMOSS 팀의 5B 이미지 모델. 프롬프트만으로, 또는 캔버스에 박스를 그려 글자·물체 자리를 지정해 생성합니다. 한글 메뉴판·간판처럼 글자가 들어간 이미지가 강점입니다. 한글 프롬프트·박스 설명은 자동 번역, 하이레즈 픽스·8스텝 가속 스위치 포함.
