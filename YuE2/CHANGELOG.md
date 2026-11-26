@@ -1,5 +1,10 @@
 # Changes
 
+## yue2-v0.1.0-rc15
+
+- Pin ABC Studio v0.4.7. Its SheetSage2 check refused every RTX 40 card ("sm_89 인데 설치된 Torch 는 ... 만 담고 있습니다"): official Torch builds list sm_86 and sm_90 but not sm_89, and the check required an exact name. It now follows CUDA's compatibility rule (sm_86 kernels run on sm_89; other generations need PTX). RTX 50 against an sm_90-only build is still refused. Reported on an RTX 4080 SUPER.
+- Also ships ABC Studio's "이 악보 쓰기" target fix (v0.4.6 was never tagged).
+
 ## yue2-v0.1.0-rc14
 
 - Expose `max_tokens` on both song generation nodes, defaulting to the existing 9000. Pass the limit to semantic sampling; low limits may truncate a song and do not guarantee that an out-of-memory error is resolved.

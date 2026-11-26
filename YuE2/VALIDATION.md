@@ -1,4 +1,13 @@
-# Validation · yue2-v0.1.0-rc14
+# Validation · yue2-v0.1.0-rc15
+
+## rc15 RTX 40 GPU check (2026-11-26)
+
+- Only the pinned ABC Studio changed (v0.4.5 → v0.4.7). The YuE2 bridge, workflow and model pins are identical to rc14.
+- ABC Studio's SheetSage2 unit tests cover the RTX 4080 SUPER case (sm_89 against the cu128 list) passing, sm_90-only builds not covering sm_89, other generations needing PTX, and RTX 50 against an sm_90-only build still refused.
+- The real probe still passes on RTX 3090 (sm_86): arch check and a CUDA matmul in the SheetSage2 runtime.
+- No sm_89 card was exercised for rc15. Before the exact-name check existed, RTX 4070 Ti SUPER ran SheetSage2 transcription on this Torch build (rc10–rc12 notes below), which is the evidence that sm_86 kernels run there.
+- The v0.4.7 archive SHA256 and file fingerprint were taken from the published tag; two downloads hashed identically.
+
 
 ## rc14 generation token limit (2026-09-30)
 
